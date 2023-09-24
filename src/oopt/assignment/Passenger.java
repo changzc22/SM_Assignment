@@ -111,6 +111,12 @@ public class Passenger extends Person {
             }
 
             System.out.println("Contact number length: " + contactNo.length());
+            
+            for (Passenger passenger : passengerList) {
+                if (passenger.getContactNo().equals(contactNo)) {
+                    invalidCount++; // IC already exists
+                }
+            }
 
             if (contactNo.length() != 10 && contactNo.length() != 11) {
                 invalidCount++;
@@ -352,9 +358,13 @@ public class Passenger extends Person {
                                     System.out.print("Enter here > ");
                                     name = sc.next().trim();
 
-                                    if ((name.equals("X") || name.equals("x")) && name.length() == 1) {
+                                    if (name.equals("X") || name.equals("x")) {
                                         nameValid = true;
-                                    } else {
+                                    } 
+                                    else if(name.isEmpty()){
+                                        System.out.println("Enter alphabelts and spaces only!");
+                                    }
+                                    else {
                                         for (j = 0; j < name.length(); j++) {
                                             char c = name.charAt(j);
                                             if (!Character.isAlphabetic(c) && !Character.isWhitespace(c)) {
@@ -365,9 +375,12 @@ public class Passenger extends Person {
 
                                         if (!nameValid) {
                                             System.out.println("Enter alphabelts and spaces only!");
-                                        } else {
+                                        } 
+                                        else {
+                                            //for (j = 0; j < name.length(); j++) {
+                                            //bookingList.get(j).setName(name);
+                                        //}
                                             passenger.setName(name);
-                                            bookingList.get(j).setName(name);
                                             PassengerMain.updatePassengerFile(passengerList);
                                             BookingMain.writeBookingFile(bookingList);
                                             System.out.println("Passenger name has been updated.");
