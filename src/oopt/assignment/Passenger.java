@@ -377,9 +377,7 @@ public class Passenger extends Person {
                                             System.out.println("Enter alphabelts and spaces only!");
                                         } 
                                         else {
-                                            //for (j = 0; j < name.length(); j++) {
-                                            //bookingList.get(j).setName(name);
-                                        //}
+                                            bookingList.get(j).setName(name);
                                             passenger.setName(name);
                                             PassengerMain.updatePassengerFile(passengerList);
                                             BookingMain.writeBookingFile(bookingList);
