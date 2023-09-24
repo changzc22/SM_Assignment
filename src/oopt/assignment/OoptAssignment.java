@@ -12,42 +12,46 @@ public class OoptAssignment {
     public static void mainMenu() {
 
         Scanner input = new Scanner(System.in);
-        boolean isValid = false, cont = true;
+        boolean isValid = false, cont = true, exit = false;
         int opt = 0;
 
         do {
-            etsLogo();
+
             do {
-                try {
-                    System.out.print("Your selection > ");
-                    opt = input.nextInt();
+                etsLogo();
+                do {
+                    try {
+                        System.out.print("Your selection > ");
+                        opt = input.nextInt();
 
-                    if (opt >= 1 && opt <= 5) {
-                        isValid = true;
-                    } else {
-                        System.out.println("Invalid input. You should only select between 1 and 5");
+                        if (opt >= 1 && opt <= 5) {
+                            isValid = true;
+                        } else {
+                            System.out.println("Invalid input. You should only select between 1 and 5");
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println("You should not enter other characters");
+                        input.nextLine();
                     }
+                } while (!isValid);
 
-                } catch (Exception e) {
-                    System.out.println("You should not enter other characters");
-                    input.nextLine();
+                switch (opt) {
+                    case 1 ->
+                        StaffMain.staffMain();
+                    case 2 ->
+                        PassengerMain.passengerMain();
+                    case 3 ->
+                        BookingMain.bookingMain();
+                    case 4 ->
+                        TrainMain.trainMain();
+                    default ->
+                        cont = false;
                 }
-            } while (!isValid);
 
-            switch (opt) {
-                case 1 ->
-                    StaffMain.staffMain();
-                case 2 ->
-                    PassengerMain.passengerMain();
-                case 3 ->
-                    BookingMain.bookingMain();
-                case 4 ->
-                    TrainMain.trainMain();
-                default ->
-                    cont = false;
-            }
+            } while (cont);
+        } while (!exit);
 
-        } while (cont);
     }
 
     public static void etsLogo() {
