@@ -552,7 +552,7 @@ public class Booking {
         }
 
         ArrayList<Train> trainList = TrainMain.readTrainFile();
-        double destinationFare = 0.0;
+        double destinationFare = 0.0, totalDestinationFare = 0.0;
         double[] subtotal = {0.0, 0.0};
 
         LocalDate currentDate = LocalDate.now();
@@ -571,12 +571,13 @@ public class Booking {
         for (Train t : trainList) {
             for (Booking b : bookingList) {
                 if (t.getDestination().equals(b.getTrain().getDestination()) && b.getSeatTier() == 'S' && b.getTrain().isTrainStatus()) {
-                    destinationFare += b.getTotalFare();
+                    destinationFare = b.getTotalFare();
+                    totalDestinationFare += b.getTotalFare();
                     subtotal[0] += destinationFare;
                 }
             }
-            System.out.printf("%-12s  : RM %8.2f\n", t.getDestination(), destinationFare);
-            destinationFare = 0.0;
+            System.out.printf("%-12s  : RM %8.2f\n", t.getDestination(), totalDestinationFare);
+            totalDestinationFare = 0.0;
         }
         
         destinationFare = 0.0;
@@ -588,12 +589,13 @@ public class Booking {
         for (Train t : trainList) {
             for (Booking b : bookingList) {
                 if (t.getDestination().equals(b.getTrain().getDestination()) && b.getSeatTier() == 'P' && b.getTrain().isTrainStatus()) {
-                    destinationFare += b.getTotalFare();
+                    destinationFare = b.getTotalFare();
+                    totalDestinationFare += b.getTotalFare();
                     subtotal[1] += destinationFare;
                 }
             }
-            System.out.printf("%-12s  : RM %8.2f\n", t.getDestination(), destinationFare);
-            destinationFare = 0.0;
+            System.out.printf("%-12s  : RM %8.2f\n", t.getDestination(), totalDestinationFare);
+            totalDestinationFare = 0.0;
         }
 
         //BookingMain.systemPause();
