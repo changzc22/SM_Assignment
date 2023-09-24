@@ -165,11 +165,10 @@ public class Booking {
             if (inputDetail.equals("X")) {
                 return;
             } else if (inputDetail.equals("S") || (inputDetail.equals("P"))) {
-                if (t.get(j).getStandardSeatQty() == 0 || t.get(j).getPremiumSeatQty() == 0) {
-                    System.out.println("No more seat for this seat tier.");
-                } else {
+                if ((inputDetail.equals("S") && t.get(j).getStandardSeatQty() == 0) || (inputDetail.equals("P") && t.get(j).getPremiumSeatQty() == 0)){
+                    System.out.println("No more seat for this seat tier.");                    
+                } else
                     isValid = true;
-                }
             } else {
                 System.out.println("Invalid Input. Please re-enter again!!");
             }
