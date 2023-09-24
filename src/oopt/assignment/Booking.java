@@ -301,6 +301,7 @@ public class Booking {
             b.add(newBooking);
             TrainMain.writeTrainFile(t);
             BookingMain.writeBookingFile(b);
+            Staff.updateNo(s,ID);
             System.out.println(newBooking.toString());
         }
     }
