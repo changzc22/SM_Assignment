@@ -504,14 +504,16 @@ public class Staff extends Person {
         String ID;
         while (true) {
 
-            System.out.print("Enter your staff ID (X to end program):");
+            System.out.print("Enter your staff ID [X to Exit]:");
             ID = scanner.nextLine().toUpperCase();
             if (ID.equals("X")) {
+                System.out.println("Thank you and have a nice day.");
                 System.exit(0);
             }
-            System.out.print("Enter your password(Z to forget password):");
+            System.out.print("Enter your password [Z - forget password] [X to Exit]:");
             String pw = scanner.nextLine();
             if (pw.equals("X")) {
+                System.out.println("Thank you and have a nice day.");
                 System.exit(0);
             } else if (pw.equals("Z")) {
                 staff.modifyPassword();
