@@ -191,7 +191,7 @@ public class Train {
             
             else if (newDestination.length() > 15) {
                 valid = false;
-                TrainMain.clearJavaConsoleScreen();
+                OoptAssignment.clearScreen();
                 System.out.println("Please input less than 15 characters!");
             }
             
@@ -270,7 +270,7 @@ public class Train {
                 newPremiumSeatQty = scanner.nextInt();
                 if (newPremiumSeatQty >= 0 && newPremiumSeatQty < 1000) {
                     valid = newPremiumSeatQty < newStandardSeatQty;
-                    TrainMain.clearJavaConsoleScreen();
+                    OoptAssignment.clearScreen();
                     if (!valid) {
                         System.out.println("Premium Seat Quantity must be lower than Standard!!");
                     }
@@ -306,7 +306,7 @@ public class Train {
                 }
                 
                 else {
-                    TrainMain.clearJavaConsoleScreen();
+                    OoptAssignment.clearScreen();
                     System.out.println("Invalid Pricing 1.00-999.98");
                 }
             } catch (Exception e) {
@@ -344,7 +344,7 @@ public class Train {
                 }
                 
                 else {
-                    TrainMain.clearJavaConsoleScreen();
+                    OoptAssignment.clearScreen();
                     System.out.println("Invalid Pricing 1.01-999.99");
                 }
             } catch (Exception e) {
@@ -493,7 +493,7 @@ public class Train {
             }
 
             if (trainFound) {
-                TrainMain.clearJavaConsoleScreen();
+                OoptAssignment.clearScreen();
                 System.out.println(   "======================================");
                 System.out.println(   "|| Train Detail                      ||");
                 System.out.println(   "======================================");
@@ -544,7 +544,7 @@ public class Train {
                 }
                 
                 else {
-                    TrainMain.clearJavaConsoleScreen();
+                    OoptAssignment.clearScreen();
                     System.out.println("Invalid Search Train ID format(TXXX)!");
                 }
             } while (!validTrainSearch);
