@@ -16,11 +16,7 @@ public class OoptAssignment {
         String loginStaffID;
 
         do {
-            try {
-                clear();
-            } catch (AWTException e) {
-                e.printStackTrace();
-            }
+            OoptAssignment.clearScreen();
             
             etsLogo();
             loginStaffID = Staff.loginStaff();
@@ -28,11 +24,7 @@ public class OoptAssignment {
             
             do {
                 
-                try {
-                    clear();
-                } catch (AWTException e) {
-                    e.printStackTrace();
-                }
+                OoptAssignment.clearScreen();
 
                 etsLogo();
                 mainMenu();
@@ -103,18 +95,29 @@ public class OoptAssignment {
 
     }
     
-    public static void clear() throws AWTException {
-        Robot rob = new Robot();
-
+    public static void systemPause() {
+        System.out.print("Press any key to continue...");
         try {
-            rob.keyPress(KeyEvent.VK_CONTROL); //press control
-            rob.keyPress(KeyEvent.VK_L); // press L
-
-            rob.keyRelease(KeyEvent.VK_L);
-            rob.keyRelease(KeyEvent.VK_CONTROL);
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            System.out.println(e);
+            System.in.read();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static void clearScreen() {
+        try {
+            Robot rob = new Robot();
+            try {
+                rob.keyPress(KeyEvent.VK_CONTROL); // press "CTRL"
+                rob.keyPress(KeyEvent.VK_L); // press "L"
+                rob.keyRelease(KeyEvent.VK_L); // unpress "L"
+                rob.keyRelease(KeyEvent.VK_CONTROL); // unpress "CTRL"
+                Thread.sleep(10); // add delay in milisecond, if not there will automatically stop after clear
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        } catch (AWTException e) {
+            e.printStackTrace();
         }
     }
 
