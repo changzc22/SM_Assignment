@@ -14,7 +14,7 @@ public class StaffMain {
 
         Scanner sc = new Scanner(System.in);
         boolean exit = false;
-        staff.loginStaff();
+        
 
         do {
             System.out.println("  SSS  TTTTT AAAAA  FFFFF  FFFFF ");

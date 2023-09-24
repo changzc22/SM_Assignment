@@ -9,14 +9,11 @@ import java.time.*;
 public class OoptAssignment {
 
     public static void main(String[] args) {
-        mainMenu();
-    }
-
-    public static void mainMenu() {
 
         Scanner input = new Scanner(System.in);
         boolean isValid = false, cont = true, exit = false;
         int opt = 0;
+        String loginStaffID;
 
         do {
             try {
@@ -24,6 +21,9 @@ public class OoptAssignment {
             } catch (AWTException e) {
                 e.printStackTrace();
             }
+            
+            etsLogo();
+            loginStaffID = Staff.loginStaff();
 
             do {
                 try {
@@ -56,7 +56,7 @@ public class OoptAssignment {
                     case 2 ->
                         PassengerMain.passengerMain();
                     case 3 ->
-                        BookingMain.bookingMain();
+                        BookingMain.bookingMain(loginStaffID);
                     case 4 ->
                         TrainMain.trainMain();
                     default ->
@@ -82,6 +82,9 @@ public class OoptAssignment {
         System.out.println("");
         System.out.println("           E l e c t r i c   T r a i n   S e r v i c e\n");
 
+    }
+    
+    public static void mainMenu(){
         System.out.println("               =========================================");
         System.out.println("               |            **Modules Menu**           |");
         System.out.println("               =========================================");

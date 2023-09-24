@@ -97,8 +97,8 @@ public class Booking {
         return price * numOfSeatBook * discount * SST_RATE;
     }
 
-    public static void addBooking(String ID) {
-        ArrayList<Staff> s=Staff.readStaffFile();
+    public static void addBooking(String staffID) {
+        ArrayList<Staff> s = Staff.readStaffFile();
         ArrayList<Booking> b = BookingMain.readBookingFile();
         ArrayList<Train> t = TrainMain.readTrainFile();
         ArrayList<Passenger> p = PassengerMain.readPassengerFile();
@@ -301,7 +301,7 @@ public class Booking {
             b.add(newBooking);
             TrainMain.writeTrainFile(t);
             BookingMain.writeBookingFile(b);
-            Staff.updateNo(s,ID);
+            s = Staff.updateNo(s,staffID);
             System.out.println(newBooking.toString());
         }
     }

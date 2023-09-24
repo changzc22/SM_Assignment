@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 
 public class BookingMain {
 
-    public static void bookingMain() {
+    public static void bookingMain(String staffID) {
         Scanner input = new Scanner(System.in).useDelimiter("\n");
 
         int selectionInput = 0;
@@ -44,7 +44,7 @@ public class BookingMain {
 
             switch (selectionInput) {
                 case 1:
-                    Booking.addBooking();
+                    Booking.addBooking(staffID);
                     break;
                 case 2:
                     Booking.displayBooking();
