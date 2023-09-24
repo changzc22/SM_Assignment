@@ -503,7 +503,7 @@ public class Staff extends Person {
         Staff staff = new Staff();
         String ID;
         while (true) {
-
+            staffList=readStaffFile();
             System.out.print("Enter your staff ID [X to Exit]:");
             ID = scanner.nextLine().toUpperCase();
             if (ID.equals("X")) {

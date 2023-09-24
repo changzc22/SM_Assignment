@@ -70,7 +70,7 @@ public class Passenger extends Person {
             System.out.print("Enter here > ");
             name = sc.nextLine().trim();
 
-            if ((name.equals("X") || name.equals("x")) && name.length() == 1) {
+            if (name.equals("X") || name.equals("x")) {
                 return;
             }
 
@@ -99,7 +99,7 @@ public class Passenger extends Person {
             System.out.print("Enter here > ");
             contactNo = sc.nextLine().trim();
 
-            if ((contactNo.equals("X") || contactNo.equals("x")) && contactNo.length() == 1) {
+            if (contactNo.equals("X") || contactNo.equals("x"))  {
                 return;
             }
 
@@ -125,7 +125,7 @@ public class Passenger extends Person {
             contactValid = invalidCount == 0;
 
             if (!contactValid) {
-                System.out.println("Enter digits only or the length is not 10 or 11!");
+                System.out.println("Enter digits only, contact no already exists or the length is not 10 or 11!");
             }
 
         } while (!contactValid);
@@ -137,7 +137,7 @@ public class Passenger extends Person {
             System.out.print("Enter here > ");
             ic = sc.nextLine().trim();
 
-            if ((ic.equals("X") || ic.equals("x")) && ic.length() == 1) {
+            if (ic.equals("X") || ic.equals("x")) {
                 return;
             }
 
@@ -261,9 +261,9 @@ public class Passenger extends Person {
             System.out.println("\nEnter passenger details by entering passenger name, IC or ID.");
             System.out.println("Press X to exit if you wish to exit.");
             System.out.print("Enter here > ");
-            searchInput = sc.nextLine().trim();
+            searchInput = sc.next().trim();
 
-            if ((searchInput.equals("X") || searchInput.equals("x")) && searchInput.length() == 1) {
+            if (searchInput.equals("X") || searchInput.equals("x")) {
                 return;
             }
 
@@ -320,7 +320,7 @@ public class Passenger extends Person {
             System.out.print("Enter here > ");
             searchInput = sc.next().trim();
 
-            if ((searchInput.equals("X") || searchInput.equals("x")) && searchInput.length() == 1) {
+            if (searchInput.equals("X") || searchInput.equals("x")) {
                 return;
             }
 
@@ -400,7 +400,7 @@ public class Passenger extends Person {
                                     System.out.print("Enter here > ");
                                     contactNo = sc.next();
 
-                                    if ((contactNo.equals("X") || contactNo.equals("x")) && contactNo.length() == 1) {
+                                    if (contactNo.equals("X") || contactNo.equals("x")) {
                                         contactValid = true;
                                     } else {
                                         for (int k = 0; k < contactNo.length(); k++) {
@@ -425,7 +425,7 @@ public class Passenger extends Person {
                                         contactValid = invalidCount == 0;
 
                                         if (!contactValid) {
-                                            System.out.println("Enter digits only or the length is not 10 or 11!");
+                                            System.out.println("Enter digits only, contact no already exists or the length is not 10 or 11!");
                                         } else {
                                             passenger.setContactNo(contactNo);
                                             PassengerMain.updatePassengerFile(passengerList);
@@ -443,7 +443,7 @@ public class Passenger extends Person {
                                     System.out.print("Enter here > ");
                                     ic = sc.next();
 
-                                    if ((ic.equals("X") || ic.equals("x")) && ic.length() == 1) {
+                                    if ((ic.equals("X") || ic.equals("x"))) {
                                         icValid = true;
                                     } else {
                                         for (int z = 0; z < ic.length(); z++) {
@@ -581,7 +581,7 @@ public class Passenger extends Person {
             System.out.print("Enter here > ");
             searchInput = sc.next().trim();
 
-            if ((searchInput.equals("X") || searchInput.equals("x")) && searchInput.length() == 1) {
+            if (searchInput.equals("X") || searchInput.equals("x")) {
                 return;
             }
 

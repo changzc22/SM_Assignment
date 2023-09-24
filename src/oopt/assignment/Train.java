@@ -169,7 +169,13 @@ public class Train {
                 new java.util.Scanner(System.in).nextLine();
                 valid = Train.checkDuplicate(newTrainID);
 
-            } else {
+            } 
+            
+            else if (newTrainID.equals("X")){
+                return;
+            }
+            
+            else {
                 OoptAssignment.clearScreen();
                 System.out.println("Invalid Train ID format(TXXX)!");
             }
@@ -463,24 +469,32 @@ public class Train {
 
     public static void searchTrain() {
         ArrayList<Train> trainList = TrainMain.readTrainFile();
-        String searchTrain;
-        int searchChoice;
-        boolean validTrainSearch, trainFound = false;
+        String searchTrain, searchChoiceString;
+        char searchChoice;
+        boolean validTrainSearch, trainFound = false, searchAgain;
         Scanner scanner = new Scanner(System.in);
         int i;
 
         do {
+            OoptAssignment.clearScreen();
             System.out.println("Search : Train");
             do {
+                searchAgain = false;
                 validTrainSearch = false;
-                System.out.print("Enter Train ID to search : ");
+                System.out.print("Enter Train ID to search (Press X/x to return): ");
                 searchTrain = scanner.nextLine().toUpperCase();
                 if (searchTrain.matches("[T]+[0-9]{3}")) {
 
                     System.out.println("Press Any Key To Continue...");
                     new java.util.Scanner(System.in).nextLine();
                     validTrainSearch = true;
-                } else {
+                } 
+                
+                else if (searchTrain.equals("X")){
+                    return;
+                }
+                
+                else {
                     System.out.println("Invalid Search Train ID format(TXXX)!");
                 }
             } while (!validTrainSearch);
@@ -494,25 +508,33 @@ public class Train {
 
             if (trainFound) {
                 OoptAssignment.clearScreen();
-                System.out.println(   "======================================");
-                System.out.println(   "|| Train Detail                      ||");
-                System.out.println(   "======================================");
-                System.out.println(     "|| Train ID               : " + trainList.get(i).getTrainID());
-                System.out.println(     "|| Destination            : " + trainList.get(i).getDestination());
-                System.out.println(     "|| Departure Date         : " + trainList.get(i).getDepartureDate());
-                System.out.println(     "|| Departure Time         : " + trainList.get(i).getDepartureTime());
-                System.out.println(     "|| Standard Seat Quantity : " + trainList.get(i).getDepartureTime());
-                System.out.println(     "|| Premium Seat Quantity  : " + trainList.get(i).getDepartureTime());
-                System.out.printf("|| Standard Seat Price    : RM %.2f\n", trainList.get(i).getStandardSeatPrice());
-                System.out.printf("|| Standard Seat Price    : RM %.2f\n", trainList.get(i).getPremiumSeatPrice());
-                System.out.println(     "|| Train Status  : " + (trainList.get(i).isTrainStatus() ? "Active" : "Discontinued"));
+                System.out.println(   "==============================================");
+                System.out.println(   "|| Train Detail                             ||");
+                System.out.println(   "==============================================");
+                System.out.printf("|| Train ID               : %4s            ||\n", trainList.get(i).getTrainID()) ;
+                System.out.printf("|| Destination            : %-15s ||\n", trainList.get(i).getDestination());
+                System.out.printf("|| Departure Date         : %10s      ||\n", trainList.get(i).getDepartureDate());
+                System.out.printf("|| Departure Time         : %5s           ||\n", trainList.get(i).getDepartureTime());
+                System.out.printf("|| Standard Seat Quantity : %4d            ||\n", trainList.get(i).getStandardSeatQty());
+                System.out.printf("|| Premium Seat Quantity  : %4d            ||\n", trainList.get(i).getPremiumSeatQty());
+                System.out.printf("|| Standard Seat Price    : RM %8.2f     ||\n", trainList.get(i).getStandardSeatPrice());
+                System.out.printf("|| Standard Seat Price    : RM %8.2f     ||\n", trainList.get(i).getPremiumSeatPrice());
+                System.out.printf("|| Train Status           : %-12s    ||\n", (trainList.get(i).isTrainStatus() ? "Active" : "Discontinued"));
+                System.out.println(   "==============================================");
             }
 
-            System.out.println("What do you want to do with this information?");
+            System.out.println("Search train again? (Y/N)");
+            searchChoiceString = scanner.nextLine();
+            if (searchChoiceString.length() == 1) {
+                searchChoice = searchChoiceString.charAt(0);
 
-            searchChoice = scanner.nextInt();
-
-        } while (trainFound);
+                if (searchChoice == 'Y') {
+                    searchAgain = true;
+                } else if (searchChoice == 'N') {
+                    searchAgain = false;
+                }
+            }
+        } while (searchAgain);
 
     }
 
