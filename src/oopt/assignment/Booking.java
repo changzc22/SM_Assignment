@@ -579,8 +579,6 @@ public class Booking {
             System.out.printf("%-12s  : RM %8.2f\n", t.getDestination(), totalDestinationFare);
             totalDestinationFare = 0.0;
         }
-        
-        destinationFare = 0.0;
 
         System.out.println("--------------------------------------------------------");
         System.out.println("Revenue by Destination (Premium Seat):");

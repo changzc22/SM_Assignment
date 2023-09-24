@@ -25,7 +25,9 @@ public class OoptAssignment {
             etsLogo();
             loginStaffID = Staff.loginStaff();
 
+            
             do {
+                
                 try {
                     clear();
                 } catch (AWTException e) {
@@ -35,6 +37,8 @@ public class OoptAssignment {
                 etsLogo();
                 mainMenu();
                 
+                isValid = false;
+                cont = true;
                 do {
                     try {
                         System.out.print("Your selection > ");
