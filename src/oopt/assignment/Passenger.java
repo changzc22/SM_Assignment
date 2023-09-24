@@ -114,7 +114,7 @@ public class Passenger extends Person {
             
             for (Passenger passenger : passengerList) {
                 if (passenger.getContactNo().equals(contactNo)) {
-                    invalidCount++; // IC already exists
+                    invalidCount++; // Contact no already exists
                 }
             }
 
