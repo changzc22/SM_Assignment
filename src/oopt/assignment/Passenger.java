@@ -356,7 +356,7 @@ public class Passenger extends Person {
                                     invalidCount = 0;
                                     System.out.println("\nEnter the passenger name without special characters.");
                                     System.out.print("Enter here > ");
-                                    name = sc.nextLine().trim();
+                                    name = sc.next().trim();
 
                                     if (name.equals("X") || name.equals("x")) {
                                         nameValid = true;
