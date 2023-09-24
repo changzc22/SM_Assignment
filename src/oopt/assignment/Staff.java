@@ -8,8 +8,6 @@ public class Staff extends Person {
     private static ArrayList<Staff> staffList = new ArrayList<>();
     private String password;
     private int noOfBookingHandle = 0;
-    //dmidjcidcnsksmcc
-    //wwdddcccc
 
     public int getNumberOfStaff() {
         return staffList.size();
@@ -553,8 +551,7 @@ public class Staff extends Person {
                                 System.out.print("Press 'Enter' key to continue ...");
                                 String c = scanner.nextLine();
                                 staffFound = true;
-                                StaffMain staff=new StaffMain();
-                                staff.ID=ID;
+                                Booking.addBooking.staffID=ID;
                                 break; // Exit the password input loop
                             } else {
                                 break;
