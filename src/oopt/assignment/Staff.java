@@ -8,6 +8,7 @@ public class Staff extends Person {
     private static ArrayList<Staff> staffList = new ArrayList<>();
     private String password;
     private int noOfBookingHandle = 0;
+    Scanner scanner = new Scanner(System.in);
 
     public int getNumberOfStaff() {
         return staffList.size();
@@ -16,21 +17,23 @@ public class Staff extends Person {
     public ArrayList<Staff> getStaffList() {
         return staffList;
     }
-
+   
     public Staff() {
     }
 
     ;
-    public Staff(String name, String contactNo, String ic, String id) {
-        super(name, contactNo, ic, id);
+    public Staff(String name, String contactNo, String ic,String id) {
+        super(name, contactNo, ic,id);
     }
 
-    public Staff(String name, String contactNo, String ic, String id, String password, int noOfBookingHandle) {
-        super(name, contactNo, ic, id);
-
+    public Staff(String name, String contactNo, String ic,String id,String password, int noOfBookingHandle) {
+        super(name, contactNo, ic,id);
+        
         this.password = password;
         this.noOfBookingHandle = noOfBookingHandle;
     }
+
+    
 
     public void setPassword(String password) {
         this.password = password;
@@ -39,6 +42,9 @@ public class Staff extends Person {
     public void setNoOfBookingHandle(int noOfBookingHandle) {
         this.noOfBookingHandle = noOfBookingHandle;
     }
+
+    
+    
 
     public String getPassword() {
         return password;
@@ -52,48 +58,42 @@ public class Staff extends Person {
     public String toString() {
         return super.toString() + "\nNumber Of Booking Handle: " + noOfBookingHandle;
     }
-
+    
     public static void updateStaffFile() {
-        try (FileWriter fileWriter = new FileWriter("StaffFile.txt"); BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+    try (FileWriter fileWriter = new FileWriter("StaffFile.txt");
+         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
 
-            for (Staff staff : staffList) {
-
-                bufferedWriter.write(staff.getName() + "|" + staff.getContactNo() + "|" + staff.getIc() + "|" + staff.getId() + "|" + staff.getPassword() + "|" + staff.getNoOfBookingHandle());
-                bufferedWriter.newLine();
-
-            }
-
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (Staff staff : staffList) {
+            
+            bufferedWriter.write(staff.getName() + "|" + staff.getContactNo() + "|" + staff.getIc() + "|" + staff.getId() + "|" + staff.getPassword() + "|" + staff.getNoOfBookingHandle());
+            bufferedWriter.newLine(); 
+            
         }
+    } catch (IOException e) {
+        e.printStackTrace();
     }
-
+}
     //method overloading 
-    public static void updateStaffFile(ArrayList<Staff> staffList) {
-        try (FileWriter fileWriter = new FileWriter("StaffFile.txt"); BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+    public static void updateStaffFile(ArrayList<Staff>staffList) {
+    try (FileWriter fileWriter = new FileWriter("StaffFile.txt");
+         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
 
-            for (Staff staff : staffList) {
-
-                bufferedWriter.write(staff.getName() + "|" + staff.getContactNo() + "|" + staff.getIc() + "|" + staff.getId() + "|" + staff.getPassword() + "|" + staff.getNoOfBookingHandle());
-                bufferedWriter.newLine();
-
-            }
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        for (Staff staff : staffList) {
+            
+            bufferedWriter.write(staff.getName() + "|" + staff.getContactNo() + "|" + staff.getIc() + "|" + staff.getId() + "|" + staff.getPassword() + "|" + staff.getNoOfBookingHandle());
+            bufferedWriter.newLine(); 
+            
         }
+    } catch (IOException e) {
+        e.printStackTrace();
     }
+}
 
     public String toString2() {
-        return """
-               
-               Enter the option that you want to modify 
-               A)Name B)Contact Number C)IC Number D)Password E)Exit
-               Your choice:""";
+        return "\nEnter the option that you want to modify " + "\n" + "A)Name B)Contact Number C)IC Number D)Password E)Exit" + "\n" + "Your choice:";
     }
 
-    public static boolean isNameValid(String name) {
+    public boolean isNameValid(String name) {
         boolean isValidName = true;
 
         name = name.toUpperCase();
@@ -113,7 +113,7 @@ public class Staff extends Person {
         return isValidName;
     }
 
-    public static boolean isCNValid(String cn) {
+    public boolean isCNValid(String cn) {
         boolean isValid = true;
 
         if (cn.isEmpty()) {
@@ -145,7 +145,7 @@ public class Staff extends Person {
         return isValid;
     }
 
-    public static boolean isICValid(String ic) {
+    public boolean isICValid(String ic) {
         boolean isValid = true;
 
         if (ic.isEmpty()) {
@@ -173,7 +173,7 @@ public class Staff extends Person {
         return isValid;
     }
 
-    public static boolean isIDValid(String ID) {
+    public boolean isIDValid(String ID) {
         ID = ID.toUpperCase();
 
         if (ID.length() != 4 || ID.trim().isEmpty() || ID.charAt(0) != 'S') {
@@ -196,7 +196,7 @@ public class Staff extends Person {
         return true;
     }
 
-    public static boolean isPWValid(String password) {
+    public boolean isPWValid(String password) {
         if (password.length() < 8) {
             return false;
         }
@@ -214,132 +214,118 @@ public class Staff extends Person {
     }
 
     public ArrayList<Staff> modifyStaff() {
-        ArrayList<Staff> staffList = readStaffFile();
-        Scanner scanner = new Scanner(System.in);
+    ArrayList<Staff> staffList = readStaffFile();
 
-        boolean isValidName, isCNtrue, isValidIC, isValidpw;
-        String name, cn, ic, pw;
+    boolean isValidName, isCNtrue, isValidIC, isValidpw;
+    String name, cn, ic, pw;
 
-        while (true) {
-            System.out.print("Enter staff ID (X to return): ");
-            String ID = scanner.nextLine().toUpperCase();
+    while (true) {
+        System.out.print("Enter staff ID (X to return): ");
+        String ID = scanner.nextLine().toUpperCase();
 
-            if (ID.equals("X")) {
-                return staffList;
-            }
+        if (ID.equals("X")) {
+            return staffList;
+        }
 
-            boolean staffFound = false;
+        boolean staffFound = false;
 
-            for (Staff s : staffList) {
-                if (s.getId().equals(ID)) {
-                    staffFound = true;
+        for (Staff s : staffList) {
+            if (s.getId().equals(ID)) {
+                staffFound = true;
 
-                    while (true) {
-                        System.out.print("Enter password(X to exit): ");
-                        pw = scanner.nextLine();
-                        if (pw.equals("X")) {
+                System.out.print(toString2());
+                String choice = scanner.nextLine().toUpperCase();
+                if (choice.equals("A")) {
+                    do {
+                        System.out.print("Update staff name (X to exit): ");
+                        name = scanner.nextLine().toUpperCase();
+                        if (name.equals("X")) {
                             return staffList;
                         }
-                        if (s.getPassword().equals(pw)) {
-                            while (true) {
-                                System.out.print(toString2());
-                                String choice = scanner.nextLine().toUpperCase();
-                                if (choice.equals("A")) {
-                                    do {
-                                        System.out.print("Update staff name (X to exit): ");
-                                        name = scanner.nextLine().toUpperCase();
-                                        if (name.equals("X")) {
-                                            return staffList;
-                                        }
-                                        isValidName = isNameValid(name);
+                        isValidName = isNameValid(name);
 
-                                        if (!isValidName) {
-                                            System.out.println("Invalid name! Please try again.");
-                                        }
-                                    } while (!isValidName);
-
-                                    s.setName(name);
-                                    updateStaffFile(staffList);
-                                    System.out.println("Name updated successfully.");
-                                    return staffList;
-                                } else if (choice.equals("B")) {
-                                    do {
-                                        System.out.print("Modify your contact number (X to exit): ");
-                                        cn = scanner.nextLine().toUpperCase();
-                                        if (cn.equals("X")) {
-                                            return staffList;
-                                        }
-                                        isCNtrue = isCNValid(cn);
-
-                                        if (!isCNtrue) {
-                                            System.out.println("Invalid/duplicate contact number! Please try again.");
-                                        }
-                                    } while (!isCNtrue);
-
-                                    s.setContactNo(cn);
-                                    updateStaffFile(staffList);
-                                    System.out.println("Contact number updated successfully.");
-                                    return staffList;
-                                } else if (choice.equals("C")) {
-                                    do {
-                                        System.out.print("Update IC number (X to exit/without -): ");
-                                        ic = scanner.nextLine().toUpperCase();
-                                        if (ic.equals("X")) {
-                                            return staffList;
-                                        }
-                                        isValidIC = isICValid(ic);
-
-                                        if (!isValidIC) {
-                                            System.out.println("Invalid/duplicate IC number! Please try again.");
-                                        }
-                                    } while (!isValidIC);
-
-                                    s.setIc(ic);
-                                    updateStaffFile(staffList);
-                                    System.out.println("IC number updated successfully.");
-                                    return staffList;
-                                } else if (choice.equals("D")) {
-                                    do {
-                                        System.out.print("Please set password (Password must be >=8 characters with at least 1 alphabet/symbol) (X to exit): ");
-                                        pw = scanner.nextLine();
-                                        if (pw.equals("X") || pw.equals("x")) {
-                                            return staffList;
-                                        }
-                                        isValidpw = isPWValid(pw);
-
-                                        if (!isValidpw) {
-                                            System.out.println("Invalid password! Please try again.");
-                                        }
-                                    } while (!isValidpw);
-
-                                    s.setPassword(pw);
-                                    updateStaffFile(staffList);
-                                    System.out.println("Password updated successfully.");
-                                    return staffList;
-                                } else if (choice.equals("E")) {
-                                    return staffList;
-                                } else {
-                                    System.out.println("Invalid input!");
-                                }
-                            }
-                        } else {
-                            System.out.println("Invalid Password!");
+                        if (!isValidName) {
+                            System.out.println("Invalid name! Please try again.");
                         }
-                    }
+                    } while (!isValidName);
+
+                    s.setName(name);
+                    updateStaffFile(staffList);
+                    System.out.println("Name updated successfully.");
+                    return staffList;
+                } else if (choice.equals("B")) {
+                    do {
+                        System.out.print("Modify your contact number (X to exit): ");
+                        cn = scanner.nextLine().toUpperCase();
+                        if (cn.equals("X")) {
+                            return staffList;
+                        }
+                        isCNtrue = isCNValid(cn);
+
+                        if (!isCNtrue) {
+                            System.out.println("Invalid/duplicate contact number! Please try again.");
+                        }
+                    } while (!isCNtrue);
+
+                    s.setContactNo(cn);
+                    updateStaffFile(staffList);
+                    System.out.println("Contact number updated successfully.");
+                    return staffList;
+                } else if (choice.equals("C")) {
+                    do {
+                        System.out.print("Update IC number (X to exit/without -): ");
+                        ic = scanner.nextLine().toUpperCase();
+                        if (ic.equals("X")) {
+                            return staffList;
+                        }
+                        isValidIC = isICValid(ic);
+
+                        if (!isValidIC) {
+                            System.out.println("Invalid/duplicate IC number! Please try again.");
+                        }
+                    } while (!isValidIC);
+
+                    s.setIc(ic);
+                    updateStaffFile(staffList);
+                    System.out.println("IC number updated successfully.");
+                    return staffList;
+                } else if (choice.equals("D")) {
+                    do {
+                        System.out.print("Please set password (Password must be >=8 characters with at least 1 alphabet/symbol) (X to exit): ");
+                        pw = scanner.nextLine();
+                        if (pw.equals("X") || pw.equals("x")) {
+                            return staffList;
+                        }
+                        isValidpw = isPWValid(pw);
+
+                        if (!isValidpw) {
+                            System.out.println("Invalid password! Please try again.");
+                        }
+                    } while (!isValidpw);
+
+                    s.setPassword(pw);
+                    updateStaffFile(staffList);
+                    System.out.println("Password updated successfully.");
+                    return staffList;
+                } else if (choice.equals("E")) {
+                    return staffList;
+                } else {
+                    System.out.println("Invalid input!");
                 }
             }
+        }
 
-            if (!staffFound) {
-                System.out.println("Invalid staff ID!");
-            }
+        if (!staffFound) {
+            System.out.println("Invalid staff ID!");
         }
     }
+}
+
 
     public ArrayList<Staff> createStaff() {
         String name, cn, ic, ID, pw;
         boolean isValidName, isCNtrue, isValidIC, isValidStaffID, isValidpw;
-        ArrayList<Staff> staffList = readStaffFile();
-        Scanner scanner = new Scanner(System.in);
+          ArrayList<Staff>staffList=readStaffFile();
         do {
             System.out.print("Enter the staff name(X to exit): ");
             name = scanner.nextLine();
@@ -413,16 +399,19 @@ public class Staff extends Person {
 
         Staff staff = new Staff(name, cn, ic, ID, pw, 0);
         staffList.add(staff);
-        try (FileWriter fileWriter = new FileWriter("StaffFile.txt", true); BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+        try (FileWriter fileWriter = new FileWriter("StaffFile.txt", true);
+         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
 
-            bufferedWriter.write(name + "|" + cn + "|" + ic + "|" + ID + "|" + pw + "|0");
-            bufferedWriter.newLine();
+        
+        bufferedWriter.write(name + "|" + cn + "|" + ic + "|" + ID + "|" + pw + "|0");
+        bufferedWriter.newLine(); 
 
-            bufferedWriter.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        
+        bufferedWriter.close();
+        
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
         System.out.print("Staff added ! Press 'enter' key to exit to staff menu....");
         String c = scanner.nextLine();
 
@@ -430,8 +419,7 @@ public class Staff extends Person {
     }
 
     public void displayPerson() {
-        Scanner scanner = new Scanner(System.in);
-        ArrayList<Staff> staffList = readStaffFile();
+         ArrayList<Staff>staffList=readStaffFile();
         String c;
         if (staffList.isEmpty()) {
             System.out.println("No staff members to display.");
@@ -452,8 +440,7 @@ public class Staff extends Person {
     }
 
     public ArrayList<Staff> deleteStaff() {
-        ArrayList<Staff> staffList = readStaffFile();
-        Scanner scanner = new Scanner(System.in);
+        ArrayList<Staff>staffList=readStaffFile();
         if (staffList.isEmpty()) {
             System.out.println("No staff members to delete.");
             System.out.print("Press 'Enter' key to exit to staff menu....");
@@ -503,10 +490,8 @@ public class Staff extends Person {
         return staffList;
     }
 
-    @Override
     public void searchPerson() {
-        ArrayList<Staff> staffList = readStaffFile();
-        Scanner scanner = new Scanner(System.in);
+        ArrayList<Staff>staffList=readStaffFile();
         while (true) {
             System.out.print("Enter the staff ID that you want to search(X to exit):");
             String ID = scanner.nextLine().toUpperCase();
@@ -532,11 +517,10 @@ public class Staff extends Person {
 
     }
 
-    public static void loginStaff() {
-        ArrayList<Staff> staffList = readStaffFile();
-        Scanner scanner = new Scanner(System.in);
+    public void loginStaff() {
+          ArrayList<Staff>staffList=readStaffFile();
         while (true) {
-
+            
             System.out.print("Enter your staff ID (X to end program):");
             String ID = scanner.nextLine().toUpperCase();
             if (ID.equals("X")) {
@@ -544,25 +528,26 @@ public class Staff extends Person {
             }
             System.out.print("Enter your password(Z to forget password):");
             String pw = scanner.nextLine();
-            if (pw.equals("X")) {
+            if(pw.equals("X")){
                 System.exit(0);
-            } else if (pw.equals("Z")) {
-                modifyPassword();
-
-            } else {
+            }  else if (pw.equals("Z")) {
+               modifyPassword();
+                
+            }
+            else {
                 boolean staffFound = false;
 
                 for (Staff s : staffList) {
                     if (s.getId().equals(ID)) {
                         while (true) {
-
+                            
                             if (s.getPassword().equals(pw)) {
                                 System.out.println("Welcome " + s.getName() + "\n");
                                 System.out.print("Press 'Enter' key to continue ...");
                                 String c = scanner.nextLine();
                                 staffFound = true;
-                                StaffMain staff = new StaffMain();
-                                staff.ID = ID;
+                                StaffMain staff=new StaffMain();
+                                staff.ID=ID;
                                 break; // Exit the password input loop
                             } else {
                                 break;
@@ -585,9 +570,8 @@ public class Staff extends Person {
         }
     }
 
-    public static void modifyPassword() {
-        ArrayList<Staff> staffList = readStaffFile();
-        Scanner scanner = new Scanner(System.in);
+    public void modifyPassword() {
+        ArrayList<Staff>staffList=readStaffFile();
         while (true) {
             boolean isValidpw = false;
             System.out.print("Enter your staff ID to change password(X to return):");
@@ -619,7 +603,7 @@ public class Staff extends Person {
                                         staffFound = true;
                                         updateStaffFile(staffList);
                                         break;
-
+                                        
                                     } else {
                                         System.out.println("Invalid Password. Password must be at least 8 characters long and at least 1 digit/symbol.");
                                     }
@@ -644,36 +628,35 @@ public class Staff extends Person {
             }
         }
     }
-
-    public static ArrayList<Staff> readStaffFile() {
-        ArrayList<Staff> staffList = new ArrayList<>();
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader("StaffFile.txt"));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] fields = line.split("\\|");
-                String name = fields[0];
-                String contactNo = fields[1];
-                String ic = fields[2];
-                String ID = fields[3];
-                String password = fields[4];
-                int noOfBookingHandle = Integer.parseInt(fields[5]);
-                Staff staff1 = new Staff(name, contactNo, ic, ID, password, noOfBookingHandle);
-                staffList.add(staff1);
-            }
-            reader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static ArrayList<Staff>readStaffFile(){
+    ArrayList <Staff>staffList=new ArrayList<>();
+     try {
+        BufferedReader reader = new BufferedReader(new FileReader("StaffFile.txt"));
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] fields = line.split("\\|");
+            String name = fields[0];
+            String contactNo = fields[1];
+            String ic = fields[2];
+            String ID = fields[3];
+            String password = fields[4];
+            int noOfBookingHandle = Integer.parseInt(fields[5]);
+            Staff staff1 = new Staff(name, contactNo, ic, ID, password, noOfBookingHandle);
+            staffList.add(staff1);
         }
-        return staffList;
+        reader.close();
+    } catch (IOException e) {
+        e.printStackTrace();
     }
-
-    public static ArrayList<Staff> updateNo(ArrayList<Staff> staffList, String ID) {
-        for (Staff s : staffList) {
-            if (ID.equals(s.getId())) {
-                s.setNoOfBookingHandle(s.getNoOfBookingHandle() + 1);
-            }
-
+    return staffList;
+    }
+    public static ArrayList<Staff>updateNo(ArrayList<Staff>staffList,String ID){
+        for(Staff s:staffList){
+        if(ID.equals(s.getId())){
+        s.setNoOfBookingHandle(s.getNoOfBookingHandle()+1);
+        updateStaffFile(staffList);
+        }
+        
         }
         return staffList;
     }
