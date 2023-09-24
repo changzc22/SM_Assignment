@@ -97,12 +97,11 @@ public class Booking {
         return price * numOfSeatBook * discount * SST_RATE;
     }
 
-    public static void addBooking() {
+    public static void addBooking(String ID) {
         ArrayList<Staff> s=Staff.readStaffFile();
         ArrayList<Booking> b = BookingMain.readBookingFile();
         ArrayList<Train> t = TrainMain.readTrainFile();
         ArrayList<Passenger> p = PassengerMain.readPassengerFile();
-        String staffID;
         Scanner input = new Scanner(System.in);
 
         LocalDate date = LocalDate.of(0, 1, 1);
