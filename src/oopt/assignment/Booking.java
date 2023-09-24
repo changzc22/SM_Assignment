@@ -98,7 +98,7 @@ public class Booking {
     }
 
     public static void addBooking() {
-        ArrayList<Staff> s=Staff.readStaffFile();
+        ArrayList<Staff> s = Staff.readStaffFile();
         ArrayList<Booking> b = BookingMain.readBookingFile();
         ArrayList<Train> t = TrainMain.readTrainFile();
         ArrayList<Passenger> p = PassengerMain.readPassengerFile();
