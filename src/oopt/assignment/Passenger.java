@@ -75,6 +75,7 @@ public class Passenger extends Person {
             }
 
             if (name.isEmpty()) {
+                System.out.println("Name cannot be empty.");
                 invalidCount++;
             }
 
@@ -94,6 +95,8 @@ public class Passenger extends Person {
             
             for (Passenger passenger : passengerList) {
                 if (passenger.getName().equals(name)) {
+                    System.out.println("The name entered has been exists.");
+                    System.out.println("(Please try to enter again by changing some of the cases.)");
                     invalidCount++;
                 }
             }
@@ -101,7 +104,7 @@ public class Passenger extends Person {
             nameValid = invalidCount == 0;
 
             if (!nameValid) {
-                System.out.println("Enter alphabelts and spaces only!");
+                System.out.println("Invalid name entered. Please entered again.");
             }
 
         } while (!nameValid);
@@ -128,18 +131,20 @@ public class Passenger extends Person {
             
             for (Passenger passenger : passengerList) {
                 if (passenger.getContactNo().equals(contactNo)) {
+                    System.out.println("The contact number entered has been exists.");
                     invalidCount++; // Contact no already exists
                 }
             }
 
             if (contactNo.length() != 10 && contactNo.length() != 11) {
+                System.out.println("The contact number length is not 10 or 11.");
                 invalidCount++;
             }
 
             contactValid = invalidCount == 0;
 
             if (!contactValid) {
-                System.out.println("Enter digits only, contact no already exists or the length is not 10 or 11!");
+                System.out.println("Invalid contact number entered. Please enter again.");
             }
 
         } while (!contactValid);
@@ -161,14 +166,17 @@ public class Passenger extends Person {
                     invalidCount++;
                 }
             }
+
+            System.out.println("IC length: " + ic.length());
+            
             if (ic.length() != 12) {
+                System.out.println("The IC length is not 12.");
                 invalidCount++;
             }
 
-            System.out.println("IC length: " + ic.length());
-
             for (Passenger passenger : passengerList) {
                 if (passenger.getIc().equals(ic)) {
+                    System.out.println("The IC entered has been exists.");
                     invalidCount++; // IC already exists
                 }
             }
@@ -176,7 +184,7 @@ public class Passenger extends Person {
             icValid = invalidCount == 0;
 
             if (!icValid) {
-                System.out.println("The entered IC is invalid or already exists. Please enter again!");
+                System.out.println("Invalid IC entered. Please enter again!");
             }
         } while (!icValid);
 
@@ -377,7 +385,7 @@ public class Passenger extends Person {
                                         nameValid = true;
                                     } 
                                     else if(name.isEmpty()){
-                                        System.out.println("Enter alphabelts and spaces only!");
+                                        System.out.println("Name cannot be empty.");
                                     }
                                     else {
                                         for (j = 0; j < name.length(); j++) {
@@ -396,6 +404,8 @@ public class Passenger extends Person {
             
                                         for (Passenger passenger4 : passengerList) {
                                             if (passenger4.getName().equals(name)) {
+                                                System.out.println("The name entered has been exists.");
+                                                System.out.println("(Please try to enter again by changing some of the cases.)");
                                                 invalidCount++;
                                             }
                                             }
@@ -403,7 +413,7 @@ public class Passenger extends Person {
                                         nameValid = invalidCount == 0;
 
                                         if (!nameValid) {
-                                            System.out.println("Enter alphabelts and spaces only!");
+                                            System.out.println("Invalid name entered. Please enter again.");
                                         } 
                                         else {
                                             for (j = 0; j < bookingList.size(); j++) {
@@ -442,18 +452,20 @@ public class Passenger extends Person {
                                         
                                         for (Passenger passenger2 : passengerList) {
                                             if (passenger2.getContactNo().equals(contactNo)) {
-                                                 invalidCount++; // Contact no already exists
+                                                System.out.println("Invalid contact number entered. Please enter again.");
+                                                invalidCount++; // Contact no already exists
                                             }
                                         }
 
                                         if (contactNo.length() != 10 && contactNo.length() != 11) {
+                                            System.out.println("The contact length is not 10 or 11.");
                                             invalidCount++;
                                         }
 
                                         contactValid = invalidCount == 0;
 
                                         if (!contactValid) {
-                                            System.out.println("Enter digits only, contact no already exists or the length is not 10 or 11!");
+                                            System.out.println("Invalid contact number entered. Please enter again.");
                                         } else {
                                             passenger.setContactNo(contactNo);
                                             PassengerMain.updatePassengerFile(passengerList);
@@ -481,14 +493,16 @@ public class Passenger extends Person {
                                             }
                                         }
 
+                                        System.out.println("IC length: " + ic.length());
+                                        
                                         if (ic.length() != 12) {
+                                            System.out.println("The IC length is not 12.");
                                             invalidCount++;
                                         }
 
-                                        System.out.println("IC length: " + ic.length());
-
                                         for (Passenger passenger3 : passengerList) {
                                             if (passenger3.getIc().equals(ic)) {
+                                                System.out.println("The IC entered has been exist.");
                                                 invalidCount++; // IC already exists
                                             }
                                         }
@@ -496,7 +510,7 @@ public class Passenger extends Person {
                                         icValid = invalidCount == 0;
 
                                         if (!icValid) {
-                                            System.out.println("The entered IC is invalid or already exists. Please enter again!");
+                                            System.out.println("Invalid IC entered. Please enter again!");
                                         } else {
                                             passenger.setIc(ic);
                                             PassengerMain.updatePassengerFile(passengerList);
