@@ -1,5 +1,8 @@
 package oopt.assignment;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+import java.awt.event.KeyEvent;
 import java.util.*;
 import java.time.*;
 
@@ -16,8 +19,19 @@ public class OoptAssignment {
         int opt = 0;
 
         do {
+            try {
+                clear();
+            } catch (AWTException e) {
+                e.printStackTrace();
+            }
 
             do {
+                try {
+                    clear();
+                } catch (AWTException e) {
+                    e.printStackTrace();
+                }
+
                 etsLogo();
                 do {
                     try {
@@ -78,6 +92,21 @@ public class OoptAssignment {
         System.out.println("               |  5) Log out                           |");
         System.out.println("               =========================================");
 
+    }
+    
+    public static void clear() throws AWTException {
+        Robot rob = new Robot();
+
+        try {
+            rob.keyPress(KeyEvent.VK_CONTROL); //press control
+            rob.keyPress(KeyEvent.VK_L); // press L
+
+            rob.keyRelease(KeyEvent.VK_L);
+            rob.keyRelease(KeyEvent.VK_CONTROL);
+            Thread.sleep(10);
+        } catch (InterruptedException e) {
+            System.out.println(e);
+        }
     }
 
 }
