@@ -164,11 +164,7 @@ public class Train {
             System.out.print("Enter New Train ID (Press X/x to return) : ");
             newTrainID = scanner.nextLine().toUpperCase();
             if (newTrainID.matches("[T]+[0-9]{3}")) {
-
-                System.out.println("Press Any Key To Continue...");
-                new java.util.Scanner(System.in).nextLine();
                 valid = Train.checkDuplicate(newTrainID);
-
             } 
             
             else if (newTrainID.equals("X")){
@@ -252,7 +248,13 @@ public class Train {
                 newStandardSeatQty = scanner.nextInt();
                 if (newStandardSeatQty >= 1 && newStandardSeatQty < 999) {
                     valid = true;
-                } else {
+                } 
+                
+                else if (newStandardSeatQty == -1){
+                    return;
+                }
+                
+                else {
                     OoptAssignment.clearScreen();
                     System.out.println("Invalid Quantity 1-998!");
                 }
@@ -280,7 +282,13 @@ public class Train {
                     if (!valid) {
                         System.out.println("Premium Seat Quantity must be lower than Standard!!");
                     }
-                } else {
+                } 
+                
+                else if (newPremiumSeatQty == -1){
+                    return;
+                }
+                
+                else {
                     OoptAssignment.clearScreen();
                     System.out.println("Invalid Quantity 0-999");
                 }
@@ -549,10 +557,11 @@ public class Train {
         boolean validTrainSearch, validModifyChoice, trainFound = false, validTrainInput;
 
         do {
+            OoptAssignment.clearScreen();
             System.out.println("Modify : Train");
             do {
                 validTrainSearch = false;
-                System.out.print("Enter Train ID to modify (Press X to return): ");
+                System.out.print("Enter Train ID to modify (Press X/x to return): ");
                 modifyTrain = scanner.nextLine().toUpperCase();
                 if (modifyTrain.matches("[T]+[0-9]{3}")) {
 
