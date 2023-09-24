@@ -567,8 +567,8 @@ public class Booking {
 
         System.out.println("Revenue by Destination (Standard Seat):");
         System.out.println("--------------------------------------------------------");
+        
         for (Train t : trainList) {
-
             for (Booking b : bookingList) {
                 if (t.getDestination().equals(b.getTrain().getDestination()) && b.getSeatTier() == 'S' && b.getTrain().isTrainStatus()) {
                     destinationFare += b.getTotalFare();
@@ -578,13 +578,14 @@ public class Booking {
             System.out.printf("%-12s  : RM %8.2f\n", t.getDestination(), destinationFare);
             destinationFare = 0.0;
         }
+        
+        destinationFare = 0.0;
 
         System.out.println("--------------------------------------------------------");
         System.out.println("Revenue by Destination (Premium Seat):");
         System.out.println("--------------------------------------------------------");
 
         for (Train t : trainList) {
-
             for (Booking b : bookingList) {
                 if (t.getDestination().equals(b.getTrain().getDestination()) && b.getSeatTier() == 'P' && b.getTrain().isTrainStatus()) {
                     destinationFare += b.getTotalFare();

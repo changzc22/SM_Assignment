@@ -33,6 +33,8 @@ public class OoptAssignment {
                 }
 
                 etsLogo();
+                mainMenu();
+                
                 do {
                     try {
                         System.out.print("Your selection > ");
