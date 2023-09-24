@@ -190,7 +190,7 @@ public class Booking {
                 } else if (numOfSeatBook == 0) {
                     System.out.println("You cannot input 0");
                 } else if (numOfSeatBook > currentQty) {
-                    System.out.println("You shoudl not input more than available quantity.");
+                    System.out.println("You should not input more than available quantity.");
                 } else {
                     isValid = true;
                 }
