@@ -8,6 +8,7 @@ public class Staff extends Person {
     private static ArrayList<Staff> staffList = new ArrayList<>();
     private String password;
     private int noOfBookingHandle = 0;
+    //dmidjcidcnsksmcc
 
     public int getNumberOfStaff() {
         return staffList.size();
