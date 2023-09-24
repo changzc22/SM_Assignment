@@ -551,7 +551,7 @@ public class Staff extends Person {
                                 System.out.print("Press 'Enter' key to continue ...");
                                 String c = scanner.nextLine();
                                 staffFound = true;
-                                Booking.addBooking.staffID=ID;
+                                Booking.addBooking(ID);
                                 break; // Exit the password input loop
                             } else {
                                 break;
