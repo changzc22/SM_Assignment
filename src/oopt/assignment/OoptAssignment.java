@@ -85,10 +85,10 @@ public class OoptAssignment {
         System.out.println("               =========================================");
         System.out.println("               |            **Modules Menu**           |");
         System.out.println("               =========================================");
-        System.out.println("               |  1) Staff Information                 |");
-        System.out.println("               |  2) Passenger Information             |");
-        System.out.println("               |  3) Train Booking Information         |");
-        System.out.println("               |  4) Train Information                 |");
+        System.out.println("               |  1) Staff                             |");
+        System.out.println("               |  2) Passenger                         |");
+        System.out.println("               |  3) Booking                           |");
+        System.out.println("               |  4) Train                             |");
         System.out.println("               |  5) Log out                           |");
         System.out.println("               =========================================");
 
