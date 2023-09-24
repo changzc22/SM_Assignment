@@ -336,8 +336,11 @@ public class Booking {
             while (!isValid) {
                 System.out.print("Please enter the booking ID [Enter X to quit] > ");
                 inputDetail = input.nextLine().toUpperCase();
-
-                if (inputDetail.equals("X")) {
+                
+                if (inputDetail.isEmpty()){
+                    System.out.println("You cannot leave it blank");
+                }
+                else if (inputDetail.equals("X")) {
                     return;
                 } else if (inputDetail.length() != 4) {
                     System.out.println("Invalid input. The Booking ID should be exactly 4 characters.");
@@ -461,8 +464,11 @@ public class Booking {
             while (!isValid) {
                 System.out.print("Please enter the booking ID [Enter X to quit] > ");
                 inputDetail = input.nextLine().toUpperCase();
-
-                if (inputDetail.equals("X")) {
+                
+                if (inputDetail.isEmpty()){
+                    System.out.println("You cannot leave it blank");
+                }
+                else if (inputDetail.equals("X")) {
                     return;
                 } else if (inputDetail.length() != 4) {
                     System.out.println("Invalid input. The Booking ID should be exactly 4 characters.");
