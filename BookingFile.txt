@@ -1,6 +1,6 @@
 B004|Tan Siew Ling|S|2|234.56|T005
 B009|Tan Siew Ling|S|2|234.56|T005
 B010|Tan Siew Ling|S|2|234.56|T005
-B005|Ho Li Hua|P|3|400|T002
+B005|Ho Li Hua|P|3|400.0|T002
 B007|Ooi Lian Wei|S|4|200.0|T003
 B002|Lim Ai Lian|P|5|472.5|T002

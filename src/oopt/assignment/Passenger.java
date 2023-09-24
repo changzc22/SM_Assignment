@@ -306,7 +306,7 @@ public class Passenger extends Person {
         ArrayList<Passenger> passengerList = PassengerMain.readPassengerFile();
         ArrayList<Booking> bookingList = BookingMain.readBookingFile();
         Scanner sc = new Scanner(System.in).useDelimiter("\n");
-        String name, contactNo, ic, id, searchInput;
+        String name, nameTemp, contactNo, ic, id, searchInput;
         char gender, tier, selectionC = 'N', selectionC2, selectionC3;
         boolean isValid = false, nameValid, contactValid, icValid, genderValid;
         int invalidCount, selectionI = 0, j;
@@ -354,6 +354,7 @@ public class Passenger extends Person {
                             case 'A':
                                 do {
                                     invalidCount = 0;
+                                    nameTemp = passenger.getName();
                                     System.out.println("\nEnter the passenger name without special characters.");
                                     System.out.print("Enter here > ");
                                     name = sc.next().trim();
@@ -377,9 +378,9 @@ public class Passenger extends Person {
                                             System.out.println("Enter alphabelts and spaces only!");
                                         } 
                                         else {
-                                            for (Booking booking : bookingList) {
-                                            if (booking.getName().equals(name)) {
-                                                bookingList.get(name.length()).setName(name);
+                                            for (j = 0; j < bookingList.size(); j++) {
+                                            if (bookingList.get(j).getName().equalsIgnoreCase(nameTemp)) {
+                                                bookingList.get(j).setName(name);
                                                 BookingMain.writeBookingFile(bookingList);
                                             }
                                         }
