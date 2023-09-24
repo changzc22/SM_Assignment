@@ -154,7 +154,7 @@ public class Train {
 
         String newTrainID, newDestination, inputNewDate, inputNewTime, confirmAddString;
         int newStandardSeatQty = 0, newPremiumSeatQty = 0;
-        double newStandardSeatPrice, newPremiumSeatPrice;
+        double newStandardSeatPrice = 0, newPremiumSeatPrice = 0;
         char confirmAdd;
         boolean valid;
         Scanner scanner = new Scanner(System.in);
@@ -187,6 +187,7 @@ public class Train {
                 valid = Train.checkDuplicate(newDestination);
             } else {
                 valid = false;
+                TrainMain.clearJavaConsoleScreen();
                 System.out.println("Please input a destination!");
             }
 
@@ -223,7 +224,6 @@ public class Train {
                 System.out.print("Enter quantity for Standard Seat: ");
 
                 newStandardSeatQty = scanner.nextInt();
-                System.out.println("Quantity:" + newStandardSeatQty);
                 if (newStandardSeatQty >= 1 && newStandardSeatQty < 999) {
                     valid = true;
                 } else {
@@ -248,14 +248,13 @@ public class Train {
                 System.out.println("Standard Seat Quantity  : " + newStandardSeatQty);
                 System.out.print("Enter quantity for Premium Seat: ");
                 newPremiumSeatQty = scanner.nextInt();
-                System.out.println("Quantity:" + newPremiumSeatQty);
                 if (newPremiumSeatQty >= 0 && newPremiumSeatQty < 1000) {
                     valid = newPremiumSeatQty < newStandardSeatQty;
                     if (!valid) {
                         System.out.println("Premium Seat Quantity must be lower than Standard!!");
                     }
                 } else {
-                    System.out.println("Invalid Pricing 1.00-999.98");
+                    TrainMain.clearJavaConsoleScreen();
                     System.out.println("Invalid Quantity 0-999");
                 }
             } catch (Exception e) {
@@ -267,45 +266,60 @@ public class Train {
         } while (!valid);
         TrainMain.clearJavaConsoleScreen();
         do {
-            valid = false;
-            System.out.println("Train ID        : " + newTrainID);
-            System.out.println("Destination     : " + newDestination);
-            System.out.println("Departure Date  : " + inputNewDate);
-            System.out.println("Departure Time  : " + inputNewTime);
-            System.out.println("Standard Seat Quantity  : " + newStandardSeatQty);
-            System.out.println("Premium Seat Quantity  : " + newPremiumSeatQty);
-            System.out.print("Enter pricing for Standard Seat: ");
-            newStandardSeatPrice = scanner.nextDouble();
-            System.out.println("Quantity:" + newStandardSeatPrice);
-            if (newStandardSeatPrice >= 1.00 && newStandardSeatPrice < 999.99) {
-                valid = true;
-            } else {
+            try{
+                valid = false;
+                System.out.println("Train ID        : " + newTrainID);
+                System.out.println("Destination     : " + newDestination);
+                System.out.println("Departure Date  : " + inputNewDate);
+                System.out.println("Departure Time  : " + inputNewTime);
+                System.out.println("Standard Seat Quantity  : " + newStandardSeatQty);
+                System.out.println("Premium Seat Quantity  : " + newPremiumSeatQty);
+                System.out.print("Enter pricing for Standard Seat: ");
+                newStandardSeatPrice = scanner.nextDouble();
+                if (newStandardSeatPrice >= 1.00 && newStandardSeatPrice < 999.99) {
+                    valid = true;
+                } else {
+                    TrainMain.clearJavaConsoleScreen();
+                    System.out.println("Invalid Pricing 1.00-999.98");
+                }
+            } catch (Exception e) {
                 TrainMain.clearJavaConsoleScreen();
-                System.out.println("Invalid Pricing 1.00-999.98");
+                System.err.println("You should not enter other characters!");
+                scanner.nextLine();
             }
+            
 
         } while (!valid);
-
+        TrainMain.clearJavaConsoleScreen();
         do {
-            valid = false;
-            System.out.println("Train ID        : " + newTrainID);
-            System.out.println("Destination     : " + newDestination);
-            System.out.println("Departure Date  : " + inputNewDate);
-            System.out.println("Departure Time  : " + inputNewTime);
-            System.out.println("Standard Seat Quantity  : " + newStandardSeatQty);
-            System.out.println("Premium Seat Quantity  : " + newPremiumSeatQty);
-            System.out.printf("Standard Seat Price  : RM %.2f\n", newStandardSeatPrice);
-            System.out.print("Enter the pricing for Premium Seat: ");
-            newPremiumSeatPrice = scanner.nextDouble();
-            System.out.println("Pricing:" + newPremiumSeatPrice);
-            if (newPremiumSeatPrice >= 1.01 && newPremiumSeatPrice < 1000.00) {
-                valid = newPremiumSeatPrice > newStandardSeatPrice;
-                if (!valid) {
-                    System.out.println("Premium Price must be higher than Standard!");
+            try{
+                valid = false;
+                System.out.println("Train ID        : " + newTrainID);
+                System.out.println("Destination     : " + newDestination);
+                System.out.println("Departure Date  : " + inputNewDate);
+                System.out.println("Departure Time  : " + inputNewTime);
+                System.out.println("Standard Seat Quantity  : " + newStandardSeatQty);
+                System.out.println("Premium Seat Quantity  : " + newPremiumSeatQty);
+                System.out.printf("Standard Seat Price  : RM %.2f\n", newStandardSeatPrice);
+                System.out.print("Enter the pricing for Premium Seat: ");
+                newPremiumSeatPrice = scanner.nextDouble();
+                
+                if (newPremiumSeatPrice >= 1.01 && newPremiumSeatPrice < 1000.00) {
+                    valid = newPremiumSeatPrice > newStandardSeatPrice;
+                    if (!valid) {
+                        TrainMain.clearJavaConsoleScreen();
+                        System.out.println("Premium Price must be higher than Standard!");
+                    }
+                } else {
+                    TrainMain.clearJavaConsoleScreen();
+                    System.out.println("Invalid Pricing 1.01-999.99");
                 }
-            } else {
-                System.out.println("Invalid Pricing 1.01-999.99");
+            } catch (Exception e) {
+                TrainMain.clearJavaConsoleScreen();
+                System.err.println("You should not enter other characters!");
+                scanner.nextLine();
             }
+            
         } while (!valid);
         scanner.nextLine();
         TrainMain.clearJavaConsoleScreen();
@@ -315,7 +329,7 @@ public class Train {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime localTime = LocalTime.parse(inputNewTime, timeFormatter);
 
-        Train train = new Train(newTrainID, newDestination, localDate, localTime, newStandardSeatQty, newPremiumSeatQty, newStandardSeatPrice, newStandardSeatPrice, true);
+        Train train = new Train(newTrainID, newDestination, localDate, localTime, newStandardSeatQty, newPremiumSeatQty, newStandardSeatPrice, newPremiumSeatPrice, true);
 
         valid = false;
         while (!valid) {
@@ -376,8 +390,7 @@ public class Train {
             // Parse the input string into a LocalTime object
             LocalDate localDate = LocalDate.parse(valueDate, dateFormatter);
             LocalDate today = LocalDate.now();
-            // Debugging
-            System.out.println("Date: " + localDate);
+            
             if (localDate.isAfter(today)) {
                 return true;
             } else if (localDate.isEqual(today)) {
@@ -448,29 +461,21 @@ public class Train {
 
             if (trainFound) {
                 System.out.println("Train Detail");
-                System.out.println("Train ID      : " + trainList.get(i).getTrainID());
-                System.out.println("Destination     : " + trainList.get(i).getDestination());
-                System.out.println("Departure Date  : " + trainList.get(i).getDepartureDate());
-                System.out.println("Departure Time  : " + trainList.get(i).getDepartureTime());
-                System.out.println("Standard Seat Quantity  : " + trainList.get(i).getDepartureTime());
-                System.out.println("Premium Seat Quantity  : " + trainList.get(i).getDepartureTime());
-                System.out.printf("Standard Seat Price  : RM %.2f\n", trainList.get(i).getStandardSeatPrice());
-                System.out.printf("Standard Seat Price  : RM %.2f\n", trainList.get(i).getPremiumSeatPrice());
+                System.out.println(     "Train ID               : " + trainList.get(i).getTrainID());
+                System.out.println(     "Destination            : " + trainList.get(i).getDestination());
+                System.out.println(     "Departure Date         : " + trainList.get(i).getDepartureDate());
+                System.out.println(     "Departure Time         : " + trainList.get(i).getDepartureTime());
+                System.out.println(     "Standard Seat Quantity : " + trainList.get(i).getDepartureTime());
+                System.out.println(     "Premium Seat Quantity  : " + trainList.get(i).getDepartureTime());
+                System.out.printf("Standard Seat Price    : RM %.2f\n", trainList.get(i).getStandardSeatPrice());
+                System.out.printf("Standard Seat Price    : RM %.2f\n", trainList.get(i).getPremiumSeatPrice());
                 System.out.println("Train Status  : " + (trainList.get(i).isTrainStatus() ? "Active" : "Discontinued"));
             }
 
             System.out.println("What do you want to do with this information?");
-            System.out.println("1. Discontinue Train");
-            System.out.println("2. Search another Train");
-            System.out.println("3. Exit");
-            System.out.print("Choice : ");
+
             searchChoice = scanner.nextInt();
 
-            if (searchChoice == 1) {
-                trainList.get(i).trainStatus = false;
-                TrainMain.writeTrainFile(trainList);
-                System.out.println("This booking has been successfully cancelled.");
-            }
         } while (trainFound);
 
     }
@@ -801,5 +806,24 @@ public class Train {
         } while (trainFound);
 
     }
-
+    
+    public static void displayTrain(){
+        ArrayList<Train> trainList = TrainMain.readTrainFile();
+        Scanner scanner = new Scanner(System.in);
+        String modifyTrain;
+        TrainMain.clearJavaConsoleScreen();
+        System.out.println(   "=======================================================================================================================================================================");
+        System.out.println(   "|| Train ID || ||   Destination   || ||  Departure  || || Departure || || Standard Seat || || Standard Seat || || Premium Seat || || Premium Seat || || Train Status ||");
+        System.out.println(   "||          || ||                 || ||    Date     || ||    Time   || ||   Quantity    || ||     Price     || ||   Quantity   || ||     Price    || ||              ||");
+        System.out.println(   "=======================================================================================================================================================================");
+        
+        for (Train a : trainList){
+            System.out.printf("|| %4s     || || %-15s || || %10s  || ||   %5s   || || %4d Seats    || || RM %8.2f   || || %4d Seats   || || RM %8.2f  || || %-12s ||\n"
+                    , a.trainID, a.destination, a.depatureDate, a.depatureTime, a.standardSeatQty, a.standardSeatPrice, a.premiumSeatQty, a.premiumSeatPrice, a.trainStatus ? "Active" : "Discontinued");
+        }
+        System.out.println(   "========================================================================================================================================================================");
+        System.out.print("Press any key to continue...");
+        modifyTrain = scanner.nextLine();
+    }
+    
 }

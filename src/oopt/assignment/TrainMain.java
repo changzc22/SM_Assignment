@@ -54,7 +54,7 @@ public class TrainMain {
                     Train.modifyTrain();
                     break;
                 case 4:
-                    //displayTrain();
+                    Train.displayTrain();
                     break;
                 case 5:
                     return;
@@ -65,7 +65,7 @@ public class TrainMain {
     }
 
     public static ArrayList<Train> readTrainFile() {
-        File trainFile = new File("Train.txt");
+        File trainFile = new File("TrainFile.txt");
 
         ArrayList<Train> trainList = new ArrayList<>();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
@@ -131,7 +131,7 @@ public class TrainMain {
                 rob.keyPress(KeyEvent.VK_L); // press "L"
                 rob.keyRelease(KeyEvent.VK_L); // unpress "L"
                 rob.keyRelease(KeyEvent.VK_CONTROL); // unpress "CTRL"
-                Thread.sleep(24); // add delay in milisecond, if not there will automatically stop after clear
+                Thread.sleep(10); // add delay in milisecond, if not there will automatically stop after clear
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
