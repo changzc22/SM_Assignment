@@ -98,6 +98,7 @@ public class Booking {
     }
 
     public static void addBooking(String staffID) {
+        OoptAssignment.clearScreen();
         ArrayList<Staff> s = Staff.readStaffFile();
         ArrayList<Booking> b = BookingMain.readBookingFile();
         ArrayList<Train> t = TrainMain.readTrainFile();
@@ -308,7 +309,7 @@ public class Booking {
     }
 
     public static void cancelBooking() {
-
+        OoptAssignment.clearScreen();
         ArrayList<Booking> bookingList = BookingMain.readBookingFile();
         ArrayList<Train> trainList = TrainMain.readTrainFile();
         Scanner input = new Scanner(System.in);
@@ -397,7 +398,7 @@ public class Booking {
                     BookingMain.writeBookingFile(bookingList);
                     TrainMain.writeTrainFile(trainList);
                 } else {
-                    System.out.println("The Booking ID of " + bookingList.get(i).getBookingID() + " will not be canceeld");
+                    System.out.println("The Booking ID of " + bookingList.get(i).getBookingID() + " will not be cancelled");
                 }
 
             } else {
@@ -433,7 +434,7 @@ public class Booking {
     }
 
     public static void searchBooking() {
-
+        OoptAssignment.clearScreen();
         ArrayList<Booking> bookingList = BookingMain.readBookingFile();
 
         Scanner input = new Scanner(System.in).useDelimiter("\n");
@@ -519,7 +520,7 @@ public class Booking {
     }
 
     public static void displayBooking() {
-
+        OoptAssignment.clearScreen();
         ArrayList<Booking> bookingList = BookingMain.readBookingFile();
 
         System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------");
@@ -545,7 +546,7 @@ public class Booking {
     }
 
     public static void bookingReport() {
-
+        OoptAssignment.clearScreen();
         ArrayList<Booking> bookingList = BookingMain.readBookingFile();
         if (bookingList.isEmpty()) {
             System.out.println("Oops, the report cannot be generated due to insufficient Data.");
