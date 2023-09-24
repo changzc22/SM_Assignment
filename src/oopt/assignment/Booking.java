@@ -164,8 +164,12 @@ public class Booking {
 
             if (inputDetail.equals("X")) {
                 return;
-            } else if (inputDetail.equals("S") || inputDetail.equals("P")) {
-                isValid = true;
+            } else if (inputDetail.equals("S") || (inputDetail.equals("P"))) {
+                if (t.get(j).getStandardSeatQty() == 0 || t.get(j).getPremiumSeatQty() == 0) {
+                    System.out.println("No more seat for this seat tier.");
+                } else {
+                    isValid = true;
+                }
             } else {
                 System.out.println("Invalid Input. Please re-enter again!!");
             }
@@ -189,6 +193,8 @@ public class Booking {
                     return;
                 } else if (numOfSeatBook == 0) {
                     System.out.println("You cannot input 0");
+                } else if (numOfSeatBook < 0) {
+                    System.out.println("You cannot enter negative values");
                 } else if (numOfSeatBook > currentQty) {
                     System.out.println("You should not input more than available quantity.");
                 } else {
@@ -270,8 +276,9 @@ public class Booking {
         System.out.println("Departure Time : " + time);
         System.out.println("Seat Tier      : " + (seatTier == 'S' ? "Standard" : "Premium"));
         System.out.println("Seat Quantity  : " + numOfSeatBook);
-        System.out.printf("Total Fare     : RM %.2f\n", totalFare);
+        System.out.printf(" Total Fare     : RM %.2f\n", totalFare);
         System.out.println("==========================\n");
+        System.out.println("Note: SST & Discounts included in total fare.");
 
         // Confirm to add new Booking
         isValid = false;
@@ -302,9 +309,9 @@ public class Booking {
             b.add(newBooking);
             TrainMain.writeTrainFile(t);
             BookingMain.writeBookingFile(b);
-            s = Staff.updateNo(s,staffID);
+            s = Staff.updateNo(s, staffID);
             System.out.println(newBooking.toString());
-            
+
         }
     }
 
@@ -569,7 +576,7 @@ public class Booking {
 
         System.out.println("Revenue by Destination (Standard Seat):");
         System.out.println("--------------------------------------------------------");
-        
+
         for (Train t : trainList) {
             for (Booking b : bookingList) {
                 if (t.getDestination().equals(b.getTrain().getDestination()) && b.getSeatTier() == 'S' && b.getTrain().isTrainStatus()) {
@@ -609,7 +616,6 @@ public class Booking {
         System.out.println("--------------------------------------------------------");
 
         System.out.println("\nNote: Discontinued train will not be included in the report!\n\n");
-        OoptAssignment.systemPause();
     }
-    
+
 }

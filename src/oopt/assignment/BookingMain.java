@@ -8,7 +8,8 @@ import java.time.format.DateTimeFormatter;
 public class BookingMain {
 
     public static void bookingMain(String staffID) {
-        Scanner input = new Scanner(System.in).useDelimiter("\n");
+        Scanner input = new Scanner(System.in);
+        OoptAssignment.clearScreen();
 
         int selectionInput = 0;
         boolean isValidInput, exitBookingModule = false, printLogo = true;
@@ -64,7 +65,6 @@ public class BookingMain {
 
         } while (!exitBookingModule);
 
-        System.out.println("Now you are returning back to the main menu.");
     }
 
     public static ArrayList<Booking> readBookingFile() {
