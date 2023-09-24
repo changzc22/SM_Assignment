@@ -9,6 +9,7 @@ public class Staff extends Person {
     private String password;
     private int noOfBookingHandle = 0;
     //dmidjcidcnsksmcc
+    //wwdddcccc
 
     public int getNumberOfStaff() {
         return staffList.size();
