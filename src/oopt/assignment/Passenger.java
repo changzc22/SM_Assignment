@@ -261,7 +261,7 @@ public class Passenger extends Person {
             System.out.println("\nEnter passenger details by entering passenger name, IC or ID.");
             System.out.println("Press X to exit if you wish to exit.");
             System.out.print("Enter here > ");
-            searchInput = sc.nextLine().trim();
+            searchInput = sc.next().trim();
 
             if (searchInput.equals("X") || searchInput.equals("x")) {
                 return;
