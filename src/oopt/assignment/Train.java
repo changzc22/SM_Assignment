@@ -163,6 +163,7 @@ public class Train {
             valid = false;
             System.out.print("Enter New Train ID (Press X/x to return) : ");
             newTrainID = scanner.nextLine().toUpperCase();
+           
             if (newTrainID.matches("[T]+[0-9]{3}")) {
                 valid = Train.checkDuplicate(newTrainID);
             } 
@@ -182,7 +183,7 @@ public class Train {
             System.out.println("Train ID        : " + newTrainID);
             System.out.print("Enter New Destination (Press X to return) : ");
             newDestination = scanner.nextLine();
-            
+             newDestination= newDestination.trim();
             if (newDestination.equals("X")){
                 return;
             }
