@@ -125,7 +125,7 @@ public class Passenger extends Person {
             contactValid = invalidCount == 0;
 
             if (!contactValid) {
-                System.out.println("Enter digits only or the length is not 10 or 11!");
+                System.out.println("Enter digits only, contact no already exists or the length is not 10 or 11!");
             }
 
         } while (!contactValid);
@@ -425,7 +425,7 @@ public class Passenger extends Person {
                                         contactValid = invalidCount == 0;
 
                                         if (!contactValid) {
-                                            System.out.println("Enter digits only or the length is not 10 or 11!");
+                                            System.out.println("Enter digits only, contact no already exists or the length is not 10 or 11!");
                                         } else {
                                             passenger.setContactNo(contactNo);
                                             PassengerMain.updatePassengerFile(passengerList);
