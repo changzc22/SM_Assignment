@@ -25,7 +25,6 @@ public class OoptAssignment {
             do {
                 
                 OoptAssignment.clearScreen();
-
                 etsLogo();
                 mainMenu();
                 
