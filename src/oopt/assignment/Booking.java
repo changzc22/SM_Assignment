@@ -303,6 +303,7 @@ public class Booking {
             BookingMain.writeBookingFile(b);
             s = Staff.updateNo(s,staffID);
             System.out.println(newBooking.toString());
+            
         }
     }
 
@@ -607,6 +608,7 @@ public class Booking {
         System.out.println("--------------------------------------------------------");
 
         System.out.println("\nNote: Discontinued train will not be included in the report!\n\n");
-
+        OoptAssignment.systemPause();
     }
+    
 }

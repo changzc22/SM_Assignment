@@ -149,14 +149,6 @@ public class BookingMain {
 
     }
 
-
-    private static void receipt() {
-        System.out.println("------------------------------------------------------------");
-        System.out.println("|                        Receipt                           |");
-        System.out.println("------------------------------------------------------------");
-        System.out.println(" Date: " + "                          Time: ");
-    }
-
     private static void bookingMenu() {
         System.out.println("===========================================================");
         System.out.println("| BBBBB    OOO    OOO   KK   KK   III   NN    NN   GGGGG  |");
@@ -177,13 +169,5 @@ public class BookingMain {
         System.out.println("         |  6. Exit                                 |");
         System.out.println("         --------------------------------------------");
     }
-
-    public static void systemPause() {
-        System.out.print("Press any key to continue...");
-        try {
-            System.in.read();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    
 }

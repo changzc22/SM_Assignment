@@ -33,11 +33,11 @@ public class TrainMain {
                     if (trainSelection >= 1 && trainSelection <= 6) {
                         validTrainInput = true;
                     } else {
-                        TrainMain.clearJavaConsoleScreen();
+                        OoptAssignment.clearScreen();
                         System.err.println("Invalid Input. You should only enter between 1 and 6 options!");
                     }
                 } catch (Exception e) {
-                    TrainMain.clearJavaConsoleScreen();
+                   OoptAssignment.clearScreen();
                     System.err.println("You should not enter other characters!");
                     sc.nextLine();
                 }
@@ -121,23 +121,6 @@ public class TrainMain {
 
         }
 
-    }
-
-    public static void clearJavaConsoleScreen() {
-        try {
-            Robot rob = new Robot();
-            try {
-                rob.keyPress(KeyEvent.VK_CONTROL); // press "CTRL"
-                rob.keyPress(KeyEvent.VK_L); // press "L"
-                rob.keyRelease(KeyEvent.VK_L); // unpress "L"
-                rob.keyRelease(KeyEvent.VK_CONTROL); // unpress "CTRL"
-                Thread.sleep(10); // add delay in milisecond, if not there will automatically stop after clear
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
     }
 
 }
