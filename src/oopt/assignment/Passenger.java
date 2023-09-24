@@ -377,12 +377,14 @@ public class Passenger extends Person {
                                             System.out.println("Enter alphabelts and spaces only!");
                                         } 
                                         else {
-                                            //for (j = 0; j < name.length(); j++) {
-                                            //bookingList.get(j).setName(name);
-                                        //}
+                                            for (Booking booking : bookingList) {
+                                            if (booking.getName().equals(name)) {
+                                                bookingList.get(name.length()).setName(name);
+                                                BookingMain.writeBookingFile(bookingList);
+                                            }
+                                        }
                                             passenger.setName(name);
                                             PassengerMain.updatePassengerFile(passengerList);
-                                            BookingMain.writeBookingFile(bookingList);
                                             System.out.println("Passenger name has been updated.");
                                         }
                                     }
@@ -408,6 +410,12 @@ public class Passenger extends Person {
                                         }
 
                                         System.out.println("Contact number length: " + contactNo.length());
+                                        
+                                        for (Passenger passenger2 : passengerList) {
+                                            if (passenger2.getContactNo().equals(contactNo)) {
+                                                 invalidCount++; // Contact no already exists
+                                            }
+                                        }
 
                                         if (contactNo.length() != 10 && contactNo.length() != 11) {
                                             invalidCount++;
@@ -450,8 +458,8 @@ public class Passenger extends Person {
 
                                         System.out.println("IC length: " + ic.length());
 
-                                        for (Passenger passenger2 : passengerList) {
-                                            if (passenger2.getIc().equals(ic)) {
+                                        for (Passenger passenger3 : passengerList) {
+                                            if (passenger3.getIc().equals(ic)) {
                                                 invalidCount++; // IC already exists
                                             }
                                         }
