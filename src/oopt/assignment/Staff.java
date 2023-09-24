@@ -8,7 +8,7 @@ public class Staff extends Person {
     private static ArrayList<Staff> staffList = new ArrayList<>();
     private String password;
     private int noOfBookingHandle = 0;
-    Scanner scanner = new Scanner(System.in);
+    
 
     public int getNumberOfStaff() {
         return staffList.size();
@@ -215,6 +215,7 @@ public class Staff extends Person {
 
     public ArrayList<Staff> modifyStaff() {
     ArrayList<Staff> staffList = readStaffFile();
+    Scanner scanner = new Scanner(System.in);
 
     boolean isValidName, isCNtrue, isValidIC, isValidpw;
     String name, cn, ic, pw;
@@ -324,6 +325,7 @@ public class Staff extends Person {
 
     public ArrayList<Staff> createStaff() {
         String name, cn, ic, ID, pw;
+        Scanner scanner = new Scanner(System.in);
         boolean isValidName, isCNtrue, isValidIC, isValidStaffID, isValidpw;
           ArrayList<Staff>staffList=readStaffFile();
         do {
@@ -419,6 +421,7 @@ public class Staff extends Person {
     }
 
     public void displayPerson() {
+        Scanner scanner = new Scanner(System.in);
          ArrayList<Staff>staffList=readStaffFile();
         String c;
         if (staffList.isEmpty()) {
@@ -440,6 +443,7 @@ public class Staff extends Person {
     }
 
     public ArrayList<Staff> deleteStaff() {
+        Scanner scanner = new Scanner(System.in);
         ArrayList<Staff>staffList=readStaffFile();
         if (staffList.isEmpty()) {
             System.out.println("No staff members to delete.");
@@ -491,6 +495,7 @@ public class Staff extends Person {
     }
 
     public void searchPerson() {
+        Scanner scanner = new Scanner(System.in);
         ArrayList<Staff>staffList=readStaffFile();
         while (true) {
             System.out.print("Enter the staff ID that you want to search(X to exit):");
@@ -518,6 +523,7 @@ public class Staff extends Person {
     }
 
     public void loginStaff() {
+        Scanner scanner = new Scanner(System.in);
           ArrayList<Staff>staffList=readStaffFile();
         while (true) {
             
@@ -571,6 +577,7 @@ public class Staff extends Person {
     }
 
     public void modifyPassword() {
+        Scanner scanner = new Scanner(System.in);
         ArrayList<Staff>staffList=readStaffFile();
         while (true) {
             boolean isValidpw = false;
@@ -661,3 +668,4 @@ public class Staff extends Person {
         return staffList;
     }
 }
+
