@@ -228,7 +228,7 @@ public class Passenger extends Person {
         System.out.println("The information has been added into the array list.");
         Passenger passenger = new Passenger(name, contactNo, ic, id, gender, dateJoined, tier);
         passengerList.add(passenger);
-        try (FileWriter fileWriter = new FileWriter("passenger.txt", true); BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
+        try (FileWriter fileWriter = new FileWriter("PassengerFile.txt", true); BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
 
             bufferedWriter.write(name + "|" + contactNo + "|" + ic + "|" + id + "|" + gender + "|" + dateJoined + "|" + tier);
             bufferedWriter.newLine();
