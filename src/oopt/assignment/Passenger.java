@@ -84,6 +84,20 @@ public class Passenger extends Person {
                     invalidCount++;
                 }
             }
+            
+            System.out.println("Name length with spaces: " + name.length());
+            
+            if(name.length()>=30){
+                invalidCount++;
+                System.out.println("Name length is too long.");
+            }
+            
+            for (Passenger passenger : passengerList) {
+                if (passenger.getName().equals(name)) {
+                    invalidCount++;
+                }
+            }
+            
             nameValid = invalidCount == 0;
 
             if (!nameValid) {
@@ -372,6 +386,20 @@ public class Passenger extends Person {
                                                 invalidCount++;
                                             }
                                         }
+                                        
+                                        System.out.println("Name length with spaces: " + name.length());
+            
+                                            if(name.length()>=30){
+                                                invalidCount++;
+                                                System.out.println("Name length is too long.");
+                                            }
+            
+                                        for (Passenger passenger4 : passengerList) {
+                                            if (passenger4.getName().equals(name)) {
+                                                invalidCount++;
+                                            }
+                                            }
+                                        
                                         nameValid = invalidCount == 0;
 
                                         if (!nameValid) {
@@ -552,11 +580,11 @@ public class Passenger extends Person {
         System.out.println("==================================");
         System.out.println("DISPLAY ALL PASSENGERS INFORMATION");
         System.out.println("==================================");
-        System.out.printf("%-6s %-28s %-14s %-15s %-7s %-9s %-14s %-7s", "NO.", "PASSENGER NAME", "CONTACT NO.", "IC NO.", "ID", "GENDER", "JOINED DATE", "TIER");
+        System.out.printf("%-6s %-33s %-14s %-15s %-7s %-9s %-14s %-7s", "NO.", "PASSENGER NAME", "CONTACT NO.", "IC NO.", "ID", "GENDER", "JOINED DATE", "TIER");
         System.out.println("\n");
         for (i = 0; i < passengerList.size(); i++) {
             Passenger passenger = passengerList.get(i);
-            System.out.printf("%-6d %-28s %-14s %-15s %-7s %-9c %-14s %-7c\n", i + 1, passenger.getName(), passenger.getContactNo(), passenger.getIc(), passenger.getId(), passenger.gender, passenger.dateJoined, passenger.passengerTier);
+            System.out.printf("%-6d %-33s %-14s %-15s %-7s %-9c %-14s %-7c\n", i + 1, passenger.getName(), passenger.getContactNo(), passenger.getIc(), passenger.getId(), passenger.gender, passenger.dateJoined, passenger.passengerTier);
         }
         System.out.println("\nLEGEND:                 M = Male   F = Female   N = No Tier   S = Silver Tier   G = Gold Tier");
         System.out.println("\nTotal of " + i + " passenger details has been displayed.\n\n");
