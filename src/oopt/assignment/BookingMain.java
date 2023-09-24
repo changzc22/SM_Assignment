@@ -4,9 +4,6 @@ import java.util.*;
 import java.time.*;
 import java.io.*;
 import java.time.format.DateTimeFormatter;
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
 
 public class BookingMain {
 
@@ -15,13 +12,7 @@ public class BookingMain {
 
         int selectionInput = 0;
         boolean isValidInput, exitBookingModule = false, printLogo = true;
-
-        try {
-            clear();
-        } catch (AWTException e) {
-            e.printStackTrace();
-        }
-
+        
         do {
 
             if (printLogo) {
@@ -185,21 +176,6 @@ public class BookingMain {
         System.out.println("         |  5. Generate Report                      |");
         System.out.println("         |  6. Exit                                 |");
         System.out.println("         --------------------------------------------");
-    }
-
-    public static void clear() throws AWTException {
-        Robot rob = new Robot();
-
-        try {
-            rob.keyPress(KeyEvent.VK_CONTROL); //press control
-            rob.keyPress(KeyEvent.VK_L); // press L
-
-            rob.keyRelease(KeyEvent.VK_L);
-            rob.keyRelease(KeyEvent.VK_CONTROL);
-            Thread.sleep(10);
-        } catch (InterruptedException e) {
-            System.out.println(e);
-        }
     }
 
     public static void systemPause() {

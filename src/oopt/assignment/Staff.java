@@ -503,6 +503,7 @@ public class Staff extends Person {
         return staffList;
     }
 
+    @Override
     public void searchPerson() {
         ArrayList<Staff> staffList = readStaffFile();
         Scanner scanner = new Scanner(System.in);
