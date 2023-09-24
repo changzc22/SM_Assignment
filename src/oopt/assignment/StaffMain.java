@@ -5,7 +5,6 @@ import java.io.*;
 
 public class StaffMain {
 
-    static String ID;
 
     public static void staffMain() {
 
@@ -46,7 +45,6 @@ public class StaffMain {
             } else if (choice.equals("5")) {
                 staff.searchPerson();
             } else if (choice.equals("6")) {
-                System.out.println(ID);
                 exit = true;
             } else {
                 System.out.println("Invalid number. Please type again.");
