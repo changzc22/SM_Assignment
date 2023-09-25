@@ -53,7 +53,7 @@ public class Passenger extends Person {
         ArrayList<Passenger> passengerList = PassengerMain.readPassengerFile();
         Scanner sc = new Scanner(System.in).useDelimiter("\n");
         String name, contactNo, ic, id;
-        char gender, tier, selection;
+        char gender = 0, tier, selection = 0;
         boolean nameValid = false, contactValid = false, icValid = false, genderValid = false;
         int invalidCount;
         LocalDate dateJoined;
@@ -190,11 +190,17 @@ public class Passenger extends Person {
 
         do {
             invalidCount = 0;
-            System.out.println("\n(4/4) Enter the passenger gender.");
-            System.out.println("M = Male or F = Female");
-            System.out.print("Enter here > ");
-            gender = sc.next().charAt(0);
-            gender = toUpperCase(gender);
+            try{
+                System.out.println("\n(4/4) Enter the passenger gender.");
+                System.out.println("M = Male or F = Female");
+                System.out.print("Enter here > ");
+                gender = sc.next().charAt(0);
+                gender = toUpperCase(gender);
+            }
+            catch (Exception ex){
+                System.out.println("Cannot leave it blank.");
+                sc.nextLine();
+            }
 
             if (gender == 'X') {
                 return;
@@ -240,11 +246,17 @@ public class Passenger extends Person {
         System.out.println("\nJoined Date              : " + dateJoined);
 
         do {
-            System.out.println("\nAre you sure you want to register passsenger with the information above (Y/N)?");
-            System.out.print("Enter here > ");
-            selection = sc.next().charAt(0);
-            selection = toUpperCase(selection);
-
+            try{
+                System.out.println("\nAre you sure you want to register passsenger with the information above (Y/N)?");
+                System.out.print("Enter here > ");
+                selection = sc.next().charAt(0);
+                selection = toUpperCase(selection);
+            }
+            catch (Exception ex){
+                System.out.println("Cannot leave it blank.");
+                sc.nextLine();
+            }
+       
             if (selection == 'N') {
                 return;
             } else if (selection != 'N' && selection != 'Y') {
@@ -253,7 +265,7 @@ public class Passenger extends Person {
 
         } while (selection != 'N' && selection != 'Y');
 
-        System.out.println("The information has been added into the array list.");
+        System.out.println("The information has been stored into the data.");
         Passenger passenger = new Passenger(name, contactNo, ic, id, gender, dateJoined, tier);
         passengerList.add(passenger);
         try (FileWriter fileWriter = new FileWriter("PassengerFile.txt", true); BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
@@ -273,7 +285,7 @@ public class Passenger extends Person {
         ArrayList<Passenger> passengerList = PassengerMain.readPassengerFile();
         Scanner sc = new Scanner(System.in).useDelimiter("\n");
         String searchInput;
-        char selection = 'N';
+        char selection = 0;
         boolean isValid = false;
         System.out.println("================");
         System.out.println("SEARCH PASSENGER");
@@ -302,10 +314,17 @@ public class Passenger extends Person {
                     System.out.println("\n");
 
                     do {
-                        System.out.println("Do you want to search another?");
-                        System.out.print("Enter here (Y/N) > ");
-                        selection = sc.next().charAt(0);
-                        selection = toUpperCase(selection);
+                        try{
+                            System.out.println("Do you want to search another?");
+                            System.out.print("Enter here (Y/N) > ");
+                            selection = sc.next().charAt(0);
+                            selection = toUpperCase(selection);
+                        }
+                        catch (Exception ex){
+                            System.out.println("Cannot leave it blank.");
+                            sc.nextLine();
+                        }
+                        
 
                         if (selection == 'Y') {
                             System.out.println("You have selected to search another.\n\n");
@@ -329,7 +348,7 @@ public class Passenger extends Person {
         ArrayList<Booking> bookingList = BookingMain.readBookingFile();
         Scanner sc = new Scanner(System.in).useDelimiter("\n");
         String name, nameTemp, contactNo, ic, id, searchInput;
-        char gender, tier, selectionC = 'N', selectionC2, selectionC3;
+        char gender, selectionC = 0, selectionC2 = 0, selectionC3 = 0;
         boolean isValid = false, nameValid, contactValid, icValid, genderValid;
         int invalidCount, selectionI = 0, j;
 
@@ -362,15 +381,23 @@ public class Passenger extends Person {
                         icValid = false;
                         genderValid = false;
 
-                        System.out.println(passenger.toString());
-                        System.out.println("\n");
-                        System.out.println("Please select the area that you wish to modify.");
-                        System.out.println("(A) Passenger Name   (B) Passenger Contact Number");
-                        System.out.println("(C) Passenger IC     (D) passenger Gender");
-                        System.out.println("(E) Exit/Finish Edit Passenger Details");
-                        System.out.print("Enter here > ");
-                        selectionC2 = sc.next().charAt(0);
-                        selectionC2 = toUpperCase(selectionC2);
+                        try{
+                            System.out.println(passenger.toString());
+                            System.out.println("\n");
+                            System.out.println("Please select the area that you wish to modify.");
+                            System.out.println("(A) Passenger Name   (B) Passenger Contact Number");
+                            System.out.println("(C) Passenger IC     (D) passenger Gender");
+                            System.out.println("(E) Exit/Finish Edit Passenger Details");
+                            System.out.print("Enter here > ");
+                            selectionC2 = sc.next().charAt(0);
+                            selectionC2 = toUpperCase(selectionC2);
+                        }
+                        catch (Exception ex){
+                            System.out.println("Cannot leave it blank.");
+                            sc.nextLine();
+                        }
+                        
+                        
 
                         switch (selectionC2) {
                             case 'A':
@@ -523,10 +550,16 @@ public class Passenger extends Person {
                                 do {
                                     gender = passenger.getGender();
                                     if (gender == 'M') {
-                                        System.out.println("Do you want to change the passenger gender from male to female?");
-                                        System.out.print("Enter here (Y/N) > ");
-                                        selectionC3 = sc.next().charAt(0);
-                                        selectionC3 = toUpperCase(selectionC3);
+                                        try{
+                                            System.out.println("Do you want to change the passenger gender from male to female?");
+                                            System.out.print("Enter here (Y/N) > ");
+                                            selectionC3 = sc.next().charAt(0);
+                                            selectionC3 = toUpperCase(selectionC3);
+                                        }
+                                        catch (Exception ex){
+                                            System.out.println("Cannot leave it blank.");
+                                            sc.nextLine();
+                                        }
                                         if (selectionC3 == 'Y') {
                                             genderValid = true;
                                             passenger.setGender('F');
@@ -557,10 +590,18 @@ public class Passenger extends Person {
                                 break;
                             case 'E':
                                 do {
-                                    System.out.println("Do you want to back to the passenger information module menu?");
-                                    System.out.print("Enter here (Y/N) > ");
-                                    selectionC = sc.next().charAt(0);
-                                    selectionC = toUpperCase(selectionC);
+                                    try{
+                                        System.out.println("Do you want to back to the passenger information module menu?");
+                                        System.out.print("Enter here (Y/N) > ");
+                                        selectionC = sc.next().charAt(0);
+                                        selectionC = toUpperCase(selectionC);
+                                    }
+                                    catch (Exception ex){
+                                        System.out.println("Cannot leave it blank.");
+                                        sc.nextLine();
+                                    }
+                                    
+                                    
                                     if (selectionC == 'Y') {
                                         System.out.println("Now you will redirect back to the passenger information module menu.\n");
                                     } else if (selectionC == 'N') {
@@ -611,7 +652,7 @@ public class Passenger extends Person {
         String searchInput;
         double inputAmount = 0.0, price = 0.0, changes;
         int selectionI = 0;
-        char selectionC = 0, selectionC2;
+        char selectionC = 0, selectionC2 = 0;
         boolean isValid = false, isValid2 = false;
         System.out.println("================================");
         System.out.println("UPGRADE/DOWNGRADE PASSENGER TIER");
@@ -648,6 +689,7 @@ public class Passenger extends Person {
 
                     do {
                         try {
+                            selectionI = 0;
                             System.out.println("Please select the option below.");
                             System.out.println("(1) Upgrade Tier");
                             System.out.println("(2) Downgrade Tier");
@@ -664,29 +706,44 @@ public class Passenger extends Person {
                                 if (passenger.passengerTier == 'G') {
                                     System.out.println("Currently you are on the highest tier.\n");
                                 } else {
-                                    System.out.println("Please select the tier that you want to upgrade. ");
-                                    System.out.println("S - Silver Tier (15% discount)");
-                                    System.out.println("Price: RM 125.00");
-                                    System.out.println("G - Gold Tier (25% discount)");
-                                    System.out.println("Price: RM 175.00");
-                                    System.out.println("(Others) - Back");
-                                    System.out.print("Enter your choice > ");
-                                    selectionC = sc.next().charAt(0);
-                                    selectionC = toUpperCase(selectionC);
+                                    try{
+                                       System.out.println("Please select the tier that you want to upgrade. ");
+                                        System.out.println("S - Silver Tier (15% discount)");
+                                        System.out.println("Price: RM 125.00");
+                                        System.out.println("G - Gold Tier (25% discount)");
+                                        System.out.println("Price: RM 175.00");
+                                        System.out.println("(Others) - Back");
+                                        System.out.print("Enter your choice > ");
+                                        selectionC = sc.next().charAt(0);
+                                        selectionC = toUpperCase(selectionC); 
+                                    }
+                                    catch (Exception ex){
+                                        sc.nextLine();
+                                    }
+                                    
+                                    
                                     if (selectionC == 'S' || selectionC == 'G') {
                                         if (passenger.passengerTier == 'S' && selectionC == 'S') {
                                             System.out.println("Currently you are on the silver tier.\n");
                                         } else {
                                             do {
-                                                System.out.print("Do you want to upgrade the tier to ");
-                                                if (selectionC == 'S') {
-                                                    System.out.println("silver?");
-                                                } else if (selectionC == 'G') {
-                                                    System.out.println("gold?");
+                                                try{
+                                                    System.out.print("Do you want to upgrade the tier to ");
+                                                    if (selectionC == 'S') {
+                                                        System.out.println("silver?");
+                                                    } else if (selectionC == 'G') {
+                                                        System.out.println("gold?");
+                                                    }
+                                                    System.out.print("Enter your selection (Y/N) > ");
+                                                    selectionC2 = sc.next().charAt(0);
+                                                    selectionC2 = toUpperCase(selectionC2);
                                                 }
-                                                System.out.print("Enter your selection (Y/N) > ");
-                                                selectionC2 = sc.next().charAt(0);
-                                                selectionC2 = toUpperCase(selectionC2);
+                                                catch (Exception ex){
+                                                    System.out.println("Cannot leave it blank.");
+                                                    sc.nextLine();
+                                                }
+                                                
+                                                
                                                 if (selectionC2 == 'Y') {
                                                     isValid2 = true;
                                                     System.out.println("You select to upgrade the tier.\n");
@@ -738,28 +795,41 @@ public class Passenger extends Person {
                                 if (passenger.passengerTier == 'N') {
                                     System.out.println("Currently you are on the lowest tier.\n");
                                 } else {
-                                    System.out.println("Please select the tier that you want to downgrade. ");
-                                    System.out.println("S - Silver Tier (15% discount)");
-                                    System.out.println("N - Without tier/None");
-                                    System.out.println("(Others) - Back");
-                                    System.out.print("Enter your choice > ");
-                                    selectionC = sc.next().charAt(0);
-                                    selectionC = toUpperCase(selectionC);
+                                    try{
+                                        System.out.println("Please select the tier that you want to downgrade. ");
+                                        System.out.println("S - Silver Tier (15% discount)");
+                                        System.out.println("N - Without tier/None");
+                                        System.out.println("(Others) - Back");
+                                        System.out.print("Enter your choice > ");
+                                        selectionC = sc.next().charAt(0);
+                                        selectionC = toUpperCase(selectionC);
+                                    }
+                                    catch (Exception ex){
+                                        sc.nextLine();
+                                    }
+                                    
                                     if (selectionC == 'S' || selectionC == 'N') {
                                         if (passenger.passengerTier == 'S' && selectionC == 'S') {
                                             System.out.println("Currently you are on the silver tier.\n");
                                         } else {
                                             do {
-                                                System.out.print("Do you want to downgrade the tier to ");
-                                                if (selectionC == 'S') {
-                                                    System.out.println("silver?");
-                                                } else if (selectionC == 'N') {
-                                                    System.out.println("none?");
+                                                try{
+                                                    System.out.print("Do you want to downgrade the tier to ");
+                                                    if (selectionC == 'S') {
+                                                        System.out.println("silver?");
+                                                    } else if (selectionC == 'N') {
+                                                        System.out.println("none?");
+                                                    }
+                                                    System.out.print("Enter your selection (Y/N) > ");
+                                                    selectionC2 = sc.next().charAt(0);
+                                                    selectionC2 = toUpperCase(selectionC2);
                                                 }
-                                                System.out.print("Enter your selection (Y/N) > ");
-                                                selectionC2 = sc.next().charAt(0);
-                                                selectionC2 = toUpperCase(selectionC2);
-                                                if (selectionC2 == 'Y') {
+                                                catch (Exception ex){
+                                                    System.out.println("Cannot leave it blank.");
+                                                    sc.nextLine();
+                                                }
+                                                
+                                               if (selectionC2 == 'Y') {
                                                     isValid2 = true;
                                                     System.out.println("You select to downgrade the tier.\n");
                                                     System.out.print("\nYour passenger tier has been successfully downgraded to ");
