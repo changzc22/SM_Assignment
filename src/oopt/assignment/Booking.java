@@ -165,10 +165,11 @@ public class Booking {
             if (inputDetail.equals("X")) {
                 return;
             } else if (inputDetail.equals("S") || (inputDetail.equals("P"))) {
-                if ((inputDetail.equals("S") && t.get(j).getStandardSeatQty() == 0) || (inputDetail.equals("P") && t.get(j).getPremiumSeatQty() == 0)){
-                    System.out.println("No more seat for this seat tier.");                    
-                } else
+                if ((inputDetail.equals("S") && t.get(j).getStandardSeatQty() == 0) || (inputDetail.equals("P") && t.get(j).getPremiumSeatQty() == 0)) {
+                    System.out.println("No more seat for this seat tier.");
+                } else {
                     isValid = true;
+                }
             } else {
                 System.out.println("Invalid Input. Please re-enter again!!");
             }
@@ -321,11 +322,11 @@ public class Booking {
         Scanner input = new Scanner(System.in);
 
         String inputDetail = null;
-        char opt;
         boolean isValid = false;
         boolean found = false;
         boolean cont = true;
         int i, j, currentQty = 0;
+        char opt;
 
         // Search Booking Logo
         System.out.println("===================================");
@@ -336,11 +337,10 @@ public class Booking {
             while (!isValid) {
                 System.out.print("Please enter the booking ID [Enter X to quit] > ");
                 inputDetail = input.nextLine().toUpperCase();
-                
-                if (inputDetail.isEmpty()){
+
+                if (inputDetail.isEmpty()) {
                     System.out.println("You cannot leave it blank");
-                }
-                else if (inputDetail.equals("X")) {
+                } else if (inputDetail.equals("X")) {
                     return;
                 } else if (inputDetail.length() != 4) {
                     System.out.println("Invalid input. The Booking ID should be exactly 4 characters.");
@@ -464,11 +464,10 @@ public class Booking {
             while (!isValid) {
                 System.out.print("Please enter the booking ID [Enter X to quit] > ");
                 inputDetail = input.nextLine().toUpperCase();
-                
-                if (inputDetail.isEmpty()){
+
+                if (inputDetail.isEmpty()) {
                     System.out.println("You cannot leave it blank");
-                }
-                else if (inputDetail.equals("X")) {
+                } else if (inputDetail.equals("X")) {
                     return;
                 } else if (inputDetail.length() != 4) {
                     System.out.println("Invalid input. The Booking ID should be exactly 4 characters.");
@@ -508,24 +507,25 @@ public class Booking {
 
             do {
                 System.out.print("Do you still want to continue [Y - Yes. N - No] > ");
-                opt = input.next().charAt(0);
-                opt = Character.toUpperCase(opt);
+                inputDetail = input.nextLine().toUpperCase();
 
-                if (!(opt == 'Y' || opt == 'N')) {
-                    System.out.println("Invalid Input. You should only enter either \'Y\' or \'N\'!");
+                if (inputDetail.isEmpty()) {
+                    System.out.println("You cannot leave it blank!");
+                } else if (!(inputDetail.equalsIgnoreCase("Y") || inputDetail.equalsIgnoreCase("N"))) {
+                    System.out.println("Invalid Input. You should only enter either 'Y' or 'N'!");
                 } else {
                     isValid = true;
                 }
 
             } while (!isValid);
 
-            if (opt == 'N') {
+            input.nextLine();
+
+            if (inputDetail.equalsIgnoreCase("N")) {
                 cont = false;
             } else {
                 isValid = false;
             }
-
-            input.nextLine();
 
         } while (cont);
 
