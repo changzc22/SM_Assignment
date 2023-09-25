@@ -85,7 +85,7 @@ public class Booking {
     }
 
     public static double calculateFare(char passengerTier, int numOfSeatBook, double price) {
-        double discount = 0.0;
+        double discount = 1.0;
 
         switch (passengerTier) {
             case 'S' ->
@@ -267,6 +267,7 @@ public class Booking {
         totalFare = calculateFare(passengerTier, numOfSeatBook, price);
 
         // Display Booking Detail
+        System.out.println("\n==========================");
         System.out.println("**Add New Booking Detail**");
         System.out.println("==========================");
         System.out.println("Booking ID     : " + bookingID);
@@ -276,9 +277,9 @@ public class Booking {
         System.out.println("Departure Time : " + time);
         System.out.println("Seat Tier      : " + (seatTier == 'S' ? "Standard" : "Premium"));
         System.out.println("Seat Quantity  : " + numOfSeatBook);
-        System.out.printf(" Total Fare     : RM %.2f\n", totalFare);
-        System.out.println("==========================\n");
-        System.out.println("Note: SST & Discounts included in total fare.");
+        System.out.printf("Total Fare     : RM %.2f\n", totalFare);
+        System.out.println("==========================");
+        System.out.println("Note: SST & Discounts(If applicable) included in total fare.");
 
         // Confirm to add new Booking
         isValid = false;
@@ -326,7 +327,7 @@ public class Booking {
         boolean found = false;
         boolean cont = true;
         int i, j, currentQty = 0;
-        char opt;
+        char opt = ' ';
 
         // Search Booking Logo
         System.out.println("===================================");
@@ -387,7 +388,7 @@ public class Booking {
                     opt = Character.toUpperCase(opt);
 
                     if (!(opt == 'Y' || opt == 'N')) {
-                        System.out.println("Invalid Input. You should only enter either \'Y\' or \'N\'!");
+                        System.out.println("Invalid Input. You should only enter either 'Y' or 'N'!");
                     } else {
                         isValid = true;
                     }
@@ -416,16 +417,21 @@ public class Booking {
 
             isValid = false;
             found = false;
+            input.nextLine();
 
             do {
                 System.out.print("Do you still want to continue [Y - Yes. N - No] > ");
-                opt = input.next().charAt(0);
-                opt = Character.toUpperCase(opt);
+                inputDetail = input.nextLine().toUpperCase();
 
-                if (!(opt == 'Y' || opt == 'N')) {
-                    System.out.println("Invalid Input. You should only enter either \'Y\' or \'N\'!");
+                if (inputDetail.isEmpty()) {
+                    System.out.println("You cannot leave it blank!");
                 } else {
-                    isValid = true;
+                    opt = inputDetail.charAt(0);
+                    if (!(opt == 'Y' || opt == 'N' )) {
+                        System.out.println("Invalid Input. You should only enter either 'Y' or 'N'!");
+                    } else {
+                        isValid = true;
+                    }
                 }
 
             } while (!isValid);
@@ -449,7 +455,7 @@ public class Booking {
         Scanner input = new Scanner(System.in).useDelimiter("\n");
 
         String inputDetail = null;
-        char opt;
+        char opt = ' ';
         boolean isValid = false;
         boolean cont = true;
         boolean found = false;
@@ -511,17 +517,18 @@ public class Booking {
 
                 if (inputDetail.isEmpty()) {
                     System.out.println("You cannot leave it blank!");
-                } else if (!(inputDetail.equalsIgnoreCase("Y") || inputDetail.equalsIgnoreCase("N"))) {
-                    System.out.println("Invalid Input. You should only enter either 'Y' or 'N'!");
                 } else {
-                    isValid = true;
+                    opt = inputDetail.charAt(0);
+                    if (!(inputDetail.equalsIgnoreCase("Y") || inputDetail.equalsIgnoreCase("N"))) {
+                        System.out.println("Invalid Input. You should only enter either 'Y' or 'N'!");
+                    } else {
+                        isValid = true;
+                    }
                 }
 
             } while (!isValid);
 
-            input.nextLine();
-
-            if (inputDetail.equalsIgnoreCase("N")) {
+            if (opt == 'N') {
                 cont = false;
             } else {
                 isValid = false;
