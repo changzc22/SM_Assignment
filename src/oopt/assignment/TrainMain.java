@@ -24,6 +24,7 @@ public class TrainMain {
 
         ArrayList<Train> trainList = TrainMain.readTrainFile();
         do {
+            OoptAssignment.clearScreen();
             do {
                 validTrainInput = false;
                 Train.displayTrainMenu();

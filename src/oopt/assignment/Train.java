@@ -137,7 +137,6 @@ public class Train {
     }
 
     public static void displayTrainMenu() {
-        OoptAssignment.clearScreen();
         System.out.println("=========================================");
         System.out.println("|     Train Information Module          |");
         System.out.println("=========================================");
@@ -159,9 +158,13 @@ public class Train {
         boolean valid;
         Scanner scanner = new Scanner(System.in);
         OoptAssignment.clearScreen();
+        
         do {
             valid = false;
-            System.out.print("Enter New Train ID (Press X/x to return) : ");
+            System.out.println("=========================================");
+            System.out.println("||            Add New Train            ||");
+            System.out.println("=========================================");
+            System.out.print("Enter New Train ID (TXXX) (Press X/x to return) : ");
             newTrainID = scanner.nextLine().toUpperCase();
            
             if (newTrainID.matches("[T]+[0-9]{3}")) {
@@ -180,6 +183,9 @@ public class Train {
         OoptAssignment.clearScreen();
         do {
             valid = false;
+            System.out.println("=========================================");
+            System.out.println("||            Add New Train            ||");
+            System.out.println("=========================================");
             System.out.println("Train ID        : " + newTrainID);
             System.out.print("Enter New Destination (Press X to return) : ");
             newDestination = scanner.nextLine();
@@ -194,6 +200,8 @@ public class Train {
 
                     if (!Character.isAlphabetic(c) && !Character.isWhitespace(c)) {
                         valid = false;
+                        OoptAssignment.clearScreen();
+                        System.out.println("Do not enter special characters!");
                         break;
                     }
                     
@@ -220,6 +228,9 @@ public class Train {
         OoptAssignment.clearScreen();
         do {
             valid = false;
+            System.out.println("=========================================");
+            System.out.println("||            Add New Train            ||");
+            System.out.println("=========================================");
             System.out.println("Train ID        : " + newTrainID);
             System.out.println("Destination     : " + newDestination);
             System.out.print("Enter the date in yyyy-MM-dd format (Press X to return) : ");
@@ -235,10 +246,13 @@ public class Train {
         OoptAssignment.clearScreen();
         do {
             valid = false;
+            System.out.println("=========================================");
+            System.out.println("||            Add New Train            ||");
+            System.out.println("=========================================");
             System.out.println("Train ID        : " + newTrainID);
             System.out.println("Destination     : " + newDestination);
             System.out.println("Departure Date  : " + inputNewDate);
-            System.out.print("Enter the date in HH:mm format (Press X to return) : ");
+            System.out.print("Enter the time in HH:mm format (Press X to return) : ");
             inputNewTime = scanner.nextLine();
             
             if (inputNewTime.equals("X")){
@@ -252,6 +266,9 @@ public class Train {
         do {
             try {
                 valid = false;
+                System.out.println("=========================================");
+                System.out.println("||            Add New Train            ||");
+                System.out.println("=========================================");
                 System.out.println("Train ID        : " + newTrainID);
                 System.out.println("Destination     : " + newDestination);
                 System.out.println("Departure Date  : " + inputNewDate);
@@ -282,6 +299,9 @@ public class Train {
         do {
             try {
                 valid = false;
+                System.out.println("=========================================");
+                System.out.println("||            Add New Train            ||");
+                System.out.println("=========================================");
                 System.out.println("Train ID        : " + newTrainID);
                 System.out.println("Destination     : " + newDestination);
                 System.out.println("Departure Date  : " + inputNewDate);
@@ -316,6 +336,9 @@ public class Train {
         do {
             try{
                 valid = false;
+                System.out.println("=========================================");
+                System.out.println("||            Add New Train            ||");
+                System.out.println("=========================================");
                 System.out.println("Train ID        : " + newTrainID);
                 System.out.println("Destination     : " + newDestination);
                 System.out.println("Departure Date  : " + inputNewDate);
@@ -348,6 +371,9 @@ public class Train {
         do {
             try{
                 valid = false;
+                System.out.println("=========================================");
+                System.out.println("||            Add New Train            ||");
+                System.out.println("=========================================");
                 System.out.println("Train ID        : " + newTrainID);
                 System.out.println("Destination     : " + newDestination);
                 System.out.println("Departure Date  : " + inputNewDate);
@@ -418,6 +444,7 @@ public class Train {
             }
             OoptAssignment.clearScreen();
             System.out.println("Please enter only Y/N");
+            
         }
         TrainMain.writeTrainFile(trainList);
 
@@ -477,8 +504,6 @@ public class Train {
             DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
             LocalTime localTime = LocalTime.parse(valueTime, timeFormatter);
 
-            // Debugging
-            System.out.println("Time: " + localTime);
             return true;
 
         } catch (Exception e) {
@@ -492,23 +517,32 @@ public class Train {
         ArrayList<Train> trainList = TrainMain.readTrainFile();
         String searchTrain, searchChoiceString;
         char searchChoice;
-        boolean validTrainSearch, trainFound = false, searchAgain;
+        boolean validTrainSearch, trainFound = false, searchAgain, validConfirmation;
         Scanner scanner = new Scanner(System.in);
         int i;
 
         do {
             OoptAssignment.clearScreen();
-            System.out.println("Search : Train");
             do {
                 searchAgain = false;
                 validTrainSearch = false;
+                System.out.println("========================================");
+                System.out.println("||            Search Train            ||");
+                System.out.println("========================================");
                 System.out.print("Enter Train ID to search (Press X/x to return): ");
                 searchTrain = scanner.nextLine().toUpperCase();
                 if (searchTrain.matches("[T]+[0-9]{3}")) {
-
-                    System.out.println("Press Any Key To Continue...");
-                    new java.util.Scanner(System.in).nextLine();
-                    validTrainSearch = true;
+                    for (i = 0; i < trainList.size(); i++) {
+                        if (trainList.get(i).getTrainID().equals(searchTrain)) {
+                            validTrainSearch = true;
+                            break;
+                        }
+                        
+                        else {
+                            OoptAssignment.clearScreen();
+                            System.out.println("Data not found");
+                        }
+                    }
                 } 
                 
                 else if (searchTrain.equals("X")){
@@ -516,6 +550,7 @@ public class Train {
                 }
                 
                 else {
+                    OoptAssignment.clearScreen();
                     System.out.println("Invalid Search Train ID format(TXXX)!");
                 }
             } while (!validTrainSearch);
@@ -543,18 +578,30 @@ public class Train {
                 System.out.printf("|| Train Status           : %-12s    ||\n", (trainList.get(i).isTrainStatus() ? "Active" : "Discontinued"));
                 System.out.println(   "==============================================");
             }
+            validConfirmation = false;
+            
+            do {
+                System.out.print("Search train again? (Y/N)");
+                searchChoiceString = scanner.nextLine();
+                if (searchChoiceString.length() == 1) {
+                    validConfirmation = true;
+                    searchChoice = searchChoiceString.charAt(0);
 
-            System.out.println("Search train again? (Y/N)");
-            searchChoiceString = scanner.nextLine();
-            if (searchChoiceString.length() == 1) {
-                searchChoice = searchChoiceString.charAt(0);
-
-                if (searchChoice == 'Y') {
-                    searchAgain = true;
-                } else if (searchChoice == 'N') {
-                    searchAgain = false;
+                    if (searchChoice == 'Y') {
+                        searchAgain = true;
+                    } else if (searchChoice == 'N') {
+                        searchAgain = false;
+                    }
+                    else{
+                        validConfirmation = false;
+                        OoptAssignment.clearScreen();
+                        System.out.println("Enter only (Y/N)!");
+                    }
                 }
-            }
+                else
+                    validConfirmation = false;
+            } while (!validConfirmation);
+            
         } while (searchAgain);
 
     }
@@ -571,9 +618,11 @@ public class Train {
 
         do {
             OoptAssignment.clearScreen();
-            System.out.println("Modify : Train");
             do {
                 validTrainSearch = false;
+                System.out.println("========================================");
+                System.out.println("||            Modify Train            ||");
+                System.out.println("========================================");
                 System.out.print("Enter Train ID to modify (Press X/x to return): ");
                 modifyTrain = scanner.nextLine().toUpperCase();
                 if (modifyTrain.matches("[T]+[0-9]{3}")) {
@@ -583,7 +632,7 @@ public class Train {
                             break;
                         }
                         
-                        else {
+                        else if(validTrainSearch = false){
                             OoptAssignment.clearScreen();
                             System.out.println("Data not found");
                         }
@@ -601,7 +650,7 @@ public class Train {
                 }
             } while (!validTrainSearch);
 
-            
+            OoptAssignment.clearScreen();
 
             do {
                 validTrainInput = false;
@@ -815,7 +864,7 @@ public class Train {
                                 }
                             } else if (temporaryTrainPrice < 50.00 || temporaryTrainPrice >= 999.99) {
                                OoptAssignment.clearScreen();
-                                System.out.println("Pricing too small or large! Enter within 1.00-999.98");
+                                System.out.println("Pricing too small or large! Enter within 50.00-999.98");
                                 System.out.printf("Enter price larger than RM 50.00 but lower than RM %.2f\n\n", trainList.get(i).premiumSeatPrice);
                             } else {
                                 OoptAssignment.clearScreen();
@@ -911,6 +960,7 @@ public class Train {
                             System.out.println("Please enter only Y/N");
                         }
                     } else {
+                        OoptAssignment.clearScreen();
                         System.out.println("Train already discontinued!");
                     }
                 }
