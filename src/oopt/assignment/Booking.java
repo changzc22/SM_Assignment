@@ -384,18 +384,21 @@ public class Booking {
 
                 do {
                     System.out.print("Do you want to cancel this booking? [Y - Yes. N - No] > ");
-                    opt = input.next().charAt(0);
-                    opt = Character.toUpperCase(opt);
+                    inputDetail = input.nextLine().toUpperCase();
 
-                    if (!(opt == 'Y' || opt == 'N')) {
-                        System.out.println("Invalid Input. You should only enter either 'Y' or 'N'!");
+                    if (inputDetail.isEmpty()) {
+                        System.out.println("You cannot leave it blank!");
                     } else {
-                        isValid = true;
+                        if (!(inputDetail.equalsIgnoreCase("Y") || inputDetail.equalsIgnoreCase("N"))) {
+                            System.out.println("Invalid Input. You should only enter either 'Y' or 'N'!");
+                        } else {
+                            isValid = true;
+                        }
                     }
 
                 } while (!isValid);
 
-                if (opt == 'Y') {
+                if (inputDetail.equals("Y")) {
                     if (bookingList.get(i).getSeatTier() == 'S') {
                         trainList.get(j).setStandardSeatQty(currentQty + bookingList.get(i).getNumOfSeatBook());
                     } else {
@@ -403,7 +406,7 @@ public class Booking {
                     }
 
                     System.out.println("Booking " + bookingList.get(i).getBookingID() + " has been successfully cancelled.");
-                    System.out.println("Seat Quantity for the train " + trainList.get(j).getTrainID() + " will be retunred back.");
+                    System.out.println("Seat Quantity for the train " + trainList.get(j).getTrainID() + " will be returned back.");
                     bookingList.remove(i);
                     BookingMain.writeBookingFile(bookingList);
                     TrainMain.writeTrainFile(trainList);
@@ -417,8 +420,6 @@ public class Booking {
 
             isValid = false;
             found = false;
-            input.nextLine();
-
             do {
                 System.out.print("Do you still want to continue [Y - Yes. N - No] > ");
                 inputDetail = input.nextLine().toUpperCase();
@@ -426,8 +427,7 @@ public class Booking {
                 if (inputDetail.isEmpty()) {
                     System.out.println("You cannot leave it blank!");
                 } else {
-                    opt = inputDetail.charAt(0);
-                    if (!(opt == 'Y' || opt == 'N' )) {
+                    if (!(inputDetail.equalsIgnoreCase("Y") || inputDetail.equalsIgnoreCase("N"))) {
                         System.out.println("Invalid Input. You should only enter either 'Y' or 'N'!");
                     } else {
                         isValid = true;
@@ -436,13 +436,11 @@ public class Booking {
 
             } while (!isValid);
 
-            if (opt == 'N') {
+            if (inputDetail.equals("N")) {
                 cont = false;
             } else {
                 isValid = false;
             }
-
-            input.nextLine();
 
         } while (cont);
 
@@ -455,7 +453,6 @@ public class Booking {
         Scanner input = new Scanner(System.in).useDelimiter("\n");
 
         String inputDetail = null;
-        char opt = ' ';
         boolean isValid = false;
         boolean cont = true;
         boolean found = false;
@@ -518,7 +515,6 @@ public class Booking {
                 if (inputDetail.isEmpty()) {
                     System.out.println("You cannot leave it blank!");
                 } else {
-                    opt = inputDetail.charAt(0);
                     if (!(inputDetail.equalsIgnoreCase("Y") || inputDetail.equalsIgnoreCase("N"))) {
                         System.out.println("Invalid Input. You should only enter either 'Y' or 'N'!");
                     } else {
@@ -528,7 +524,7 @@ public class Booking {
 
             } while (!isValid);
 
-            if (opt == 'N') {
+            if (inputDetail.equals("N")) {
                 cont = false;
             } else {
                 isValid = false;
