@@ -49,7 +49,7 @@ public class OoptAssignment {
 
                 switch (opt) {
                     case 1 ->
-                        StaffMain.staffMain();
+                        StaffMain.staffMain(loginStaffID);
                     case 2 ->
                         PassengerMain.passengerMain();
                     case 3 ->

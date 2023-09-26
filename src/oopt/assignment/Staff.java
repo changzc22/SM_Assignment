@@ -417,9 +417,10 @@ public class Staff extends Person {
         c = scanner.nextLine();
     }
 
-    public ArrayList<Staff> deleteStaff() {
+    public ArrayList<Staff> deleteStaff(String id) {
         Scanner scanner = new Scanner(System.in);
         ArrayList<Staff> staffList = readStaffFile();
+        System.out.println("Mention:You are not allow to delete yourself!");
         if (staffList.isEmpty()) {
             System.out.println("No staff members to delete.");
             System.out.print("Press 'Enter' key to exit to staff menu....");
@@ -437,7 +438,10 @@ public class Staff extends Person {
             }
 
             for (Staff s : staffList) {
-                if (ID.equals(s.getId())) {
+                if(ID.equals(id)){
+                break;
+                }
+                else if (ID.equals(s.getId())) {
                     System.out.println(s.toString() + "\n");
                     while (true) {
                         System.out.print("Do you sure you want to delete this Staff?(Y/N):");
@@ -458,6 +462,8 @@ public class Staff extends Person {
                     }
                     break;
                 }
+                
+                
             }
 
             if (!isValidInput) {
@@ -502,6 +508,7 @@ public class Staff extends Person {
         ArrayList<Staff> staffList = readStaffFile();
         Staff staff = new Staff();
         String ID;
+       
         while (true) {
             staffList=readStaffFile();
             System.out.print("Enter your staff ID [X to Exit]:");

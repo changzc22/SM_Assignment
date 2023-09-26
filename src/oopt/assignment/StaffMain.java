@@ -6,7 +6,7 @@ import java.io.*;
 public class StaffMain {
 
 
-    public static void staffMain() {
+    public static void staffMain(String staffID) {
 
         Staff staff = new Staff();
         ArrayList<Staff> staffList = staff.getStaffList();
@@ -39,7 +39,7 @@ public class StaffMain {
             } else if (choice.equals("2")) {
                 staff.modifyStaff();
             } else if (choice.equals("3")) {
-                staff.deleteStaff();
+                staff.deleteStaff(staffID);
             } else if (choice.equals("4")) {
                 staff.displayPerson();
             } else if (choice.equals("5")) {
