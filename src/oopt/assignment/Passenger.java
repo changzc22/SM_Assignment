@@ -199,6 +199,7 @@ public class Passenger extends Person {
             }
             catch (Exception ex){
                 System.out.println("Cannot leave it blank.");
+                gender = ' ';
                 sc.nextLine();
             }
 
@@ -254,6 +255,7 @@ public class Passenger extends Person {
             }
             catch (Exception ex){
                 System.out.println("Cannot leave it blank.");
+                selection = ' ';
                 sc.nextLine();
             }
        
@@ -322,6 +324,7 @@ public class Passenger extends Person {
                         }
                         catch (Exception ex){
                             System.out.println("Cannot leave it blank.");
+                            selection = ' ';
                             sc.nextLine();
                         }
                         
@@ -394,6 +397,7 @@ public class Passenger extends Person {
                         }
                         catch (Exception ex){
                             System.out.println("Cannot leave it blank.");
+                            selectionC2 = ' ';
                             sc.nextLine();
                         }
                         
@@ -558,6 +562,7 @@ public class Passenger extends Person {
                                         }
                                         catch (Exception ex){
                                             System.out.println("Cannot leave it blank.");
+                                            selectionC3 = ' ';
                                             sc.nextLine();
                                         }
                                         if (selectionC3 == 'Y') {
@@ -571,10 +576,17 @@ public class Passenger extends Person {
                                             System.out.println("Invalid input. Please enter again.");
                                         }
                                     } else if (gender == 'F') {
-                                        System.out.println("Do you want to change the passenger gender from female to male?");
-                                        System.out.print("Enter here (Y/N) > ");
-                                        selectionC3 = sc.next().charAt(0);
-                                        selectionC3 = toUpperCase(selectionC3);
+                                        try{
+                                            System.out.println("Do you want to change the passenger gender from female to male?");
+                                            System.out.print("Enter here (Y/N) > ");
+                                            selectionC3 = sc.next().charAt(0);
+                                            selectionC3 = toUpperCase(selectionC3);
+                                        }
+                                        catch (Exception ex){
+                                            System.out.println("Cannot leave it blank.");
+                                            selectionC3 = ' ';
+                                            sc.nextLine();
+                                        }
                                         if (selectionC3 == 'Y') {
                                             genderValid = true;
                                             passenger.setGender('M');
@@ -598,6 +610,7 @@ public class Passenger extends Person {
                                     }
                                     catch (Exception ex){
                                         System.out.println("Cannot leave it blank.");
+                                        selectionC = ' ';
                                         sc.nextLine();
                                     }
                                     
@@ -718,6 +731,7 @@ public class Passenger extends Person {
                                         selectionC = toUpperCase(selectionC); 
                                     }
                                     catch (Exception ex){
+                                        selectionC = ' ';
                                         sc.nextLine();
                                     }
                                     
@@ -740,6 +754,7 @@ public class Passenger extends Person {
                                                 }
                                                 catch (Exception ex){
                                                     System.out.println("Cannot leave it blank.");
+                                                    selectionC2 = ' ';
                                                     sc.nextLine();
                                                 }
                                                 
@@ -756,6 +771,7 @@ public class Passenger extends Person {
                                                     do {
                                                         try {
                                                             System.out.println("The total price is RM " + String.format("%.2f", price));
+                                                            System.out.println("Maximum input amount: RM 500.00");
                                                             System.out.print("Enter input amount: RM ");
                                                             inputAmount = sc.nextDouble();
                                                         } catch (Exception ex) {
@@ -764,7 +780,10 @@ public class Passenger extends Person {
                                                         }
                                                         if (inputAmount < price) {
                                                             System.out.println("The input amount is less than the price. Please enter again.");
-                                                        } else {
+                                                        } else if (inputAmount > 500){
+                                                            System.out.println("The input amount is too large. Please enter again.");
+                                                        }
+                                                        else {
                                                             changes = inputAmount - price;
                                                             System.out.println("Changes: RM" + String.format("%.2f", changes));
                                                             System.out.print("\nYour passenger tier has been successfully upgraded to ");
@@ -778,7 +797,7 @@ public class Passenger extends Person {
                                                                 PassengerMain.updatePassengerFile(passengerList);
                                                             }
                                                         }
-                                                    } while (inputAmount < price);
+                                                    } while (inputAmount < price || inputAmount > 500);
 
                                                 } else if (selectionC2 == 'N') {
                                                     System.out.println("You select not to upgrade the tier.\n");
@@ -805,6 +824,7 @@ public class Passenger extends Person {
                                         selectionC = toUpperCase(selectionC);
                                     }
                                     catch (Exception ex){
+                                        selectionC = ' ';
                                         sc.nextLine();
                                     }
                                     
@@ -826,6 +846,7 @@ public class Passenger extends Person {
                                                 }
                                                 catch (Exception ex){
                                                     System.out.println("Cannot leave it blank.");
+                                                    selectionC2 = ' ';
                                                     sc.nextLine();
                                                 }
                                                 

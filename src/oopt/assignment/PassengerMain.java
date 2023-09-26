@@ -3,7 +3,6 @@ package oopt.assignment;
 import java.util.*;
 import java.io.*;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.*;
 
 public class PassengerMain {
