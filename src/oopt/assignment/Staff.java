@@ -73,6 +73,7 @@ public class Staff extends Person {
     }
 
     public boolean isNameValid(String name) {
+         ArrayList<Staff> staffList = readStaffFile();
         boolean isValidName = true;
 
         name = name.toUpperCase();
@@ -93,6 +94,7 @@ public class Staff extends Person {
     }
 
     public boolean isCNValid(String cn) {
+         ArrayList<Staff> staffList = readStaffFile();
         boolean isValid = true;
 
         if (cn.isEmpty()) {
@@ -125,6 +127,7 @@ public class Staff extends Person {
     }
 
     public boolean isICValid(String ic) {
+         ArrayList<Staff> staffList = readStaffFile();
         boolean isValid = true;
 
         if (ic.isEmpty()) {
@@ -153,6 +156,7 @@ public class Staff extends Person {
     }
 
     public boolean isIDValid(String ID) {
+         ArrayList<Staff> staffList = readStaffFile();
         ID = ID.toUpperCase();
 
         if (ID.length() != 4 || ID.trim().isEmpty() || ID.charAt(0) != 'S') {
@@ -176,6 +180,7 @@ public class Staff extends Person {
     }
 
     public boolean isPWValid(String password) {
+         ArrayList<Staff> staffList = readStaffFile();
         if (password.length() < 8) {
             return false;
         }
