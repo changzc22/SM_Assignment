@@ -10,7 +10,6 @@ public class Passenger extends Person {
     private char gender;
     private LocalDate dateJoined;
     private char passengerTier;
-
     //Constructor
     public Passenger() {
 

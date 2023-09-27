@@ -11,7 +11,6 @@ import java.time.format.DateTimeFormatter;
 import static java.time.temporal.TemporalQueries.localDate;
 import static java.time.temporal.TemporalQueries.localTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Scanner;
 
 public class Train {
@@ -19,8 +18,8 @@ public class Train {
     private ArrayList<Train> trainList = new ArrayList<>();
     private String trainID;
     private String destination;
-    private LocalDate depatureDate;
-    private LocalTime depatureTime;
+    private LocalDate departureDate;
+    private LocalTime departureTime;
     private int standardSeatQty;
     private int premiumSeatQty;
     private double standardSeatPrice;
@@ -34,8 +33,8 @@ public class Train {
     public Train(String trainID, String destination, LocalDate depatureDate, LocalTime depatureTime, int standardSeatQty, int premiumSeatQty, double standardSeatPrice, double premiumSeatPrice, boolean trainStatus) {
         this.trainID = trainID;
         this.destination = destination;
-        this.depatureDate = depatureDate;
-        this.depatureTime = depatureTime;
+        this.departureDate = depatureDate;
+        this.departureTime = depatureTime;
         this.standardSeatQty = standardSeatQty;
         this.premiumSeatQty = premiumSeatQty;
         this.standardSeatPrice = standardSeatPrice;
@@ -56,11 +55,11 @@ public class Train {
     }
 
     public LocalDate getDepartureDate() {
-        return depatureDate;
+        return departureDate;
     }
 
     public LocalTime getDepartureTime() {
-        return depatureTime;
+        return departureTime;
     }
 
     public int getStandardSeatQty() {
@@ -97,11 +96,11 @@ public class Train {
     }
 
     public void setDepatureDate(LocalDate depatureDate) {
-        this.depatureDate = depatureDate;
+        this.departureDate = depatureDate;
     }
 
     public void setDepatureTime(LocalTime depatureTime) {
-        this.depatureTime = depatureTime;
+        this.departureTime = depatureTime;
     }
 
     public void setStandardSeatQty(int standardSeatQty) {
@@ -127,8 +126,8 @@ public class Train {
     public String toString() {
         return "Train ID                : " + trainID
                 + "\nDestination             : " + destination
-                + "\nDeparture Date          : " + depatureDate
-                + "\nDeparture Time          : " + depatureTime
+                + "\nDeparture Date          : " + departureDate
+                + "\nDeparture Time          : " + departureTime
                 + "\nStandard Seat Quantity  : " + standardSeatQty
                 + "\nPremium Seat Quantity   : " + premiumSeatQty
                 + "\nStandard Seat Price     : RM " + standardSeatPrice
@@ -982,7 +981,7 @@ public class Train {
         
         for (Train a : trainList){
             System.out.printf("|| %4s     || || %-15s || || %10s  || ||   %5s   || || %4d Seats    || || RM %8.2f   || || %4d Seats   || || RM %8.2f  || || %-12s ||\n"
-                    , a.trainID, a.destination, a.depatureDate, a.depatureTime, a.standardSeatQty, a.standardSeatPrice, a.premiumSeatQty, a.premiumSeatPrice, a.trainStatus ? "Active" : "Discontinued");
+                    , a.trainID, a.destination, a.departureDate, a.departureTime, a.standardSeatQty, a.standardSeatPrice, a.premiumSeatQty, a.premiumSeatPrice, a.trainStatus ? "Active" : "Discontinued");
         }
         System.out.println(   "=======================================================================================================================================================================");
         OoptAssignment.systemPause();
