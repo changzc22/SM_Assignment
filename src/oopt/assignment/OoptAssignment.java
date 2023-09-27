@@ -17,10 +17,8 @@ public class OoptAssignment {
 
         do {
             OoptAssignment.clearScreen();
-            
             etsLogo();
             loginStaffID = Staff.loginStaff();
-
             
             do {
                 

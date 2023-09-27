@@ -30,11 +30,11 @@ public class Train {
     public Train() {
     }
 
-    public Train(String trainID, String destination, LocalDate depatureDate, LocalTime depatureTime, int standardSeatQty, int premiumSeatQty, double standardSeatPrice, double premiumSeatPrice, boolean trainStatus) {
+    public Train(String trainID, String destination, LocalDate departureDate, LocalTime departureTime, int standardSeatQty, int premiumSeatQty, double standardSeatPrice, double premiumSeatPrice, boolean trainStatus) {
         this.trainID = trainID;
         this.destination = destination;
-        this.departureDate = depatureDate;
-        this.departureTime = depatureTime;
+        this.departureDate = departureDate;
+        this.departureTime = departureTime;
         this.standardSeatQty = standardSeatQty;
         this.premiumSeatQty = premiumSeatQty;
         this.standardSeatPrice = standardSeatPrice;
@@ -95,12 +95,12 @@ public class Train {
         this.destination = destination;
     }
 
-    public void setDepatureDate(LocalDate depatureDate) {
-        this.departureDate = depatureDate;
+    public void setDepartureDate(LocalDate departureDate) {
+        this.departureDate = departureDate;
     }
 
-    public void setDepatureTime(LocalTime depatureTime) {
-        this.departureTime = depatureTime;
+    public void setDepartureTime(LocalTime departureTime) {
+        this.departureTime = departureTime;
     }
 
     public void setStandardSeatQty(int standardSeatQty) {
