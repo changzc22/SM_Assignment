@@ -1,58 +1,27 @@
 package oopt.assignment;
 
-import java.util.*;
-import java.io.*;
+import oopt.assignment.model.StaffRepository;
+import oopt.assignment.service.StaffService;
+import oopt.assignment.ui.StaffUI;
 
 public class StaffMain {
 
-
+    /**
+     * Entry point for the Staff Management module.
+     * Sets up the necessary layers and starts the Staff UI.
+     * @param staffID The ID of the staff member who is logged in.
+     */
     public static void staffMain(String staffID) {
+        // 1. Create Repository (Data Layer)
+        StaffRepository repo = new StaffRepository();
 
-        Staff staff = new Staff();
-        ArrayList<Staff> staffList = staff.getStaffList();
+        // 2. Create Service (Business Layer) - Injects Repository
+        StaffService service = new StaffService(repo);
 
-        Scanner sc = new Scanner(System.in);
-        boolean exit = false;
-        
+        // 3. Create UI (Presentation Layer) - Injects Service
+        StaffUI ui = new StaffUI(service);
 
-        do {
-            System.out.println("  SSS  TTTTT AAAAA  FFFFF  FFFFF ");
-            System.out.println(" S       T   A   A  F      F     ");
-            System.out.println("  SSS    T   AAAAA  FFFF   FFFF  ");
-            System.out.println("     S   T   A   A  F      F     ");
-            System.out.println(" SSSS    T   A   A  F      F     ");
-            System.out.println("|=======================================|");
-            System.out.println("|     Staff Information Module          |");
-            System.out.println("|=======================================|");
-            System.out.println("|  1. Add new Staff                     |");
-            System.out.println("|  2. Edit information                  |");
-            System.out.println("|  3. Delete staff                      |");
-            System.out.println("|  4. Display staff                     |");
-            System.out.println("|  5. Search staff                      |");
-            System.out.println("|  6. Exit to main menu                 |");
-            System.out.println("|=======================================|");
-            System.out.print("Enter your choice: ");
-            String choice = sc.nextLine();
-            System.out.println();
-            if (choice.equals("1")) {
-                staff.createStaff();
-            } else if (choice.equals("2")) {
-                staff.modifyStaff();
-            } else if (choice.equals("3")) {
-                staff.deleteStaff(staffID);
-            } else if (choice.equals("4")) {
-                staff.displayPerson();
-            } else if (choice.equals("5")) {
-                staff.searchPerson();
-            } else if (choice.equals("6")) {
-                exit = true;
-            } else {
-                System.out.println("Invalid number. Please type again.");
-                System.out.println();
-            }
-
-        } while (!exit);
-
+        // 4. Start Staff UI Application
+        ui.start(staffID);
     }
-
 }

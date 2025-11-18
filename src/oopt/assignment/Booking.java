@@ -4,6 +4,8 @@ import java.util.*;
 import java.util.regex.*;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import oopt.assignment.model.Staff;
+import oopt.assignment.service.StaffService;
 
 public class Booking {
 
@@ -99,7 +101,7 @@ public class Booking {
 
     public static void addBooking(String staffID) {
         OoptAssignment.clearScreen();
-        ArrayList<Staff> s = Staff.readStaffFile();
+        ArrayList<Staff> s = StaffService.getAllStaffStatic();
         ArrayList<Booking> b = BookingMain.readBookingFile();
         ArrayList<Train> t = TrainMain.readTrainFile();
         ArrayList<Passenger> p = PassengerMain.readPassengerFile();
@@ -310,9 +312,8 @@ public class Booking {
             b.add(newBooking);
             TrainMain.writeTrainFile(t);
             BookingMain.writeBookingFile(b);
-            s = Staff.updateNo(s, staffID);
-            System.out.println(newBooking.toString());
-
+            StaffService.incrementBookingHandleStatic(staffID);
+            System.out.println(newBooking);
         }
     }
 

@@ -4,7 +4,9 @@ import java.awt.AWTException;
 import java.awt.Robot;
 import java.awt.event.KeyEvent;
 import java.util.*;
-import java.time.*;
+import oopt.assignment.model.StaffRepository;
+import oopt.assignment.service.StaffService;
+import oopt.assignment.ui.StaffUI;
 
 public class OoptAssignment {
 
@@ -15,17 +17,27 @@ public class OoptAssignment {
         int opt = 0;
         String loginStaffID;
 
+        // --- Setup Staff Layers for Login ---
+        // The login process needs the service layer, so we instantiate it here.
+        StaffRepository staffRepo = new StaffRepository();
+        StaffService staffService = new StaffService(staffRepo);
+        // --- End Setup ---
+
         do {
             OoptAssignment.clearScreen();
             etsLogo();
-            loginStaffID = Staff.loginStaff();
-            
+
+            // --- Updated Login Call ---
+            // Call the static handleLogin method from StaffUI
+            loginStaffID = StaffUI.handleLogin(staffService);
+            // --- End Updated Login Call ---
+
             do {
-                
+
                 OoptAssignment.clearScreen();
                 etsLogo();
                 mainMenu();
-                
+
                 isValid = false;
                 cont = true;
                 do {
@@ -47,15 +59,15 @@ public class OoptAssignment {
 
                 switch (opt) {
                     case 1 ->
-                        StaffMain.staffMain(loginStaffID);
+                            StaffMain.staffMain(loginStaffID);
                     case 2 ->
-                        PassengerMain.passengerMain();
+                            PassengerMain.passengerMain(); // Assuming this class exists
                     case 3 ->
-                        BookingMain.bookingMain(loginStaffID);
+                            BookingMain.bookingMain(loginStaffID); // Assuming this class exists
                     case 4 ->
-                        TrainMain.trainMain();
+                            TrainMain.trainMain(); // Assuming this class exists
                     default ->
-                        cont = false;
+                            cont = false;
                 }
 
             } while (cont);
@@ -78,10 +90,10 @@ public class OoptAssignment {
         System.out.println("           E l e c t r i c   T r a i n   S e r v i c e\n");
 
     }
-    
+
     public static void mainMenu(){
         System.out.println("               =========================================");
-        System.out.println("               |            **Modules Menu**           |");
+        System.out.println("               |            **Modules Menu** |");
         System.out.println("               =========================================");
         System.out.println("               |  1) Staff                             |");
         System.out.println("               |  2) Passenger                         |");
@@ -91,16 +103,16 @@ public class OoptAssignment {
         System.out.println("               =========================================");
 
     }
-    
+
     public static void systemPause() {
         System.out.print("Press any key to continue...");
         try {
             System.in.read();
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Error system pause: " + e.getMessage());
         }
     }
-    
+
     public static void clearScreen() {
         try {
             Robot rob = new Robot();
@@ -111,10 +123,10 @@ public class OoptAssignment {
                 rob.keyRelease(KeyEvent.VK_CONTROL); // unpress "CTRL"
                 Thread.sleep(10); // add delay in milisecond, if not there will automatically stop after clear
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                System.err.println("Error clear screen: " + e.getMessage());
             }
         } catch (AWTException e) {
-            e.printStackTrace();
+            System.err.println("Error clear screen: " + e.getMessage());
         }
     }
 
