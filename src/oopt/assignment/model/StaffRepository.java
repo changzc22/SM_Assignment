@@ -9,8 +9,8 @@ public class StaffRepository implements IStaffRepository {
     private static final String STAFF_FILE_PATH = "StaffFile.txt";
 
     /**
-     *
-     * @return a list of
+     * Reads the file and returns a Map of Staff objects.
+     * Uses LinkedHashMap to preserve the insertion order of the file.
      */
     @Override
     public LinkedHashMap<String, Staff> getAll() {
@@ -37,6 +37,9 @@ public class StaffRepository implements IStaffRepository {
         return staffMap;
     }
 
+    /**
+     * Overwrites the file with the current list of staff.
+     */
     @Override
     public void saveAll(Collection<Staff> staffList) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(STAFF_FILE_PATH, false))) {
@@ -59,6 +62,9 @@ public class StaffRepository implements IStaffRepository {
         }
     }
 
+    /**
+     * Parses a pipe-separated string into a Staff object.
+     */
     private Staff parseLineToStaff(String line) {
         try {
             String[] fields = line.split("\\|");
