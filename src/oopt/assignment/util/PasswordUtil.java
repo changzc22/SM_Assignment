@@ -15,25 +15,22 @@ public class PasswordUtil {
     public static String hashPassword(String plainPassword) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] encodedhash = digest.digest(
-                    plainPassword.getBytes(StandardCharsets.UTF_8));
+            byte[] encodedhash = digest.digest(plainPassword.getBytes(StandardCharsets.UTF_8));
             return bytesToHex(encodedhash);
         } catch (NoSuchAlgorithmException e) {
-            System.err.println("SHA-256 algorithm not found. This should not happen.");
-            // In a real app, you might want to throw a RuntimeException
-            return null;
+            throw new RuntimeException("Critical Error: SHA-256 algorithm not found.", e);
         }
     }
 
     /**
      * Checks if a plain-text password matches a stored hash.
      * @param plainPassword The password entered by the user.
-     * @param hashedPassword The hash stored in the file.
+     * @param storedHash The hash stored in the file.
      * @return true if the passwords match, false otherwise.
      */
-    public static boolean checkPassword(String plainPassword, String hashedPassword) {
+    public static boolean checkPassword(String plainPassword, String storedHash) {
         String newHash = hashPassword(plainPassword);
-        return newHash != null && newHash.equals(hashedPassword);
+        return newHash.equals(storedHash);
     }
 
     /**
@@ -43,9 +40,7 @@ public class PasswordUtil {
         StringBuilder hexString = new StringBuilder(2 * hash.length);
         for (byte b : hash) {
             String hex = Integer.toHexString(0xff & b);
-            if (hex.length() == 1) {
-                hexString.append('0');
-            }
+            if (hex.length() == 1) hexString.append('0');
             hexString.append(hex);
         }
         return hexString.toString();

@@ -4,8 +4,12 @@ import oopt.assignment.model.Staff;
 import oopt.assignment.service.StaffService;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.function.Predicate;
 
-// This class handles all console input and output for the Staff module.
+/**
+ * Handles all console interactions for Staff Management.
+ * Delegates business logic to StaffService.
+ */
 public class StaffUI {
 
     private final StaffService staffService;
@@ -17,400 +21,217 @@ public class StaffUI {
     }
 
     /**
-     * Static method to handle the initial staff login.
-     * Called from OoptAssignment (main app).
+     * A generic helper method to handle user input loops.
+     * This implements the DRY (Don't Repeat Yourself) principle by centralizing
+     * the "Ask -> Validate -> Retry" logic used across multiple methods.
+     *
+     * @param message   The prompt to display to the user.
+     * @param errorMsg  The error message if validation fails.
+     * @param validator A functional interface (lambda) that defines valid input rules.
+     * @return The valid string input from the user, or null if they chose to exit.
      */
-    public static String handleLogin(StaffService service) {
-        Scanner staticScanner = new Scanner(System.in);
-        String id;
+    // --- Helper for DRY Input ---
+    private String promptForInput(String message, String errorMsg, Predicate<String> validator) {
+        String input;
+        do {
+            System.out.print(message + " (X to exit): ");
+            input = scanner.nextLine().trim();
+            if (input.equalsIgnoreCase("X")) return null;
+
+            if (!validator.test(input)) {
+                System.out.println(errorMsg);
+            } else {
+                return input.toUpperCase();
+            }
+        } while (true);
+    }
+
+    /**
+     * Main entry point for the Staff Management UI.
+     * Loops until the user chooses to return to the main menu.
+     * @param loggedInStaffId Used to prevent the user from deleting themselves.
+     */
+    public void start(String loggedInStaffId) {
         while (true) {
-            System.out.print("Enter your staff ID [X to Exit]:");
-            id = staticScanner.nextLine().toUpperCase();
-            if (id.equals("X")) {
-                System.out.println("Thank you and have a nice day.");
-                System.exit(0);
+            StaffMenuOption option = getMenuSelection();
+            if (option == null) {
+                System.out.println("Invalid choice. Please try again.");
+                continue;
             }
 
-            System.out.print("Enter your password [Z - forget password] [X to Exit]:");
-            String pw = staticScanner.nextLine();
-
-            if (pw.equals("X")) {
-                System.out.println("Thank you and have a nice day.");
-                System.exit(0);
-            } else if (pw.equals("Z") || pw.equals("z")) {
-                handleForgotPassword(service, staticScanner);
-            } else {
-                // --- UPDATED LOGIC FOR LOGIN AND LOCKOUT ---
-                try {
-                    Staff staff = service.loginStaff(id, pw);
-                    if (staff != null) {
-                        System.out.println("Welcome " + staff.getName() + "\n");
-                        System.out.print("Press 'Enter' key to continue ...");
-                        staticScanner.nextLine();
-                        return id; // Login successful
-                    } else {
-                        System.out.println("Invalid Staff ID/Password");
-                    }
-                } catch (RuntimeException e) {
-                    // Catch the specific error message thrown by the service when account is locked
-                    System.out.println("Login Failed: " + e.getMessage());
-                }
-                // -------------------------------------------
+            switch (option) {
+                case CREATE -> handleCreateStaff();
+                case MODIFY -> handleModifyStaff();
+                case DELETE -> handleDeleteStaff(loggedInStaffId);
+                case DISPLAY_ALL -> handleDisplayAllStaff();
+                case SEARCH -> handleSearchStaff();
+                case RETURN -> { return; } // Exit the method
             }
         }
     }
 
     /**
-     * Static method to handle the "forgot password" process during login.
+     * Displays the menu options and parses the user's integer choice.
      */
-    private static void handleForgotPassword(StaffService service, Scanner scanner) {
-        while (true) {
-            System.out.print("Enter your staff ID to change password (X to return):");
-            String id = scanner.nextLine().toUpperCase();
-            if (id.equals("X")) {
-                return;
-            }
-
-            Staff staff = service.getStaffById(id);
-            if (staff == null) {
-                System.out.println("Staff ID not Found!");
-                continue;
-            }
-
-            System.out.print("Enter your IC (X to return):");
-            String ic = scanner.nextLine();
-            if (ic.equals("X")) {
-                return;
-            }
-
-            // Note: We can keep this check for User Experience (immediate feedback),
-            // but the actual security check is now handled inside changePassword().
-            if (!staff.getIc().equals(ic)) {
-                System.out.println("Invalid IC");
-                continue;
-            }
-
-            System.out.println("IC correct!");
-            String newPw;
-            boolean pwValid;
-            do {
-                System.out.print("Enter your new password here (Password must be >=8 characters with at least 1 alphabet/symbol):");
-                newPw = scanner.nextLine();
-                pwValid = service.isPWValid(newPw);
-
-                if (pwValid) {
-                    // --- UPDATED: Utilizing changePassword() ---
-                    // We pass ID, IC, and New Password. The Service layer verifies them and updates.
-                    boolean success = service.changePassword(id, ic, newPw);
-
-                    if (success) {
-                        System.out.println("Password updated successfully.");
-                        return; // Success
-                    } else {
-                        // This happens if the ID/IC check failed inside the service
-                        System.out.println("Error: Verification failed. Password not updated.");
-                    }
-                } else {
-                    System.out.println("Invalid Password.");
-                }
-            } while (!pwValid);
-        }
-    }
-
-    public void start(String loggedInStaffId) {
-        boolean exitStaffMenu = false;
-        while (!exitStaffMenu) {
-            showStaffMenu();
-            int choice = getMenuChoice();
-            switch (choice) {
-                case 1:
-                    handleCreateStaff();
-                    break;
-                case 2:
-                    handleModifyStaff();
-                    break;
-                case 3:
-                    handleDeleteStaff(loggedInStaffId);
-                    break;
-                case 4:
-                    handleDisplayAllStaff();
-                    break;
-                case 5:
-                    handleSearchStaff();
-                    break;
-                case 6:
-                    exitStaffMenu = true;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please enter a number between 1 and 6.");
-            }
-        }
-    }
-
-    private void showStaffMenu() {
+    private StaffMenuOption getMenuSelection() {
         System.out.println("\n--- Staff Management Menu ---");
-        System.out.println("1. Create New Staff");
-        System.out.println("2. Modify Staff Details");
-        System.out.println("3. Delete Staff");
-        System.out.println("4. Display All Staff");
-        System.out.println("5. Search for Staff");
-        System.out.println("6. Return to Main Menu");
+        for (StaffMenuOption opt : StaffMenuOption.values()) {
+            System.out.println(opt.getId() + ". " + opt.getDescription());
+        }
         System.out.print("Your choice: ");
-    }
 
-    private int getMenuChoice() {
         try {
-            String input = scanner.nextLine();
-            return Integer.parseInt(input);
+            int choice = Integer.parseInt(scanner.nextLine());
+            return StaffMenuOption.fromId(choice);
         } catch (NumberFormatException e) {
-            return -1; // Invalid choice
+            return null;
         }
     }
 
+    /**
+     * Orchestrates the creation of a new staff member.
+     * Uses promptForInput to ensure all data is valid before calling the Service.
+     */
     private void handleCreateStaff() {
         System.out.println("\n--- Create New Staff ---");
-        String name, cn, ic, id, pw;
 
-        do {
-            System.out.print("Enter the staff name (X to exit): ");
-            name = scanner.nextLine().toUpperCase();
-            if (name.equals("X")) return;
-            if (!staffService.isNameValid(name)) {
-                System.out.println("Invalid name! Please try again.");
-            }
-        } while (!staffService.isNameValid(name));
+        String name = promptForInput("Enter Name", "Invalid Name", staffService::isNameValid);
+        if (name == null) return;
 
-        do {
-            System.out.print("Enter your contact number (X to exit): ");
-            cn = scanner.nextLine();
-            if (cn.equalsIgnoreCase("X")) return;
-            if (!staffService.isCNValid(cn)) {
-                System.out.println("Invalid/duplicate contact number! Please try again.");
-            }
-        } while (!staffService.isCNValid(cn));
+        String cn = promptForInput("Enter Contact No", "Invalid/Duplicate Contact", staffService::isCNValid);
+        if (cn == null) return;
 
-        do {
-            System.out.print("Enter your IC number (X to exit/without -): ");
-            ic = scanner.nextLine();
-            if (ic.equalsIgnoreCase("X")) return;
-            if (!staffService.isICValid(ic)) {
-                System.out.println("Invalid/duplicate IC number! Please try again.");
-            }
-        } while (!staffService.isICValid(ic));
+        String ic = promptForInput("Enter IC (no dashes)", "Invalid/Duplicate IC", staffService::isICValid);
+        if (ic == null) return;
 
-        do {
-            System.out.print("Enter your ID (S001 format/X to exit): ");
-            id = scanner.nextLine().toUpperCase();
-            if (id.equals("X")) return;
-            if (!staffService.isIDValid(id)) {
-                System.out.println("Invalid/duplicate Staff ID! Please try again.");
-            }
-        } while (!staffService.isIDValid(id));
+        String id = promptForInput("Enter ID (e.g., S001)", "Invalid/Duplicate ID", staffService::isIDValid);
+        if (id == null) return;
 
-        do {
-            System.out.print("Please set your password (Password must be >=8 characters with at least 1 alphabet/symbol)/(X to exit): ");
-            pw = scanner.nextLine();
-            if (pw.equalsIgnoreCase("X")) return;
-            if (!staffService.isPWValid(pw)) {
-                System.out.println("Invalid password! Please try again.");
-            }
-        } while (!staffService.isPWValid(pw));
+        String pw = promptForInput("Set Password", "Weak Password", staffService::isPWValid);
+        if (pw == null) return;
 
         staffService.createStaff(name, cn, ic, id, pw);
-        System.out.print("Staff added! Press 'enter' key to exit to staff menu....");
-        scanner.nextLine();
+        System.out.println("Staff created successfully!");
     }
 
+    /**
+     * Handles the modification of existing staff details.
+     * Uses ModifyStaffOption Enum to handle sub-menu selection.
+     */
     private void handleModifyStaff() {
         System.out.println("\n--- Modify Staff Details ---");
-        while (true) {
-            System.out.print("Enter staff ID (X to return): ");
-            String id = scanner.nextLine().toUpperCase();
-            if (id.equals("X")) return;
+        System.out.print("Enter Staff ID to modify (X to return): ");
+        String id = scanner.nextLine().toUpperCase();
+        if (id.equals("X")) return;
 
-            Staff staff = staffService.getStaffById(id);
-            if (staff == null) {
-                System.out.println("Invalid staff ID!");
-                continue;
-            }
-
-            System.out.print("""
-                    Enter the option that you want to modify\s
-                    A)Name B)Contact Number C)IC Number D)Password E)Exit
-                    Your choice:\s""");
-            String choice = scanner.nextLine().toUpperCase();
-
-            switch (choice) {
-                case "A":
-                    modifyStaffName(id);
-                    return;
-                case "B":
-                    modifyStaffContact(id);
-                    return;
-                case "C":
-                    modifyStaffIC(id);
-                    return;
-                case "D":
-                    modifyStaffPassword(id);
-                    return;
-                case "E":
-                    return;
-                default:
-                    System.out.println("Invalid input!");
-            }
-        }
-    }
-
-    private void modifyStaffName(String id) {
-        String name;
-        do {
-            System.out.print("Update staff name (X to exit): ");
-            name = scanner.nextLine().toUpperCase();
-            if (name.equals("X")) return;
-            if (!staffService.isNameValid(name)) {
-                System.out.println("Invalid name! Please try again.");
-            }
-        } while (!staffService.isNameValid(name));
-        staffService.updateStaffName(id, name);
-        System.out.println("Name updated successfully.");
-    }
-
-    private void modifyStaffContact(String id) {
-        String cn;
-        do {
-            System.out.print("Modify your contact number (X to exit): ");
-            cn = scanner.nextLine();
-            if (cn.equalsIgnoreCase("X")) return;
-            if (!staffService.isCNValid(cn)) {
-                System.out.println("Invalid/duplicate contact number! Please try again.");
-            }
-        } while (!staffService.isCNValid(cn));
-        staffService.updateStaffContact(id, cn);
-        System.out.println("Contact number updated successfully.");
-    }
-
-    private void modifyStaffIC(String id) {
-        String ic;
-        do {
-            System.out.print("Update IC number (X to exit/without -): ");
-            ic = scanner.nextLine();
-            if (ic.equalsIgnoreCase("X")) return;
-            if (!staffService.isICValid(ic)) {
-                System.out.println("Invalid/duplicate IC number! Please try again.");
-            }
-        } while (!staffService.isICValid(ic));
-        staffService.updateStaffIC(id, ic);
-        System.out.println("IC number updated successfully.");
-    }
-
-    private void modifyStaffPassword(String id) {
-        String pw;
-        do {
-            System.out.print("Please set password (Password must be >=8 characters with at least 1 alphabet/symbol) (X to exit): ");
-            pw = scanner.nextLine();
-            if (pw.equalsIgnoreCase("X")) return;
-            if (!staffService.isPWValid(pw)) {
-                System.out.println("Invalid password! Please try again.");
-            }
-        } while (!staffService.isPWValid(pw));
-        staffService.updateStaffPassword(id, pw);
-        System.out.println("Password updated successfully.");
-    }
-
-
-    private void handleDeleteStaff(String loggedInStaffId) {
-        System.out.println("\n--- Delete Staff ---");
-        System.out.println("Mention: You are not allowed to delete yourself!");
-        ArrayList<Staff> staffList = staffService.getAllStaff();
-
-        if (staffList.isEmpty()) {
-            System.out.println("No staff members to delete.");
-            System.out.print("Press 'Enter' key to exit to staff menu....");
-            scanner.nextLine();
+        Staff staff = staffService.getStaffById(id);
+        if (staff == null) {
+            System.out.println("Staff not found.");
             return;
         }
 
-        while (true) {
-            System.out.print("Please type the Staff ID to remove staff (Press X to exit):");
-            String idToDelete = scanner.nextLine().toUpperCase();
-            if (idToDelete.equals("X")) return;
+        // Display Modify Options
+        System.out.println("Select option to modify:");
+        for (ModifyStaffOption opt : ModifyStaffOption.values()) {
+            System.out.println(opt.getCode() + ") " + opt.getDescription());
+        }
+        System.out.print("Your choice: ");
 
-            if (idToDelete.equals(loggedInStaffId)) {
-                System.out.println("You cannot delete yourself! Please try again.");
-                continue;
+        String input = scanner.nextLine();
+        ModifyStaffOption choice = ModifyStaffOption.fromCode(input);
+
+        if (choice == null) {
+            System.out.println("Invalid option.");
+            return;
+        }
+
+        String newValue;
+        switch (choice) {
+            case NAME -> {
+                newValue = promptForInput("New Name", "Invalid Name", staffService::isNameValid);
+                if (newValue != null) staffService.updateStaffField(id, "NAME", newValue);
             }
-
-            Staff staff = staffService.getStaffById(idToDelete);
-            if (staff == null) {
-                System.out.println("Staff ID not found, please try again.");
-                continue;
+            case CONTACT -> {
+                newValue = promptForInput("New Contact", "Invalid Contact", staffService::isCNValid);
+                if (newValue != null) staffService.updateStaffField(id, "CONTACT", newValue);
             }
-
-            System.out.println(staff + "\n");
-            System.out.print("Do you sure you want to delete this Staff?(Y/N):");
-            String confirm = scanner.nextLine().toUpperCase();
-
-            if (confirm.equals("Y")) {
-                if (staffService.deleteStaff(idToDelete, loggedInStaffId)) {
-                    System.out.println("Staff deleted.");
-                } else {
-                    System.out.println("Error deleting staff (maybe you tried to delete yourself).");
-                }
-                return;
-            } else if (confirm.equals("N")) {
-                System.out.println("Deletion canceled.");
-                return;
-            } else {
-                System.out.println("Invalid input! Please enter 'Y' or 'N'.");
+            case IC -> {
+                newValue = promptForInput("New IC", "Invalid IC", staffService::isICValid);
+                if (newValue != null) staffService.updateStaffField(id, "IC", newValue);
             }
+            case PASSWORD -> {
+                newValue = promptForInput("New Password", "Weak Password", staffService::isPWValid);
+                if (newValue != null) staffService.updateStaffField(id, "PASSWORD", newValue);
+            }
+        }
+        System.out.println(choice.getDescription() + " updated successfully.");
+    }
+
+    /**
+     * Removes a staff member, ensuring the current user cannot delete themselves.
+     */
+    private void handleDeleteStaff(String loggedInStaffId) {
+        System.out.print("Enter Staff ID to delete (X to exit): ");
+        String id = scanner.nextLine().toUpperCase();
+        if (id.equals("X")) return;
+
+        if (staffService.deleteStaff(id, loggedInStaffId)) {
+            System.out.println("Staff deleted.");
+        } else {
+            System.out.println("Deletion failed (Staff not found or you tried to delete yourself).");
         }
     }
 
-    // --- UPDATED TABLE DISPLAY METHOD ---
+    /**
+     * Displays a formatted table of all staff members.
+     */
     private void handleDisplayAllStaff() {
-        System.out.println("\n--- List of Staff Members ---");
-        ArrayList<Staff> staffList = staffService.getAllStaff();
-
-        if (staffList.isEmpty()) {
-            System.out.println("No staff members to display.");
-        } else {
-            // Print Table Header
-            System.out.println("-------------------------------------------------------------------------------------------------------");
-            System.out.printf("| %-10s | %-30s | %-15s | %-15s | %-17s |\n",
-                    "ID", "Name", "Contact No", "IC Number", "Bookings Handled");
-            System.out.println("-------------------------------------------------------------------------------------------------------");
-
-            // Print Table Rows
-            for (Staff s : staffList) {
-                System.out.printf("| %-10s | %-30s | %-15s | %-15s | %-17d |\n",
-                        s.getId(),
-                        s.getName(),
-                        s.getContactNo(),
-                        s.getIc(),
-                        s.getNoOfBookingHandle());
-            }
-            System.out.println("-------------------------------------------------------------------------------------------------------");
+        ArrayList<Staff> list = staffService.getAllStaff();
+        if (list.isEmpty()) {
+            System.out.println("No records found.");
+            return;
         }
-        System.out.print("Press 'Enter' to exit to staff menu....");
+        System.out.println("-----------------------------------------------------------------");
+        System.out.printf("| %-10s | %-30s | %-15s |\n", "ID", "Name", "Bookings");
+        for (Staff s : list) {
+            System.out.printf("| %-10s | %-30s | %-15d |\n", s.getId(), s.getName(), s.getNoOfBookingHandle());
+        }
+        System.out.println("-----------------------------------------------------------------");
+        System.out.println("Press Enter to continue...");
         scanner.nextLine();
     }
-    // ------------------------------------
 
+    /**
+     * Searches for a specific staff member by ID and prints their details.
+     */
     private void handleSearchStaff() {
-        System.out.println("\n--- Search for Staff ---");
-        while (true) {
-            System.out.print("Enter the staff ID that you want to search (X to exit):");
-            String id = scanner.nextLine().toUpperCase();
-            if (id.equals("X")) return;
+        System.out.print("Enter ID to search: ");
+        String id = scanner.nextLine().toUpperCase();
+        Staff s = staffService.getStaffById(id);
+        if (s != null) System.out.println(s);
+        else System.out.println("Not found.");
+    }
 
-            Staff staff = staffService.getStaffById(id);
-            if (staff != null) {
-                System.out.println("\n" + staff + "\n");
-                System.out.print("Press 'Enter' key to exit to staff menu....");
-                scanner.nextLine();
-                return;
-            } else {
-                System.out.println("Staff not found!");
+    /**
+     * Static method to handle initial application login.
+     * Catches security exceptions (e.g., Lockout) thrown by the Service.
+     */
+    public static String handleLogin(StaffService service) {
+        Scanner sc = new Scanner(System.in);
+        while (true) {
+            System.out.print("Staff ID (X to Exit): ");
+            String id = sc.nextLine().toUpperCase();
+            if (id.equals("X")) System.exit(0);
+
+            System.out.print("Password: ");
+            String pw = sc.nextLine();
+
+            try {
+                Staff staff = service.loginStaff(id, pw);
+                if (staff != null) return id;
+                System.out.println("Invalid ID or Password.");
+            } catch (RuntimeException e) {
+                System.out.println("Login Failed: " + e.getMessage());
             }
         }
     }

@@ -17,43 +17,22 @@ public abstract class Person {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
-    }
+    // Getters and Setters
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getContactNo() {
-        return contactNo;
-    }
+    public String getContactNo() { return contactNo; }
+    public void setContactNo(String contactNo) { this.contactNo = contactNo; }
 
-    public String getIc() {
-        return ic;
-    }
+    public String getIc() { return ic; }
+    public void setIc(String ic) { this.ic = ic; }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setContactNo(String contactNo) {
-        this.contactNo = contactNo;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setIc(String ic) {
-        this.ic = ic;
-    }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
     @Override
     public String toString() {
-        return "Name            : " + name
-                + "\nContact Number  : " + contactNo
-                + "\nIC Number       : " + ic
-                + "\nID              : " + id;
+        return String.format("Name            : %s\nContact Number  : %s\nIC Number       : %s\nID              : %s",
+                name, contactNo, ic, id);
     }
 }

@@ -1,30 +1,24 @@
 package oopt.assignment.model;
 
 import java.io.*;
-import java.util.LinkedHashMap;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 
-public class StaffRepository {
+public class StaffRepository implements IStaffRepository {
 
     private static final String STAFF_FILE_PATH = "StaffFile.txt";
 
     /**
-     * Reads staff records directly into a LinkedHashMap for fast access.
-     * Key: Staff ID, Value: Staff Object
+     *
+     * @return a list of
      */
-    public LinkedHashMap<String, Staff> readStaffFile() {
-        // We use LinkedHashMap to maintain the order from the file while allowing O(1) access
+    @Override
+    public LinkedHashMap<String, Staff> getAll() {
         LinkedHashMap<String, Staff> staffMap = new LinkedHashMap<>();
-
         File file = new File(STAFF_FILE_PATH);
 
         if (!file.exists()) {
-            System.out.println("Staff file not found, creating a new one: " + STAFF_FILE_PATH);
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                System.err.println("Error creating staff file: " + e.getMessage());
-            }
+            createNewFile(file);
             return staffMap;
         }
 
@@ -32,44 +26,50 @@ public class StaffRepository {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (line.trim().isEmpty()) continue;
-
-                String[] fields = line.split("\\|");
-                String name = fields[0];
-                String contactNo = fields[1];
-                String ic = fields[2];
-                String id = fields[3];
-                String password = fields[4];
-                int noOfBookingHandle = Integer.parseInt(fields[5]);
-
-                Staff staff = new Staff(name, contactNo, ic, id, password, noOfBookingHandle);
-                // Put directly into the map. Key is ID.
-                staffMap.put(staff.getId(), staff);
+                Staff staff = parseLineToStaff(line);
+                if (staff != null) {
+                    staffMap.put(staff.getId(), staff);
+                }
             }
-        } catch (IOException | NumberFormatException e) {
+        } catch (IOException e) {
             System.err.println("Error reading staff file: " + e.getMessage());
         }
         return staffMap;
     }
 
-    /**
-     * Writes a collection of staff records to the file.
-     * Changed to accept 'Collection' so it handles both Lists and Map Values.
-     */
-    public void updateStaffFile(Collection<Staff> staffList) {
-        try (FileWriter fileWriter = new FileWriter(STAFF_FILE_PATH, false);
-             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter)) {
-
+    @Override
+    public void saveAll(Collection<Staff> staffList) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(STAFF_FILE_PATH, false))) {
             for (Staff staff : staffList) {
-                bufferedWriter.write(staff.getName() + "|"
-                        + staff.getContactNo() + "|"
-                        + staff.getIc() + "|"
-                        + staff.getId() + "|"
-                        + staff.getPassword() + "|"
-                        + staff.getNoOfBookingHandle());
-                bufferedWriter.newLine();
+                writer.write(formatStaffForFile(staff));
+                writer.newLine();
             }
         } catch (IOException e) {
             System.err.println("Error writing to staff file: " + e.getMessage());
         }
+    }
+
+    // --- Private Helpers for Clean Code ---
+
+    private void createNewFile(File file) {
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            System.err.println("Error creating staff file: " + e.getMessage());
+        }
+    }
+
+    private Staff parseLineToStaff(String line) {
+        try {
+            String[] fields = line.split("\\|");
+            return new Staff(fields[0], fields[1], fields[2], fields[3], fields[4], Integer.parseInt(fields[5]));
+        } catch (Exception e) {
+            System.err.println("Skipping corrupted line: " + line);
+            return null;
+        }
+    }
+
+    private String formatStaffForFile(Staff s) {
+        return String.join("|", s.getName(), s.getContactNo(), s.getIc(), s.getId(), s.getPassword(), String.valueOf(s.getNoOfBookingHandle()));
     }
 }
