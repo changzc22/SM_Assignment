@@ -6,6 +6,7 @@ import java.time.*;
 import java.time.format.DateTimeFormatter;
 import oopt.assignment.model.Staff;
 import oopt.assignment.service.StaffService;
+import oopt.assignment.ui.MainUI;
 
 public class Booking {
 
@@ -100,7 +101,7 @@ public class Booking {
     }
 
     public static void addBooking(String staffID) {
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         ArrayList<Staff> s = StaffService.getAllStaffStatic();
         ArrayList<Booking> b = BookingMain.readBookingFile();
         ArrayList<Train> t = TrainMain.readTrainFile();
@@ -318,7 +319,7 @@ public class Booking {
     }
 
     public static void cancelBooking() {
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         ArrayList<Booking> bookingList = BookingMain.readBookingFile();
         ArrayList<Train> trainList = TrainMain.readTrainFile();
         Scanner input = new Scanner(System.in);
@@ -448,7 +449,7 @@ public class Booking {
     }
 
     public static void searchBooking() {
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         ArrayList<Booking> bookingList = BookingMain.readBookingFile();
 
         Scanner input = new Scanner(System.in).useDelimiter("\n");
@@ -536,7 +537,7 @@ public class Booking {
     }
 
     public static void displayBooking() {
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         ArrayList<Booking> bookingList = BookingMain.readBookingFile();
 
         System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------");
@@ -562,7 +563,7 @@ public class Booking {
     }
 
     public static void bookingReport() {
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         ArrayList<Booking> bookingList = BookingMain.readBookingFile();
         if (bookingList.isEmpty()) {
             System.out.println("Oops, the report cannot be generated due to insufficient Data.");

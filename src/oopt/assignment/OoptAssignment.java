@@ -1,133 +1,79 @@
 package oopt.assignment;
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
-import java.util.*;
 import oopt.assignment.model.StaffRepository;
 import oopt.assignment.service.StaffService;
+import oopt.assignment.ui.MainMenuOption;
+import oopt.assignment.ui.MainUI;
 import oopt.assignment.ui.StaffUI;
+import oopt.assignment.util.ErrorMessage; // Import the utility
+
+import java.util.Scanner;
 
 public class OoptAssignment {
 
     public static void main(String[] args) {
 
-        Scanner input = new Scanner(System.in);
-        boolean isValid = false, cont = true, exit = false;
-        int opt = 0;
-        String loginStaffID;
-
-        // --- Setup Staff Layers for Login ---
-        // The login process needs the service layer, so we instantiate it here.
         StaffRepository staffRepo = new StaffRepository();
         StaffService staffService = new StaffService(staffRepo);
-        // --- End Setup ---
+
+        boolean exitApp = false;
+        Scanner scanner = new Scanner(System.in);
 
         do {
-            OoptAssignment.clearScreen();
-            etsLogo();
+            MainUI.clearScreen();
+            MainUI.displayLogo();
 
-            // --- Updated Login Call ---
-            // Call the static handleLogin method from StaffUI
-            loginStaffID = StaffUI.handleLogin(staffService);
-            // --- End Updated Login Call ---
+            String loginStaffID = StaffUI.handleLogin(staffService);
 
+            boolean stayInMenu = true;
             do {
+                MainUI.clearScreen();
+                MainUI.displayLogo();
+                MainUI.displayMainMenu();
 
-                OoptAssignment.clearScreen();
-                etsLogo();
-                mainMenu();
+                MainMenuOption option = getSelection(scanner);
 
-                isValid = false;
-                cont = true;
-                do {
-                    try {
-                        System.out.print("Your selection > ");
-                        opt = input.nextInt();
-
-                        if (opt >= 1 && opt <= 5) {
-                            isValid = true;
-                        } else {
-                            System.out.println("Invalid input. You should only select between 1 and 5");
-                        }
-
-                    } catch (Exception e) {
-                        System.out.println("You should not enter other characters");
-                        input.nextLine();
-                    }
-                } while (!isValid);
-
-                switch (opt) {
-                    case 1 ->
-                            StaffMain.staffMain(loginStaffID);
-                    case 2 ->
-                            PassengerMain.passengerMain(); // Assuming this class exists
-                    case 3 ->
-                            BookingMain.bookingMain(loginStaffID); // Assuming this class exists
-                    case 4 ->
-                            TrainMain.trainMain(); // Assuming this class exists
-                    default ->
-                            cont = false;
+                if (option == null) {
+                    // CONSTANT : Generic invalid selection
+                    System.out.println(ErrorMessage.INVALID_MENU_SELECTION);
+                    MainUI.systemPause();
+                    continue;
                 }
 
-            } while (cont);
-        } while (!exit);
+                switch (option) {
+                    case STAFF -> StaffMain.staffMain(loginStaffID, staffService);
 
+                    case PASSENGER -> PassengerMain.passengerMain();
+
+                    case BOOKING -> BookingMain.bookingMain(loginStaffID);
+
+                    case TRAIN -> TrainMain.trainMain();
+
+                    case LOGOUT -> {
+                        System.out.println("Logging out...");
+                        stayInMenu = false;
+                    }
+                }
+
+            } while (stayInMenu);
+
+        } while (!exitApp);
     }
 
-    public static void etsLogo() {
-        System.out.println("                   /EEEEEE\\\\    TTTTTT\\\\    SSSSSSS\\\\");
-        System.out.println("                  //EEEEEEEE    TTTTTTTT    SSSSSSSS");
-        System.out.println("                 ///EE          TTTTTTTT    SS");
-        System.out.println("                0///EE            TTTT      SS");
-        System.out.println("               00///EEEEEEEE      TTTT      SSSSSSSSS");
-        System.out.println("              000///EEEEEEEE      TTTT       SSSSSSSSS");
-        System.out.println("             0000///EE            TTTT              SS");
-        System.out.println("            ////////EE            TTTT              SS");
-        System.out.println("           /////////EEEEEEEE      TTTT       SSSSSSSSS");
-        System.out.println("           \\\\///////EEEEEEEE      TTTT      SSSSSSSSS");
-        System.out.println("");
-        System.out.println("           E l e c t r i c   T r a i n   S e r v i c e\n");
-
-    }
-
-    public static void mainMenu(){
-        System.out.println("               =========================================");
-        System.out.println("               |            **Modules Menu**           |");
-        System.out.println("               =========================================");
-        System.out.println("               |  1) Staff                             |");
-        System.out.println("               |  2) Passenger                         |");
-        System.out.println("               |  3) Booking                           |");
-        System.out.println("               |  4) Train                             |");
-        System.out.println("               |  5) Log out                           |");
-        System.out.println("               =========================================");
-
-    }
-
-    public static void systemPause() {
-        System.out.print("Press any key to continue...");
+    /**
+     * Helpers specifically for getting valid ENUM input.
+     * @param scanner input
+     * @return user main menu selection
+     */
+    private static MainMenuOption getSelection(Scanner scanner) {
+        System.out.print("Your selection > ");
         try {
-            System.in.read();
-        } catch (Exception e) {
-            System.err.println("Error system pause: " + e.getMessage());
+            int val = Integer.parseInt(scanner.nextLine());
+            return MainMenuOption.fromId(val);
+        } catch (NumberFormatException e) {
+            // CONSTANT : Specific number format error
+            System.out.println(ErrorMessage.INPUT_NOT_NUMBER);
+            return null;
         }
     }
-
-    public static void clearScreen() {
-        try {
-            Robot rob = new Robot();
-            try {
-                rob.keyPress(KeyEvent.VK_CONTROL); // press "CTRL"
-                rob.keyPress(KeyEvent.VK_L); // press "L"
-                rob.keyRelease(KeyEvent.VK_L); // unpress "L"
-                rob.keyRelease(KeyEvent.VK_CONTROL); // unpress "CTRL"
-                Thread.sleep(10); // add delay in milisecond, if not there will automatically stop after clear
-            } catch (InterruptedException e) {
-                System.err.println("Error clear screen: " + e.getMessage());
-            }
-        } catch (AWTException e) {
-            System.err.println("Error clear screen: " + e.getMessage());
-        }
-    }
-
 }

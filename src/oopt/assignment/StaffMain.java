@@ -1,27 +1,24 @@
 package oopt.assignment;
 
-import oopt.assignment.model.StaffRepository;
 import oopt.assignment.service.StaffService;
 import oopt.assignment.ui.StaffUI;
 
+/**
+ * Controller/Bootstrapper for the Staff Management Module.
+ * Refactored to accept dependencies rather than creating them,
+ * ensuring data consistency across the application.
+ */
 public class StaffMain {
-
     /**
      * Entry point for the Staff Management module.
-     * Sets up the necessary layers and starts the Staff UI.
-     * @param staffID The ID of the staff member who is logged in.
+     * @param loggedInStaffId The ID of the currently logged-in user.
+     * @param sharedService The shared StaffService instance (must be passed from Main).
      */
-    public static void staffMain(String staffID) {
-        // 1. Create Repository (Data Layer)
-        StaffRepository repo = new StaffRepository();
+    public static void staffMain(String loggedInStaffId, StaffService sharedService) {
+        // 1. Create UI (Presentation Layer) - Injecting the Shared Service
+        StaffUI ui = new StaffUI(sharedService);
 
-        // 2. Create Service (Business Layer) - Injects Repository
-        StaffService service = new StaffService(repo);
-
-        // 3. Create UI (Presentation Layer) - Injects Service
-        StaffUI ui = new StaffUI(service);
-
-        // 4. Start Staff UI Application
-        ui.start(staffID);
+        // 2. Start Staff UI Application
+        ui.start(loggedInStaffId);
     }
 }

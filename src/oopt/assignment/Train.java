@@ -1,5 +1,7 @@
 package oopt.assignment;
 
+import oopt.assignment.ui.MainUI;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -156,7 +158,7 @@ public class Train {
         char confirmAdd, exitChoice;
         boolean valid;
         Scanner scanner = new Scanner(System.in);
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         
         do {
             valid = false;
@@ -175,11 +177,11 @@ public class Train {
             }
             
             else {
-                OoptAssignment.clearScreen();
+                MainUI.clearScreen();
                 System.out.println("Invalid Train ID format(TXXX)!");
             }
         } while (!valid);
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         do {
             valid = false;
             System.out.println("=========================================");
@@ -199,7 +201,7 @@ public class Train {
 
                     if (!Character.isAlphabetic(c) && !Character.isWhitespace(c)) {
                         valid = false;
-                        OoptAssignment.clearScreen();
+                        MainUI.clearScreen();
                         System.out.println("Do not enter special characters!");
                         break;
                     }
@@ -213,18 +215,18 @@ public class Train {
             
             else if (newDestination.length() > 15) {
                 valid = false;
-                OoptAssignment.clearScreen();
+                MainUI.clearScreen();
                 System.out.println("Please input less than 15 characters!");
             }
             
             else {
                 valid = false;
-                OoptAssignment.clearScreen();
+                MainUI.clearScreen();
                 System.out.println("Please input a destination!");
             }
 
         } while (!valid);
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         do {
             valid = false;
             System.out.println("=========================================");
@@ -242,7 +244,7 @@ public class Train {
             valid = Train.checkDate(inputNewDate);
 
         } while (!valid);
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         do {
             valid = false;
             System.out.println("=========================================");
@@ -261,7 +263,7 @@ public class Train {
             valid = Train.checkTime(inputNewTime);
 
         } while (!valid);
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         do {
             try {
                 valid = false;
@@ -284,17 +286,17 @@ public class Train {
                 }
                 
                 else {
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     System.out.println("Invalid Quantity 1-999!");
                 }
             } catch (Exception e) {
-                OoptAssignment.clearScreen();
+                MainUI.clearScreen();
                 System.err.println("You should not enter other characters!");
                 scanner.nextLine();
             }
 
         } while (!valid);
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         do {
             try {
                 valid = false;
@@ -310,7 +312,7 @@ public class Train {
                 newPremiumSeatQty = scanner.nextInt();
                 if (newPremiumSeatQty >= 0 && newPremiumSeatQty < 999) {
                     valid = newPremiumSeatQty < newStandardSeatQty;
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     if (!valid) {
                         System.out.println("Premium Seat Quantity must be lower than Standard!!");
                     }
@@ -321,17 +323,17 @@ public class Train {
                 }
                 
                 else {
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     System.out.println("Invalid Quantity 0-998");
                 }
             } catch (Exception e) {
-                OoptAssignment.clearScreen();
+                MainUI.clearScreen();
                 System.err.println("You should not enter other characters!");
                 scanner.nextLine();
             }
 
         } while (!valid);
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         do {
             try{
                 valid = false;
@@ -355,18 +357,18 @@ public class Train {
                 }
                 
                 else {
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     System.out.println("Invalid Pricing 50.00-999.98");
                 }
             } catch (Exception e) {
-                OoptAssignment.clearScreen();
+                MainUI.clearScreen();
                 System.err.println("You should not enter other characters!");
                 scanner.nextLine();
             }
             
 
         } while (!valid);
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         do {
             try{
                 valid = false;
@@ -386,7 +388,7 @@ public class Train {
                 if (newPremiumSeatPrice >= 50.01 && newPremiumSeatPrice < 1000.00) {
                     valid = newPremiumSeatPrice > newStandardSeatPrice;
                     if (!valid) {
-                        OoptAssignment.clearScreen();
+                        MainUI.clearScreen();
                         System.out.println("Premium Price must be higher than Standard!");
                     }
                 } 
@@ -396,18 +398,18 @@ public class Train {
                 }
                 
                 else {
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     System.out.println("Invalid Pricing 50.01-999.99");
                 }
             } catch (Exception e) {
-                OoptAssignment.clearScreen();
+                MainUI.clearScreen();
                 System.err.println("You should not enter other characters!");
                 scanner.nextLine();
             }
             
         } while (!valid);
         scanner.nextLine();
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDate = LocalDate.parse(inputNewDate, dateFormatter);
 
@@ -431,17 +433,17 @@ public class Train {
                 if (confirmAdd == 'Y') {
                     valid = true;
                     trainList.add(train);
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     System.out.println("Added successfully!");
                     break;
                 } else if (confirmAdd == 'N') {
                     valid = true;
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     System.out.println("New information discarded!");
                     break;
                 }
             }
-            OoptAssignment.clearScreen();
+            MainUI.clearScreen();
             System.out.println("Please enter only Y/N");
             
         }
@@ -455,7 +457,7 @@ public class Train {
 
         // Check if the user input matches any token
         for (Train a : trainList) {
-            OoptAssignment.clearScreen();
+            MainUI.clearScreen();
             if (a.getTrainID().equals(value)) {
                 System.out.println("Duplicate ID : " + value);
                 System.out.println("Please Enter Again!\n");
@@ -480,17 +482,17 @@ public class Train {
             if (localDate.isAfter(today)) {
                 return true;
             } else if (localDate.isEqual(today)) {
-                OoptAssignment.clearScreen();
+                MainUI.clearScreen();
                 System.out.println("Please input date after today");
                 return false;
             } else {
-                OoptAssignment.clearScreen();
+                MainUI.clearScreen();
                 System.out.println("Please input date after today");
                 return false;
             }
 
         } catch (Exception e) {
-            OoptAssignment.clearScreen();
+            MainUI.clearScreen();
             System.err.println("Invalid input format. Please use yyyy-MM-dd format.");
             return false;
         }
@@ -506,7 +508,7 @@ public class Train {
             return true;
 
         } catch (Exception e) {
-            OoptAssignment.clearScreen();
+            MainUI.clearScreen();
             System.err.println("Invalid input format. Please use HH:mm format.");
             return false;
         }
@@ -521,7 +523,7 @@ public class Train {
         int i;
 
         do {
-            OoptAssignment.clearScreen();
+            MainUI.clearScreen();
             do {
                 searchAgain = false;
                 validTrainSearch = false;
@@ -538,7 +540,7 @@ public class Train {
                         }
                         
                         else {
-                            OoptAssignment.clearScreen();
+                            MainUI.clearScreen();
                             System.out.println("Data not found");
                         }
                     }
@@ -549,7 +551,7 @@ public class Train {
                 }
                 
                 else {
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     System.out.println("Invalid Search Train ID format(TXXX)!");
                 }
             } while (!validTrainSearch);
@@ -562,7 +564,7 @@ public class Train {
             }
 
             if (trainFound) {
-                OoptAssignment.clearScreen();
+                MainUI.clearScreen();
                 System.out.println(   "==============================================");
                 System.out.println(   "|| Train Detail                             ||");
                 System.out.println(   "==============================================");
@@ -593,7 +595,7 @@ public class Train {
                     }
                     else{
                         validConfirmation = false;
-                        OoptAssignment.clearScreen();
+                        MainUI.clearScreen();
                         System.out.println("Enter only (Y/N)!");
                     }
                 }
@@ -616,7 +618,7 @@ public class Train {
         boolean validTrainSearch, validModifyChoice, trainFound = false, validTrainInput;
 
         do {
-            OoptAssignment.clearScreen();
+            MainUI.clearScreen();
             do {
                 validTrainSearch = false;
                 System.out.println("========================================");
@@ -632,7 +634,7 @@ public class Train {
                         }
                         
                         else if(validTrainSearch = false){
-                            OoptAssignment.clearScreen();
+                            MainUI.clearScreen();
                             System.out.println("Data not found");
                         }
                     }
@@ -644,12 +646,12 @@ public class Train {
                 }
                 
                 else {
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     System.out.println("Invalid Search Train ID format(TXXX)!");
                 }
             } while (!validTrainSearch);
 
-            OoptAssignment.clearScreen();
+            MainUI.clearScreen();
 
             do {
                 validTrainInput = false;
@@ -692,20 +694,20 @@ public class Train {
                         scanner.nextLine();
 
                         if (modifyChoice < 1 || modifyChoice > 6) {
-                            OoptAssignment.clearScreen();
+                            MainUI.clearScreen();
                             System.err.println("Please enter within 1-5");
                         } else {
                             validTrainInput = true;
                         }
                     } catch (Exception e) {
-                        OoptAssignment.clearScreen();
+                        MainUI.clearScreen();
                         System.err.println("Please enter only numbers");
                         scanner.nextLine();
                     }
                 }
                 validTrainInput = false;
                 if (modifyChoice == 1) {
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     while (!validTrainInput) {
                         try {
                             System.out.printf("          Standard Seat Quantity : %d seats\n", trainList.get(i).standardSeatQty);
@@ -714,7 +716,7 @@ public class Train {
                             temporaryTrainQuantity = scanner.nextInt();
                             
                             if (temporaryTrainQuantity == -1){
-                                OoptAssignment.clearScreen();
+                                MainUI.clearScreen();
                                 break;
                             }
                             
@@ -734,35 +736,35 @@ public class Train {
                                         if (confirmModify == 'Y') {
                                             trainList.get(i).standardSeatQty = temporaryTrainQuantity;
                                             validModifyChoice = true;
-                                            OoptAssignment.clearScreen();
+                                            MainUI.clearScreen();
                                             System.out.println("Changed successfully!");
                                             break;
                                         } else if (confirmModify == 'N') {
                                             validModifyChoice = true;
-                                            OoptAssignment.clearScreen();
+                                            MainUI.clearScreen();
                                             System.out.println("Changes discarded!");
                                             break;
                                         }
                                     }
-                                   OoptAssignment.clearScreen();
+                                   MainUI.clearScreen();
                                     System.out.println("Please enter only Y/N");
                                 }
                             } else if (temporaryTrainQuantity < 1 || temporaryTrainQuantity > 999) {
-                                OoptAssignment.clearScreen();
+                                MainUI.clearScreen();
                                 System.out.println("Number too small or large! Enter within 1-999");
                                 System.out.printf("Enter number larger than %d but lower than 999\n\n", trainList.get(i).premiumSeatQty);
                             } else {
-                                OoptAssignment.clearScreen();
+                                MainUI.clearScreen();
                                 System.out.printf("Please enter number larger than %d\n\n", trainList.get(i).premiumSeatQty);
                             }
                         } catch (Exception e) {
-                            OoptAssignment.clearScreen();
+                            MainUI.clearScreen();
                             System.err.println("Please enter only numbers");
                             scanner.nextLine();
                         }
                     }
                 } else if (modifyChoice == 2) {
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     while (!validTrainInput) {
                         try {
                             System.out.printf("          Standard Seat Quantity : %d\n", trainList.get(i).standardSeatQty);
@@ -771,7 +773,7 @@ public class Train {
                             temporaryTrainQuantity = scanner.nextInt();
                             
                             if (temporaryTrainQuantity == -1){
-                                OoptAssignment.clearScreen();
+                                MainUI.clearScreen();
                                 break;
                             }
                             
@@ -791,35 +793,35 @@ public class Train {
                                         if (confirmModify == 'Y') {
                                             trainList.get(i).premiumSeatQty = temporaryTrainQuantity;
                                             validModifyChoice = true;
-                                            OoptAssignment.clearScreen();
+                                            MainUI.clearScreen();
                                             System.out.println("Changed successfully!");
                                             break;
                                         } else if (confirmModify == 'N') {
                                             validModifyChoice = true;
-                                            OoptAssignment.clearScreen();
+                                            MainUI.clearScreen();
                                             System.out.println("Changes discarded!");
                                             break;
                                         }
                                     }
-                                    OoptAssignment.clearScreen();
+                                    MainUI.clearScreen();
                                     System.out.println("Please enter only Y/N");
                                 }
                             } else if (temporaryTrainQuantity < 0 || temporaryTrainQuantity >= 999) {
-                                OoptAssignment.clearScreen();
+                                MainUI.clearScreen();
                                 System.out.println("Number too small or large! Enter within 0-998");
                                 System.out.printf("Enter number larger than 0 but lower than %d\n\n", trainList.get(i).standardSeatQty);
                             } else {
-                                OoptAssignment.clearScreen();
+                                MainUI.clearScreen();
                                 System.out.printf("Please enter number less than %d\n\n", trainList.get(i).standardSeatQty);
                             }
                         } catch (Exception e) {
-                            OoptAssignment.clearScreen();
+                            MainUI.clearScreen();
                             System.err.println("Please enter only numbers");
                             scanner.nextLine();
                         }
                     }
                 } else if (modifyChoice == 3) {
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     while (!validTrainInput) {
                         try {
                             System.out.printf("          Standard Seat Price : RM %.2f\n", trainList.get(i).standardSeatPrice);
@@ -828,7 +830,7 @@ public class Train {
                             temporaryTrainPrice = scanner.nextDouble();
                             
                             if (temporaryTrainPrice == -1){
-                                OoptAssignment.clearScreen();
+                                MainUI.clearScreen();
                                 break;
                             }
                             
@@ -848,35 +850,35 @@ public class Train {
                                         if (confirmModify == 'Y') {
                                             trainList.get(i).standardSeatPrice = temporaryTrainPrice;
                                             validModifyChoice = true;
-                                            OoptAssignment.clearScreen();
+                                            MainUI.clearScreen();
                                             System.out.println("Changed successfully!");
                                             break;
                                         } else if (confirmModify == 'N') {
                                             validModifyChoice = true;
-                                           OoptAssignment.clearScreen();
+                                           MainUI.clearScreen();
                                             System.out.println("Changes discarded!");
                                             break;
                                         }
                                     }
-                                    OoptAssignment.clearScreen();
+                                    MainUI.clearScreen();
                                     System.out.println("Please enter only Y/N");
                                 }
                             } else if (temporaryTrainPrice < 50.00 || temporaryTrainPrice >= 999.99) {
-                               OoptAssignment.clearScreen();
+                               MainUI.clearScreen();
                                 System.out.println("Pricing too small or large! Enter within 50.00-999.98");
                                 System.out.printf("Enter price larger than RM 50.00 but lower than RM %.2f\n\n", trainList.get(i).premiumSeatPrice);
                             } else {
-                                OoptAssignment.clearScreen();
+                                MainUI.clearScreen();
                                 System.out.printf("Please enter price less than RM %.2f\n\n", trainList.get(i).premiumSeatPrice);
                             }
                         } catch (Exception e) {
-                            OoptAssignment.clearScreen();
+                            MainUI.clearScreen();
                             System.err.println("Please enter only numbers");
                             scanner.nextLine();
                         }
                     }
                 } else if (modifyChoice == 4) {
-                    OoptAssignment.clearScreen();
+                    MainUI.clearScreen();
                     while (!validTrainInput) {
                         try {
                             System.out.printf("         Standard Seat Price : RM %.2f\n", trainList.get(i).standardSeatPrice);
@@ -885,7 +887,7 @@ public class Train {
                             temporaryTrainPrice = scanner.nextDouble();
                             
                             if (temporaryTrainPrice == -1){
-                                OoptAssignment.clearScreen();
+                                MainUI.clearScreen();
                                 break;
                             }
                             
@@ -905,29 +907,29 @@ public class Train {
                                         if (confirmModify == 'Y') {
                                             trainList.get(i).premiumSeatPrice = temporaryTrainPrice;
                                             validModifyChoice = true;
-                                            OoptAssignment.clearScreen();
+                                            MainUI.clearScreen();
                                             System.out.println("Changed successfully!");
                                             break;
                                         } else if (confirmModify == 'N') {
                                             validModifyChoice = true;
-                                            OoptAssignment.clearScreen();
+                                            MainUI.clearScreen();
                                             System.out.println("Changes discarded!");
                                             break;
                                         }
                                     }
-                                    OoptAssignment.clearScreen();
+                                    MainUI.clearScreen();
                                     System.out.println("Please enter only Y/N");
                                 }
                             } else if (temporaryTrainPrice < 50.01 || temporaryTrainPrice >= 1000.00) {
-                               OoptAssignment.clearScreen();
+                               MainUI.clearScreen();
                                 System.out.println("Pricing too small or large! Enter within 50.01-999.99");
                                 System.out.printf("Enter price larger than RM %.2f but lower than RM 999.99\n\n", trainList.get(i).standardSeatPrice);
                             } else {
-                                OoptAssignment.clearScreen();
+                                MainUI.clearScreen();
                                 System.out.printf("Please enter price larger than RM %.2f\n\n", trainList.get(i).standardSeatPrice);
                             }
                         } catch (Exception e) {
-                            OoptAssignment.clearScreen();
+                            MainUI.clearScreen();
                             System.err.println("Please enter only numbers");
                             scanner.nextLine();
                         }
@@ -945,21 +947,21 @@ public class Train {
                                 if (confirmModify == 'Y') {
                                     trainList.get(i).trainStatus = false;
                                     validModifyChoice = true;
-                                    OoptAssignment.clearScreen();
+                                    MainUI.clearScreen();
                                     System.out.println("Changed successfully!");
                                     break;
                                 } else if (confirmModify == 'N') {
                                     validModifyChoice = true;
-                                    OoptAssignment.clearScreen();
+                                    MainUI.clearScreen();
                                     System.out.println("Changes discarded!");
                                     break;
                                 }
                             }
-                            OoptAssignment.clearScreen();
+                            MainUI.clearScreen();
                             System.out.println("Please enter only Y/N");
                         }
                     } else {
-                        OoptAssignment.clearScreen();
+                        MainUI.clearScreen();
                         System.out.println("Train already discontinued!");
                     }
                 }
@@ -973,7 +975,7 @@ public class Train {
         ArrayList<Train> trainList = TrainMain.readTrainFile();
         Scanner scanner = new Scanner(System.in);
         String modifyTrain;
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
         System.out.println(   "=======================================================================================================================================================================");
         System.out.println(   "|| Train ID || ||   Destination   || ||  Departure  || || Departure || || Standard Seat || || Standard Seat || || Premium Seat || || Premium Seat || || Train Status ||");
         System.out.println(   "||          || ||                 || ||    Date     || ||    Time   || ||   Quantity    || ||     Price     || ||   Quantity   || ||     Price    || ||              ||");
@@ -984,7 +986,6 @@ public class Train {
                     , a.trainID, a.destination, a.departureDate, a.departureTime, a.standardSeatQty, a.standardSeatPrice, a.premiumSeatQty, a.premiumSeatPrice, a.trainStatus ? "Active" : "Discontinued");
         }
         System.out.println(   "=======================================================================================================================================================================");
-        OoptAssignment.systemPause();
+        MainUI.systemPause();
     }
-    
 }

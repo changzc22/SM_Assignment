@@ -1,5 +1,7 @@
 package oopt.assignment;
 
+import oopt.assignment.ui.MainUI;
+
 import java.util.*;
 import java.time.*;
 import java.io.*;
@@ -9,7 +11,7 @@ public class BookingMain {
 
     public static void bookingMain(String staffID) {
         Scanner input = new Scanner(System.in);
-        OoptAssignment.clearScreen();
+        MainUI.clearScreen();
 
         int selectionInput = 0;
         boolean isValidInput, exitBookingModule = false, printLogo = true;

@@ -1,8 +1,7 @@
 package oopt.assignment;
 
-import java.awt.AWTException;
-import java.awt.Robot;
-import java.awt.event.KeyEvent;
+import oopt.assignment.ui.MainUI;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,7 +23,7 @@ public class TrainMain {
 
         ArrayList<Train> trainList = TrainMain.readTrainFile();
         do {
-            OoptAssignment.clearScreen();
+            MainUI.clearScreen();
             do {
                 validTrainInput = false;
                 Train.displayTrainMenu();
@@ -34,11 +33,11 @@ public class TrainMain {
                     if (trainSelection >= 1 && trainSelection <= 6) {
                         validTrainInput = true;
                     } else {
-                        OoptAssignment.clearScreen();
+                        MainUI.clearScreen();
                         System.err.println("Invalid Input. You should only enter between 1 and 6 options!");
                     }
                 } catch (Exception e) {
-                   OoptAssignment.clearScreen();
+                   MainUI.clearScreen();
                     System.err.println("You should not enter other characters!");
                     sc.nextLine();
                 }
