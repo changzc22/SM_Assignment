@@ -93,7 +93,7 @@ public class OoptAssignment {
 
     public static void mainMenu(){
         System.out.println("               =========================================");
-        System.out.println("               |            **Modules Menu** |");
+        System.out.println("               |            **Modules Menu**           |");
         System.out.println("               =========================================");
         System.out.println("               |  1) Staff                             |");
         System.out.println("               |  2) Passenger                         |");
