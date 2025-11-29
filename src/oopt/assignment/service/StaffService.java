@@ -3,6 +3,8 @@ package oopt.assignment.service;
 import oopt.assignment.model.IStaffRepository;
 import oopt.assignment.model.Staff;
 import oopt.assignment.model.StaffRepository;
+import oopt.assignment.util.AppConstants;
+import oopt.assignment.util.ErrorMessage;
 import oopt.assignment.util.PasswordUtil;
 
 import java.time.Duration;
@@ -12,24 +14,17 @@ import java.util.LinkedHashMap;
 
 /**
  * Handles all business logic for Staff operations.
- * Updated to include a Compatibility Layer for the Booking module.
+ * Implements clean code standards and exception handling.
  */
 public class StaffService {
 
-    // Dependencies (DIP: Depending on Interface)
     private final IStaffRepository repository;
     private final StaffValidator validator;
-
-    // In-memory cache for O(1) access speed
     private final LinkedHashMap<String, Staff> staffCache;
 
-    // Constants for Business Rules
-    private static final int MAX_LOGIN_ATTEMPTS = 4;
-    private static final int LOCKOUT_MINUTES = 5;
-
     /**
-     * Constructor for Dependency Injection.
-     * @param repository The data source provider.
+     * Parameterised constructor for Dependency Injection
+     * @param repository The data source provider interface
      */
     public StaffService(IStaffRepository repository) {
         this.repository = repository;
@@ -38,17 +33,33 @@ public class StaffService {
     }
 
     // =========================================================================
-    // SECTION: Instance Methods (New Clean Code Style)
+    // SECTION: Instance Methods
     // =========================================================================
 
+    /**
+     * Retrieves all staff members currently in the system
+     * @return ArrayList containing all Staff objects
+     */
     public ArrayList<Staff> getAllStaff() {
         return new ArrayList<>(this.staffCache.values());
     }
 
+    /**
+     * Retrieves a specific staff member by their unique ID
+     * @param id The unique staff ID to search for
+     * @return The Staff object if found, otherwise null
+     */
     public Staff getStaffById(String id) {
         return this.staffCache.get(id);
     }
 
+    /**
+     * Authenticates a staff member based on ID and password.
+     * Checks for lockouts before processing password.
+     * @param id The staff ID input
+     * @param password The plain-text password input
+     * @return The authenticated Staff object if successful, or null if failed
+     */
     public Staff loginStaff(String id, String password) {
         Staff staff = getStaffById(id);
         if (staff == null) return null;
@@ -64,6 +75,14 @@ public class StaffService {
         }
     }
 
+    /**
+     * Creates a new staff member and persists them to the repository
+     * @param name Staff full name
+     * @param cn Staff contact number
+     * @param ic Staff identification card number
+     * @param id Staff unique ID
+     * @param pw Staff plain-text password (will be hashed)
+     */
     public void createStaff(String name, String cn, String ic, String id, String pw) {
         String hashedPassword = PasswordUtil.hashPassword(pw);
         Staff staff = new Staff(name, cn, ic, id, hashedPassword, 0);
@@ -72,19 +91,32 @@ public class StaffService {
         repository.saveAll(staffCache.values());
     }
 
+    /**
+     * Updates a specific field of an existing staff member.
+     * Uses Constants to avoid magic strings.
+     * @param id The ID of the staff to update
+     * @param fieldType The type of field to update (From AppConstants)
+     * @param newValue The new value to assign to the field
+     */
     public void updateStaffField(String id, String fieldType, String newValue) {
         Staff s = staffCache.get(id);
         if (s == null) return;
 
         switch (fieldType) {
-            case "NAME" -> s.setName(newValue);
-            case "CONTACT" -> s.setContactNo(newValue);
-            case "IC" -> s.setIc(newValue);
-            case "PASSWORD" -> s.setPassword(PasswordUtil.hashPassword(newValue));
+            case AppConstants.FIELD_NAME -> s.setName(newValue);
+            case AppConstants.FIELD_CONTACT -> s.setContactNo(newValue);
+            case AppConstants.FIELD_IC -> s.setIc(newValue);
+            case AppConstants.FIELD_PASSWORD -> s.setPassword(PasswordUtil.hashPassword(newValue));
         }
         repository.saveAll(staffCache.values());
     }
 
+    /**
+     * Deletes a staff member from the system, preventing self-deletion
+     * @param idToDelete The ID of the staff to remove
+     * @param currentStaffId The ID of the currently logged-in staff
+     * @return true if deletion was successful, false otherwise
+     */
     public boolean deleteStaff(String idToDelete, String currentStaffId) {
         if (idToDelete.equals(currentStaffId) || !staffCache.containsKey(idToDelete)) {
             return false;
@@ -96,23 +128,34 @@ public class StaffService {
 
     // --- Private Helpers ---
 
+    /**
+     * Checks if the staff account is currently locked due to excessive failed attempts
+     * @param staff The staff object to check
+     * @throws RuntimeException if the account is currently locked
+     */
     private void checkLockoutStatus(Staff staff) {
         if (staff.getLockTime() != null) {
             if (staff.getLockTime().isAfter(LocalDateTime.now())) {
                 long minutesLeft = Duration.between(LocalDateTime.now(), staff.getLockTime()).toMinutes() + 1;
-                throw new RuntimeException("Account locked. Try again in " + minutesLeft + " minutes.");
+                throw new RuntimeException(String.format(ErrorMessage.LOGIN_LOCKED, minutesLeft));
             }
+            // Reset lock if time has passed
             staff.setLockTime(null);
             staff.setFailedAttempts(0);
         }
     }
 
+    /**
+     * Processes a failed login attempt and locks the account if max attempts are reached
+     * @param staff The staff object associated with the failed attempt
+     * @throws RuntimeException if the max attempts are reached and account becomes locked
+     */
     private void handleFailedLogin(Staff staff) {
         int attempts = staff.getFailedAttempts() + 1;
         staff.setFailedAttempts(attempts);
-        if (attempts >= MAX_LOGIN_ATTEMPTS) {
-            staff.setLockTime(LocalDateTime.now().plusMinutes(LOCKOUT_MINUTES));
-            throw new RuntimeException("Max attempts reached. Account locked for " + LOCKOUT_MINUTES + " minutes.");
+        if (attempts >= AppConstants.MAX_LOGIN_ATTEMPTS) {
+            staff.setLockTime(LocalDateTime.now().plusMinutes(AppConstants.LOCKOUT_MINUTES));
+            throw new RuntimeException(String.format(ErrorMessage.LOGIN_MAX_ATTEMPTS, AppConstants.LOCKOUT_MINUTES));
         }
     }
 
@@ -125,18 +168,11 @@ public class StaffService {
 
 
     // =========================================================================
-    // SECTION: Static Compatibility Layer (For Booking.java)
+    // SECTION: Static Compatibility Layer (For Legacy Booking.java)
     // =========================================================================
-    /* * These methods exist solely to support legacy modules (like Booking.java)
-     * that rely on static method calls. They act as a bridge to the new
-     * instance-based logic.
-     */
 
     private static StaffService staticInstance;
 
-    /**
-     * Creates a Singleton instance of the service for static context usage.
-     */
     private static StaffService getStaticInstance() {
         if (staticInstance == null) {
             staticInstance = new StaffService(new StaffRepository());
@@ -145,16 +181,18 @@ public class StaffService {
     }
 
     /**
-     * REQUIRED BY: Booking.java (addBooking method)
-     * Provides a list of all staff statically.
+     * REQUIRED BY: Booking.java
+     * Provides a list of all staff statically for legacy modules
+     * @return ArrayList containing all Staff objects
      */
     public static ArrayList<Staff> getAllStaffStatic() {
         return getStaticInstance().getAllStaff();
     }
 
     /**
-     * REQUIRED BY: Booking.java (addBooking method)
-     * Increments the booking handle count for a staff member.
+     * REQUIRED BY: Booking.java
+     * Increments the booking handle count for a staff member statically
+     * @param staffId The ID of the staff member who handled the booking
      */
     public static void incrementBookingHandleStatic(String staffId) {
         StaffService service = getStaticInstance();

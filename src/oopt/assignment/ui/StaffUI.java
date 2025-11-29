@@ -2,6 +2,9 @@ package oopt.assignment.ui;
 
 import oopt.assignment.model.Staff;
 import oopt.assignment.service.StaffService;
+import oopt.assignment.util.AppConstants;
+import oopt.assignment.util.ErrorMessage;
+
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.function.Predicate;
@@ -22,15 +25,11 @@ public class StaffUI {
 
     /**
      * A generic helper method to handle user input loops.
-     * This implements the DRY (Don't Repeat Yourself) principle by centralizing
-     * the "Ask -> Validate -> Retry" logic used across multiple methods.
-     *
      * @param message   The prompt to display to the user.
      * @param errorMsg  The error message if validation fails.
      * @param validator A functional interface (lambda) that defines valid input rules.
      * @return The valid string input from the user, or null if they chose to exit.
      */
-    // --- Helper for DRY Input ---
     private String promptForInput(String message, String errorMsg, Predicate<String> validator) {
         String input;
         do {
@@ -39,7 +38,8 @@ public class StaffUI {
             if (input.equalsIgnoreCase("X")) return null;
 
             if (!validator.test(input)) {
-                System.out.println(errorMsg);
+                // Requirement: Use ErrorMessage constant
+                System.out.println("Error: " + errorMsg);
             } else {
                 return input.toUpperCase();
             }
@@ -48,7 +48,6 @@ public class StaffUI {
 
     /**
      * Main entry point for the Staff Management UI.
-     * Loops until the user chooses to return to the main menu.
      * @param loggedInStaffId Used to prevent the user from deleting themselves.
      */
     public void start(String loggedInStaffId) {
@@ -65,13 +64,14 @@ public class StaffUI {
                 case DELETE -> handleDeleteStaff(loggedInStaffId);
                 case DISPLAY_ALL -> handleDisplayAllStaff();
                 case SEARCH -> handleSearchStaff();
-                case RETURN -> { return; } // Exit the method
+                case RETURN -> { return; }
             }
         }
     }
 
     /**
      * Displays the menu options and parses the user's integer choice.
+     * @return user's integer choice mapped to Enum.
      */
     private StaffMenuOption getMenuSelection() {
         System.out.println("\n--- Staff Management Menu ---");
@@ -90,24 +90,24 @@ public class StaffUI {
 
     /**
      * Orchestrates the creation of a new staff member.
-     * Uses promptForInput to ensure all data is valid before calling the Service.
+     * Uses promptForInput with Method References for validation.
      */
     private void handleCreateStaff() {
         System.out.println("\n--- Create New Staff ---");
 
-        String name = promptForInput("Enter Name", "Invalid Name", staffService::isNameValid);
+        String name = promptForInput("Enter Name", ErrorMessage.INVALID_NAME, staffService::isNameValid);
         if (name == null) return;
 
-        String cn = promptForInput("Enter Contact No", "Invalid/Duplicate Contact", staffService::isCNValid);
+        String cn = promptForInput("Enter Contact No", ErrorMessage.INVALID_CONTACT + " or " + ErrorMessage.DUPLICATE_CONTACT, staffService::isCNValid);
         if (cn == null) return;
 
-        String ic = promptForInput("Enter IC (no dashes)", "Invalid/Duplicate IC", staffService::isICValid);
+        String ic = promptForInput("Enter IC (no dashes)", ErrorMessage.INVALID_IC + " or " + ErrorMessage.DUPLICATE_IC, staffService::isICValid);
         if (ic == null) return;
 
-        String id = promptForInput("Enter ID (e.g., S001)", "Invalid/Duplicate ID", staffService::isIDValid);
+        String id = promptForInput("Enter ID (e.g., S001)", ErrorMessage.INVALID_ID + " or " + ErrorMessage.DUPLICATE_ID, staffService::isIDValid);
         if (id == null) return;
 
-        String pw = promptForInput("Set Password", "Weak Password", staffService::isPWValid);
+        String pw = promptForInput("Set Password", ErrorMessage.WEAK_PASSWORD, staffService::isPWValid);
         if (pw == null) return;
 
         staffService.createStaff(name, cn, ic, id, pw);
@@ -116,7 +116,6 @@ public class StaffUI {
 
     /**
      * Handles the modification of existing staff details.
-     * Uses ModifyStaffOption Enum to handle sub-menu selection.
      */
     private void handleModifyStaff() {
         System.out.println("\n--- Modify Staff Details ---");
@@ -145,30 +144,38 @@ public class StaffUI {
             return;
         }
 
-        String newValue;
+        String newValue = null;
+        String fieldKey = "";
+
+        // Map Enum choice to AppConstants keys
         switch (choice) {
             case NAME -> {
-                newValue = promptForInput("New Name", "Invalid Name", staffService::isNameValid);
-                if (newValue != null) staffService.updateStaffField(id, "NAME", newValue);
+                newValue = promptForInput("New Name", ErrorMessage.INVALID_NAME, staffService::isNameValid);
+                fieldKey = AppConstants.FIELD_NAME;
             }
             case CONTACT -> {
-                newValue = promptForInput("New Contact", "Invalid Contact", staffService::isCNValid);
-                if (newValue != null) staffService.updateStaffField(id, "CONTACT", newValue);
+                newValue = promptForInput("New Contact", ErrorMessage.INVALID_CONTACT, staffService::isCNValid);
+                fieldKey = AppConstants.FIELD_CONTACT;
             }
             case IC -> {
-                newValue = promptForInput("New IC", "Invalid IC", staffService::isICValid);
-                if (newValue != null) staffService.updateStaffField(id, "IC", newValue);
+                newValue = promptForInput("New IC", ErrorMessage.INVALID_IC, staffService::isICValid);
+                fieldKey = AppConstants.FIELD_IC;
             }
             case PASSWORD -> {
-                newValue = promptForInput("New Password", "Weak Password", staffService::isPWValid);
-                if (newValue != null) staffService.updateStaffField(id, "PASSWORD", newValue);
+                newValue = promptForInput("New Password", ErrorMessage.WEAK_PASSWORD, staffService::isPWValid);
+                fieldKey = AppConstants.FIELD_PASSWORD;
             }
         }
-        System.out.println(choice.getDescription() + " updated successfully.");
+
+        if (newValue != null) {
+            staffService.updateStaffField(id, fieldKey, newValue);
+            System.out.println(choice.getDescription() + " updated successfully.");
+        }
     }
 
     /**
-     * Removes a staff member, ensuring the current user cannot delete themselves.
+     * Removes a staff member.
+     * @param loggedInStaffId staff id
      */
     private void handleDeleteStaff(String loggedInStaffId) {
         System.out.print("Enter Staff ID to delete (X to exit): ");
@@ -191,8 +198,10 @@ public class StaffUI {
             System.out.println("No records found.");
             return;
         }
+        // Requirement: Professional formatting
         System.out.println("-----------------------------------------------------------------");
         System.out.printf("| %-10s | %-30s | %-15s |\n", "ID", "Name", "Bookings");
+        System.out.println("-----------------------------------------------------------------");
         for (Staff s : list) {
             System.out.printf("| %-10s | %-30s | %-15d |\n", s.getId(), s.getName(), s.getNoOfBookingHandle());
         }
@@ -202,7 +211,7 @@ public class StaffUI {
     }
 
     /**
-     * Searches for a specific staff member by ID and prints their details.
+     * Searches for a specific staff member by ID.
      */
     private void handleSearchStaff() {
         System.out.print("Enter ID to search: ");
@@ -214,7 +223,8 @@ public class StaffUI {
 
     /**
      * Static method to handle initial application login.
-     * Catches security exceptions (e.g., Lockout) thrown by the Service.
+     * @param service StaffService instance
+     * @return Logged in staff ID
      */
     public static String handleLogin(StaffService service) {
         Scanner sc = new Scanner(System.in);
@@ -231,6 +241,7 @@ public class StaffUI {
                 if (staff != null) return id;
                 System.out.println("Invalid ID or Password.");
             } catch (RuntimeException e) {
+                // Catches the 'Locked' exception from Service
                 System.out.println("Login Failed: " + e.getMessage());
             }
         }
