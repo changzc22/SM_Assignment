@@ -39,12 +39,12 @@ public class MainUI {
      * Display main menu of the system
      */
     public static void displayMainMenu() {
-        System.out.println("               =========================================");
-        System.out.println("               |            **Modules Menu**           |");
-        System.out.println("               =========================================");
+        System.out.println("             =========================================");
+        System.out.println("             |            **Modules Menu**           |");
+        System.out.println("             =========================================");
         Arrays.stream(MainMenuOption.values())
-                .forEach(opt -> System.out.printf("               |  %d) %-33s |\n", opt.getId(), opt.getLabel()));
-        System.out.println("               =========================================");
+                .forEach(opt -> System.out.printf("             |  %d) %-33s |\n", opt.getId(), opt.getLabel()));
+        System.out.println("             =========================================");
     }
 
     /**

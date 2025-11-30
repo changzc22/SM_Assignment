@@ -92,7 +92,7 @@ public class StaffRepository implements IStaffRepository {
             String[] fields = line.split("\\|");
             return new Staff(fields[0], fields[1], fields[2], fields[3], fields[4], Integer.parseInt(fields[5]));
         } catch (Exception e) {
-            // Requirement: Log specific data corruption errors
+            // Log specific data corruption errors
             logger.log(Level.WARNING, ErrorMessage.CORRUPTED_DATA + line);
             return null;
         }

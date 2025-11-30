@@ -6,6 +6,7 @@ import oopt.assignment.util.AppConstants;
 import oopt.assignment.util.ErrorMessage;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.function.Predicate;
 
@@ -75,9 +76,8 @@ public class StaffUI {
      */
     private StaffMenuOption getMenuSelection() {
         System.out.println("\n--- Staff Management Menu ---");
-        for (StaffMenuOption opt : StaffMenuOption.values()) {
-            System.out.println(opt.getId() + ". " + opt.getDescription());
-        }
+        Arrays.stream(StaffMenuOption.values())
+                .forEach(opt -> System.out.println(opt.getId() + ". " + opt.getDescription()));
         System.out.print("Your choice: ");
 
         try {
