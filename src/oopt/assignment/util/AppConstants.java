@@ -7,6 +7,7 @@ package oopt.assignment.util;
 public class AppConstants {
     // File Configurations
     public static final String STAFF_FILE_PATH = "StaffFile.txt";
+    public static final String BOOKING_FILE_PATH = "BookingFile.txt";
 
     // Business Rules
     public static final int MAX_LOGIN_ATTEMPTS = 4;
@@ -25,4 +26,7 @@ public class AppConstants {
     public static final String FIELD_CONTACT = "CONTACT";
     public static final String FIELD_IC = "IC";
     public static final String FIELD_PASSWORD = "PASSWORD";
+
+    // Tax Rate
+    public static final double SST_RATE = 1.06;
 }
