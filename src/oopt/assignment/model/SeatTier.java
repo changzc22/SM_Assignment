@@ -2,7 +2,7 @@ package oopt.assignment.model;
 
 public enum SeatTier {
     STANDARD('S', "Standard"),
-    PREMIUM('P', "Premium");;
+    PREMIUM('P', "Premium");
 
     private final char code;
     private final String label;
@@ -28,5 +28,4 @@ public enum SeatTier {
         }
         throw new IllegalArgumentException("Invalid Seat Tier: " + code);
     }
-
 }

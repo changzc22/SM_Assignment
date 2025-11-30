@@ -1,5 +1,7 @@
 package oopt.assignment;
 
+import oopt.assignment.model.Booking;
+
 import static java.lang.Character.toUpperCase;
 import java.util.*;
 import java.io.*;

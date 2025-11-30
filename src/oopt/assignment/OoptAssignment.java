@@ -2,6 +2,7 @@ package oopt.assignment;
 
 import oopt.assignment.model.StaffRepository;
 import oopt.assignment.service.StaffService;
+import oopt.assignment.ui.BookingUI;
 import oopt.assignment.ui.MainMenuOption;
 import oopt.assignment.ui.MainUI;
 import oopt.assignment.ui.StaffUI;
@@ -45,7 +46,7 @@ public class OoptAssignment {
 
                     case PASSENGER -> PassengerMain.passengerMain();
 
-                    case BOOKING -> BookingMain.bookingMain(loginStaffID);
+                    case BOOKING -> new BookingUI().start();
 
                     case TRAIN -> TrainMain.trainMain();
 
