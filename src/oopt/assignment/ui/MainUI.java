@@ -17,6 +17,9 @@ public class MainUI {
     private static final Logger logger = Logger.getLogger(MainUI.class.getName());
     private static final Scanner scanner = new Scanner(System.in);
 
+    /**
+     * ETS logo display
+     */
     public static void displayLogo() {
         System.out.println("                   /EEEEEE\\\\    TTTTTT\\\\    SSSSSSS\\\\");
         System.out.println("                  //EEEEEEEE    TTTTTTTT    SSSSSSSS");
@@ -32,6 +35,9 @@ public class MainUI {
         System.out.println("           E l e c t r i c   T r a i n   S e r v i c e\n");
     }
 
+    /**
+     * Display main menu of the system
+     */
     public static void displayMainMenu() {
         System.out.println("               =========================================");
         System.out.println("               |            **Modules Menu**           |");
@@ -41,6 +47,9 @@ public class MainUI {
         System.out.println("               =========================================");
     }
 
+    /**
+     * Clear screen for clean display
+     */
     public static void clearScreen() {
         try {
             Robot rob = new Robot();
@@ -54,6 +63,9 @@ public class MainUI {
         }
     }
 
+    /**
+     * System pause to allow the user see the current status before proceed to next
+     */
     public static void systemPause() {
         System.out.print("Press Enter to continue...");
         scanner.nextLine();
