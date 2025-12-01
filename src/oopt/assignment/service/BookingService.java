@@ -13,82 +13,88 @@ public class BookingService {
         this.bookingRepository = bookingRepository;
     }
 
-    /**
-     * Calculates the total fare based on business rules.
-     */
     public double calculateFare(PassengerTier passengerTier, SeatTier seatTier, int quantity, double basePrice) {
         double discountMultiplier = passengerTier.getPriceMultiplier();
         double tax = AppConstants.SST_RATE;
-
         return basePrice * quantity * discountMultiplier * tax;
     }
 
-    /**
-     * Validates and creates a new booking.
-     */
     public boolean createBooking(Booking newBooking, Train train) {
-        // 1. Check for Duplicate ID
-        if (getBookingById(newBooking.getBookingID()) != null) {
-            System.out.println("Error: Duplicate Booking ID.");
-            return false;
-        }
+        // Logic largely handled in UI/Repo, but we validate here
+        if (newBooking.getNumOfSeatBook() <= 0) return false;
 
-        // 2. Check Seat Availability
-        int availableSeats = (newBooking.getSeatTier() == SeatTier.STANDARD)
-                ? train.getStandardSeatQty()
-                : train.getPremiumSeatQty();
+        // Update Train Seats (In Memory)
+        int currentSeats = (newBooking.getSeatTier() == SeatTier.STANDARD) ? train.getStandardSeatQty() : train.getPremiumSeatQty();
+        if (currentSeats < newBooking.getNumOfSeatBook()) return false;
 
-        if (newBooking.getNumOfSeatBook() > availableSeats) {
-            System.out.println("Error: Not enough seats available.");
-            return false;
-        }
-
-        // 3. Update Train Seats (In-Memory update)
         if (newBooking.getSeatTier() == SeatTier.STANDARD) {
-            train.setStandardSeatQty(availableSeats - newBooking.getNumOfSeatBook());
+            train.setStandardSeatQty(currentSeats - newBooking.getNumOfSeatBook());
         } else {
-            train.setPremiumSeatQty(availableSeats - newBooking.getNumOfSeatBook());
+            train.setPremiumSeatQty(currentSeats - newBooking.getNumOfSeatBook());
         }
 
-        // 4. Save Booking
         bookingRepository.add(newBooking);
         return true;
     }
 
     /**
-     * Retrieves all bookings and links them to full Train details.
+     * Cancels a booking and restores seats to the provided Train List.
      */
+    public boolean cancelBooking(String bookingID, ArrayList<Train> allTrains) {
+        Booking booking = getBookingById(bookingID);
+        if (booking == null) return false;
+
+        // 1. Find the correct train in the list to update
+        Train trainToUpdate = null;
+        if (booking.getTrain() != null) {
+            for (Train t : allTrains) {
+                if (t.getTrainID().equals(booking.getTrain().getTrainID())) {
+                    trainToUpdate = t;
+                    break;
+                }
+            }
+        }
+
+        // 2. Restore Seats
+        if (trainToUpdate != null) {
+            if (booking.getSeatTier() == SeatTier.STANDARD) {
+                trainToUpdate.setStandardSeatQty(trainToUpdate.getStandardSeatQty() + booking.getNumOfSeatBook());
+            } else {
+                trainToUpdate.setPremiumSeatQty(trainToUpdate.getPremiumSeatQty() + booking.getNumOfSeatBook());
+            }
+        }
+
+        // 3. Delete Booking
+        bookingRepository.delete(bookingID);
+        return true;
+    }
+
     public ArrayList<Booking> getAllBookings() {
         ArrayList<Booking> bookings = bookingRepository.getAll();
-
-        // Fetch all trains to hydrate the data
-        // Uses legacy TrainMain because Train module is not yet refactored
         ArrayList<Train> allTrains = oopt.assignment.TrainMain.readTrainFile();
 
         for (Booking b : bookings) {
+            if (b.getTrain() == null) continue;
             String trainId = b.getTrain().getTrainID();
-
-            // Find matching train
             Train fullTrain = allTrains.stream()
                     .filter(t -> t.getTrainID().equals(trainId))
                     .findFirst()
                     .orElse(null);
-
             if (fullTrain != null) {
-                b.setTrain(fullTrain); // Link full object
+                b.setTrain(fullTrain);
             }
         }
         return bookings;
     }
 
     public Booking getBookingById(String id) {
-        ArrayList<Booking> all = getAllBookings(); // Use the method that links trains
-        return all.stream()
+        return getAllBookings().stream()
                 .filter(b -> b.getBookingID().equalsIgnoreCase(id))
                 .findFirst()
                 .orElse(null);
     }
 
+    // Simple delete for internal use
     public boolean deleteBooking(String id) {
         if (getBookingById(id) == null) return false;
         bookingRepository.delete(id);

@@ -65,7 +65,8 @@ public class BookingRepository implements BookingInterface {
         if (removed) {
             saveAll(list);
         } else {
-            logger.log(Level.WARNING, "Attempted to delete non-existent booking: " + bookingId);
+            // Changed from WARNING to INFO or removed entirely to avoid scaring the user
+            // logger.log(Level.INFO, "Delete requested for non-existent booking: " + bookingId);
         }
     }
 
