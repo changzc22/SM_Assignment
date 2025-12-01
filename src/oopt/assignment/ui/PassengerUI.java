@@ -126,13 +126,14 @@ public class PassengerUI {
      */
     private String readValidName() {
         while (true) {
-            System.out.print("(1/4) Enter name           > ");
+            System.out.print("(1/4) Enter passenger name  > ");
             String name = scanner.nextLine().trim();
 
-            if (name.isBlank()) {
-                System.out.println("Name cannot be empty. Please try again.");
-            } else {
+            try {
+                service.validateName(name);
                 return name;
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Invalid name: " + ex.getMessage());
             }
         }
     }
@@ -146,12 +147,11 @@ public class PassengerUI {
             System.out.print("(2/4) Enter contact number > ");
             String contact = scanner.nextLine().trim();
 
-            if (contact.isBlank()) {
-                System.out.println("Contact number cannot be empty. Please try again.");
-            } else if (!contact.matches("\\d{9,15}")) {
-                System.out.println("Contact number must be 9–15 digits. Please try again.");
-            } else {
+            try {
+                service.validateContact(contact);
                 return contact;
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Invalid contact number: " + ex.getMessage());
             }
         }
     }
@@ -165,12 +165,11 @@ public class PassengerUI {
             System.out.print("(3/4) Enter IC number      > ");
             String ic = scanner.nextLine().trim();
 
-            if (ic.isBlank()) {
-                System.out.println("IC number cannot be empty. Please try again.");
-            } else if (!ic.matches("\\d{12}")) {
-                System.out.println("IC number must be exactly 12 digits. Please try again.");
-            } else {
+            try {
+                service.validateIc(ic);
                 return ic;
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Invalid IC number: " + ex.getMessage());
             }
         }
     }
@@ -190,10 +189,11 @@ public class PassengerUI {
             }
 
             char gender = input.charAt(0);
-            if (gender == 'M' || gender == 'F') {
+            try {
+                service.validateGender(gender);
                 return gender;
-            } else {
-                System.out.println("Gender must be M (Male) or F (Female). Please try again.");
+            } catch (IllegalArgumentException ex) {
+                System.out.println("Invalid gender: " + ex.getMessage());
             }
         }
     }
@@ -243,32 +243,76 @@ public class PassengerUI {
             System.out.println("5. Save changes and return");
             System.out.println("6. Cancel without saving");
 
-            int choice = readInt("Your choice > ", 1, 7);
+            int choice = readInt("Your choice > ", 1, 6);
 
             switch (choice) {
                 case 1 -> {
-                    System.out.print("Enter new name           > ");
-                    String newName = scanner.nextLine();
-                    existing.setName(newName);
+                    // edit name with validation
+                    while (true) {
+                        System.out.print("Enter new name           > ");
+                        String newName = scanner.nextLine().trim();
+                        try {
+                            service.validateName(newName);
+                            existing.setName(newName);
+                            System.out.println("Name updated (pending save).");
+                            break;
+                        } catch (IllegalArgumentException ex) {
+                            System.out.println("Invalid name: " + ex.getMessage());
+                        }
+                    }
                 }
                 case 2 -> {
-                    System.out.print("Enter new contact number > ");
-                    String newContact = scanner.nextLine();
-                    existing.setContactNo(newContact);
+                    // edit contact with validation
+                    while (true) {
+                        System.out.print("Enter new contact number > ");
+                        String newContact = scanner.nextLine().trim();
+                        try {
+                            service.validateContact(newContact);
+                            existing.setContactNo(newContact);
+                            System.out.println("Contact number updated (pending save).");
+                            break;
+                        } catch (IllegalArgumentException ex) {
+                            System.out.println("Invalid contact number: " + ex.getMessage());
+                        }
+                    }
                 }
                 case 3 -> {
-                    System.out.print("Enter new IC             > ");
-                    String newIc = scanner.nextLine();
-                    existing.setIc(newIc);
+                    // edit IC with validation
+                    while (true) {
+                        System.out.print("Enter new IC             > ");
+                        String newIc = scanner.nextLine().trim();
+                        try {
+                            service.validateIc(newIc);
+                            existing.setIc(newIc);
+                            System.out.println("IC updated (pending save).");
+                            break;
+                        } catch (IllegalArgumentException ex) {
+                            System.out.println("Invalid IC: " + ex.getMessage());
+                        }
+                    }
                 }
                 case 4 -> {
-                    System.out.print("Enter new gender (M - Male | F - Female) > ");
-                    String genderInput = scanner.nextLine();
-                    if (!genderInput.isBlank()) {
-                        existing.setGender(genderInput.toUpperCase().charAt(0));
+                    // edit gender with validation
+                    while (true) {
+                        System.out.print("Enter new gender (M - Male | F - Female) > ");
+                        String genderInput = scanner.nextLine().trim().toUpperCase();
+                        if (genderInput.isBlank()) {
+                            System.out.println("Gender cannot be empty. Please try again.");
+                            continue;
+                        }
+                        char newGender = genderInput.charAt(0);
+                        try {
+                            service.validateGender(newGender);
+                            existing.setGender(newGender);
+                            System.out.println("Gender updated (pending save).");
+                            break;
+                        } catch (IllegalArgumentException ex) {
+                            System.out.println("Invalid gender: " + ex.getMessage());
+                        }
                     }
                 }
                 case 5 -> {
+                    // save all pending changes
                     try {
                         service.updatePassenger(existing);
                         System.out.println("Passenger updated successfully.");
@@ -284,6 +328,7 @@ public class PassengerUI {
             }
         }
     }
+
 
     /**
      * UI for Display All Passengers Information
@@ -314,7 +359,7 @@ public class PassengerUI {
                     p.getIc(),
                     String.valueOf(p.getGender()),
                     p.getDateJoined(),
-                    String.valueOf(p.getPassengerTier())
+                    String.valueOf(p.getPassengerTier().getCode())
             );
         }
 
@@ -351,20 +396,23 @@ public class PassengerUI {
             return;
         }
 
-        System.out.print("Enter new tier (N - Normal | S - Silver | G - Gold) > ");
+        System.out.print("Enter new tier (G - Gold | S - Silver | N - Normal) > ");
         String tierInput = scanner.nextLine().trim().toUpperCase();
+
         if (tierInput.isBlank()) {
             System.out.println("Tier cannot be empty. Operation cancelled.");
             return;
         }
-        char newTier = tierInput.charAt(0);
+
+        char newTierCode = tierInput.charAt(0);
 
         try {
-            service.changeTier(id, newTier);
+            service.changeTier(id, newTierCode);
             System.out.println("Passenger tier updated successfully.");
         } catch (IllegalArgumentException ex) {
             System.out.println("Failed to update tier: " + ex.getMessage());
         }
+
     }
 
 }

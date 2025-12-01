@@ -3,6 +3,7 @@ package oopt.assignment.service;
 import oopt.assignment.model.IPassengerRepository;
 import oopt.assignment.model.Passenger;
 import oopt.assignment.model.PassengerRepository;
+import oopt.assignment.model.PassengerTier;
 
 import java.time.LocalDate;
 import java.util.Collection;
@@ -39,6 +40,39 @@ public class PassengerService {
     }
 
     /**
+     * Call the validator from the UI
+     * @param name Passenger's name
+     */
+    public void validateName(String name) {
+        validator.validateName(name);
+    }
+
+    /**
+     * Call the validator from the UI
+     * @param contactNo Passenger's contact number/phone number
+     */
+    public void validateContact(String contactNo) {
+        validator.validateContact(contactNo);
+    }
+
+    /**
+     * Call the validator from the UI
+     * @param ic Passenger's identity card number
+     */
+    public void validateIc(String ic) {
+        validator.validateIc(ic);
+    }
+
+    /**
+     * Call the validator from the UI
+     * @param gender Passenger's gender
+     */
+    public void validateGender(char gender) {
+        validator.validateGender(gender);
+    }
+
+
+    /**
      * Search passenger using id
      * @param id Passenger's id
      * @return passenger data
@@ -73,7 +107,7 @@ public class PassengerService {
 
         String id = concreteRepo.generateNewId();
         LocalDate joinedDate = LocalDate.now();
-        char defaultTier = 'N';
+        PassengerTier defaultTier = PassengerTier.NORMAL;
 
         Passenger newPassenger = new Passenger(
                 name, contactNo, ic, id, Character.toUpperCase(gender),
@@ -102,7 +136,6 @@ public class PassengerService {
         validator.validateContact(updatedPassenger.getContactNo());
         validator.validateIc(updatedPassenger.getIc());
         validator.validateGender(updatedPassenger.getGender());
-        validator.validateTier(updatedPassenger.getPassengerTier());
 
         all.put(updatedPassenger.getId(), updatedPassenger);
         repository.saveAll(all.values());
@@ -111,9 +144,9 @@ public class PassengerService {
     /**
      * Change (upgrade/downgrade) the passenger's tier manually by staff
      * @param passengerId Passenger's id
-     * @param newTier Passenger's tier in the system
+     * @param newTierCode Passenger's tier in the system
      */
-    public void changeTier(String passengerId, char newTier) {
+    public void changeTier(String passengerId, char newTierCode) {
         LinkedHashMap<String, Passenger> all = repository.getAll();
 
         Passenger p = all.get(passengerId);
@@ -121,10 +154,12 @@ public class PassengerService {
             throw new IllegalArgumentException("Passenger not found: " + passengerId);
         }
 
-        validator.validateTier(newTier);
-        p.setPassengerTier(Character.toUpperCase(newTier));
+        validator.validateTier(newTierCode);
+        PassengerTier newTier = PassengerTier.fromCode(newTierCode);
+        p.setPassengerTier(newTier);
         repository.saveAll(all.values());
     }
+
 
     /**
      * To check the PassengerRepository is concrete
@@ -134,8 +169,6 @@ public class PassengerService {
         if (repository instanceof PassengerRepository repo) {
             return repo;
         }
-        // If someone passes a different implementation,
-        // you can throw or handle differently.
         throw new IllegalStateException(
                 "New ID generation requires PassengerRepository concrete type.");
     }

@@ -39,7 +39,8 @@ public class PassengerRepository implements IPassengerRepository {
                 String id = fields[3];
                 char gender = fields[4].charAt(0);
                 LocalDate joinedDate = LocalDate.parse(fields[5], DATE_FORMATTER);
-                char tier = fields[6].charAt(0);
+                char tierCode = fields[6].charAt(0);
+                PassengerTier tier = PassengerTier.fromCode(tierCode);
 
                 Passenger passenger = new Passenger(
                         name, contactNo, ic, id, gender, joinedDate, tier
@@ -64,7 +65,7 @@ public class PassengerRepository implements IPassengerRepository {
                                 p.getId() + "|" +
                                 p.getGender() + "|" +
                                 p.getDateJoined().format(DATE_FORMATTER) + "|" +
-                                p.getPassengerTier()
+                                p.getPassengerTier().getCode()
                 );
                 writer.newLine();
             }

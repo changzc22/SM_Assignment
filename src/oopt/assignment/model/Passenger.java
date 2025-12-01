@@ -9,7 +9,7 @@ public class Passenger extends Person {
 
     private char gender;
     private LocalDate dateJoined;
-    private char passengerTier;
+    private PassengerTier passengerTier;
 
     /**
      * Empty constructor
@@ -33,7 +33,7 @@ public class Passenger extends Person {
                      String id,
                      char gender,
                      LocalDate dateJoined,
-                     char passengerTier) {
+                     PassengerTier passengerTier) {
 
         super(name, contactNo, ic, id);
         this.gender = gender;
@@ -66,35 +66,17 @@ public class Passenger extends Person {
     }
 
     /**
-     * Setter 2
-     * @param dateJoined Passenger's joined (registered) date
-     */
-    public void setDateJoined(LocalDate dateJoined) {
-        this.dateJoined = dateJoined;
-    }
-
-    /**
      * Getter 3
      * @return passengerTier (Passenger's tier in the system)
      */
-    public char getPassengerTier() {
-        return passengerTier;
-    }
+    public PassengerTier getPassengerTier() { return passengerTier; }
+
 
     /**
-     * Setter 3
+     * Setter 2
      * @param passengerTier Passenger's tier in the system
      */
-    public void setPassengerTier(char passengerTier) {
-        this.passengerTier = passengerTier;
-    }
-
-    /**
-     * Display passenger's information (name, contactNo, ic, id)
-     */
-    public void displayPerson() {
-        System.out.println(this);
-    }
+    public void setPassengerTier(PassengerTier passengerTier) { this.passengerTier = passengerTier; }
 
     /**
      * Display passenger's information (gender, dateJoined, passengerTier)

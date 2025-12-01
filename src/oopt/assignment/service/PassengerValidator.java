@@ -1,5 +1,7 @@
 package oopt.assignment.service;
 
+import oopt.assignment.model.PassengerTier;
+
 /**
  * Passenger Validator - Utility class to check the input validity
  */
@@ -57,12 +59,18 @@ public class PassengerValidator {
 
     /**
      * Method to validate passenger tier
-     * @param tier Passenger's tier in the system
+     * @param tierCode Passenger's tier in the system
      */
-    public void validateTier(char tier) {
-        char upper = Character.toUpperCase(tier);
-        if (upper != 'N' && upper != 'S' && upper != 'G') {
-            throw new IllegalArgumentException("Tier must be N (Normal), S (Silver), G(Gold).");
+    public void validateTier(char tierCode) {
+        char upper = Character.toUpperCase(tierCode);
+
+        for (PassengerTier tier : PassengerTier.values()) {
+            if (upper == tier.getCode()) {
+                return; // valid
+            }
         }
+
+        throw new IllegalArgumentException("Tier must be G (Gold), S (Silver) or N (Normal).");
     }
+
 }
