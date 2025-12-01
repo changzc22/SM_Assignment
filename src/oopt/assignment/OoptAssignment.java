@@ -1,11 +1,9 @@
 package oopt.assignment;
 
 import oopt.assignment.model.StaffRepository;
+import oopt.assignment.service.PassengerService;
 import oopt.assignment.service.StaffService;
-import oopt.assignment.ui.BookingUI;
-import oopt.assignment.ui.MainMenuOption;
-import oopt.assignment.ui.MainUI;
-import oopt.assignment.ui.StaffUI;
+import oopt.assignment.ui.*;
 import oopt.assignment.util.ErrorMessage; // Import the utility
 
 import java.util.Scanner;
@@ -44,7 +42,11 @@ public class OoptAssignment {
                 switch (option) {
                     case STAFF -> StaffMain.staffMain(loginStaffID, staffService);
 
-                    case PASSENGER -> PassengerMain.passengerMain();
+                    case PASSENGER -> {
+                        PassengerService passengerService = new PassengerService();
+                        PassengerUI passengerUI = new PassengerUI(passengerService, scanner);
+                        passengerUI.showMenu();
+                    }
 
                     case BOOKING -> new BookingUI().start();
 
