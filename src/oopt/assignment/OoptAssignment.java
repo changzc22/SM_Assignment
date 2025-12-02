@@ -3,6 +3,7 @@ package oopt.assignment;
 import oopt.assignment.model.StaffRepository;
 import oopt.assignment.service.PassengerService;
 import oopt.assignment.service.StaffService;
+import oopt.assignment.service.TrainService;
 import oopt.assignment.ui.*;
 import oopt.assignment.util.ErrorMessage; // Import the utility
 
@@ -50,7 +51,11 @@ public class OoptAssignment {
 
                     case BOOKING -> new BookingUI().start();
 
-                    case TRAIN -> TrainMain.trainMain();
+                    case TRAIN -> {
+                        TrainService trainService = new TrainService();
+                        TrainUI trainUI = new TrainUI(trainService, scanner);
+                        trainUI.showMenu();
+                    }
 
                     case LOGOUT -> {
                         System.out.println("Logging out...");
