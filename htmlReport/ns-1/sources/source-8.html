@@ -5,7 +5,7 @@
 <html id="htmlId">
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
-  <title>Coverage Report > TrainTest</title>
+  <title>Coverage Report > StaffValidatorTest</title>
   <style type="text/css">
     @import "../../css/coverage.css";
     @import "../../css/idea.min.css";
@@ -22,7 +22,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     <a href="../index.html">test</a>
 </div>
 
-<h1>Coverage Summary for Class: TrainTest (test)</h1>
+<h1>Coverage Summary for Class: StaffValidatorTest (test)</h1>
 
 <table class="coverageStats">
 <tr>
@@ -41,7 +41,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 </th>
 </tr>
 <tr>
-  <td class="name">TrainTest</td>
+  <td class="name">StaffValidatorTest</td>
 <td class="coverageStat">
   <span class="percent">
     100%
@@ -55,7 +55,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (4/4)
+    (7/7)
   </span>
 </td>
 <td class="coverageStat">
@@ -63,7 +63,7 @@ Current scope:     <a href="../../index.html">all classes</a>
     100%
   </span>
   <span class="absValue">
-    (47/47)
+    (19/19)
   </span>
 </td>
 </tr>
@@ -77,112 +77,83 @@ Current scope:     <a href="../../index.html">all classes</a>
 <pre>
 <code class="sourceCode" id="sourceCode">&nbsp;package test;
 &nbsp;
-&nbsp;import oopt.assignment.model.Train;
-&nbsp;import oopt.assignment.model.TrainStatus;
+&nbsp;import oopt.assignment.model.Staff;
+&nbsp;import oopt.assignment.service.StaffValidator;
+&nbsp;import org.junit.jupiter.api.BeforeEach;
+&nbsp;import org.junit.jupiter.api.DisplayName;
 &nbsp;import org.junit.jupiter.api.Test;
 &nbsp;
-&nbsp;import java.time.LocalDate;
-&nbsp;import java.time.LocalTime;
+&nbsp;import java.util.LinkedHashMap;
 &nbsp;
 &nbsp;import static org.junit.jupiter.api.Assertions.*;
 &nbsp;
-&nbsp;/**
-&nbsp; * Unit tests for {@link Train}.
-&nbsp; * Verifies construction, getters, setters and toString formatting.
-&nbsp; */
-<b class="fc">&nbsp;class TrainTest {</b>
+&nbsp;@DisplayName(&quot;Staff Validator Tests&quot;)
+<b class="fc">&nbsp;public class StaffValidatorTest {</b>
 &nbsp;
-&nbsp;    /**
-&nbsp;     * Verifies that the no-arg constructor creates a Train
-&nbsp;     * with all fields initially null/zero and setters work correctly.
-&nbsp;     */
-&nbsp;    @Test
-&nbsp;    void testNoArgConstructorAndSetters() {
-<b class="fc">&nbsp;        Train train = new Train();</b>
+&nbsp;    private StaffValidator validator;
+&nbsp;    private LinkedHashMap&lt;String, Staff&gt; mockData;
 &nbsp;
-<b class="fc">&nbsp;        LocalDate date = LocalDate.of(2030, 5, 10);</b>
-<b class="fc">&nbsp;        LocalTime time = LocalTime.of(14, 30);</b>
-&nbsp;
-<b class="fc">&nbsp;        train.setTrainID(&quot;T123&quot;);</b>
-<b class="fc">&nbsp;        train.setDestination(&quot;KL Sentral&quot;);</b>
-<b class="fc">&nbsp;        train.setDepartureDate(date);</b>
-<b class="fc">&nbsp;        train.setDepartureTime(time);</b>
-<b class="fc">&nbsp;        train.setStandardSeatQty(100);</b>
-<b class="fc">&nbsp;        train.setPremiumSeatQty(20);</b>
-<b class="fc">&nbsp;        train.setStandardSeatPrice(50.0);</b>
-<b class="fc">&nbsp;        train.setPremiumSeatPrice(120.0);</b>
-<b class="fc">&nbsp;        train.setStatus(TrainStatus.ACTIVE);</b>
-&nbsp;
-<b class="fc">&nbsp;        assertEquals(&quot;T123&quot;, train.getTrainID());</b>
-<b class="fc">&nbsp;        assertEquals(&quot;KL Sentral&quot;, train.getDestination());</b>
-<b class="fc">&nbsp;        assertEquals(date, train.getDepartureDate());</b>
-<b class="fc">&nbsp;        assertEquals(time, train.getDepartureTime());</b>
-<b class="fc">&nbsp;        assertEquals(100, train.getStandardSeatQty());</b>
-<b class="fc">&nbsp;        assertEquals(20, train.getPremiumSeatQty());</b>
-<b class="fc">&nbsp;        assertEquals(50.0, train.getStandardSeatPrice());</b>
-<b class="fc">&nbsp;        assertEquals(120.0, train.getPremiumSeatPrice());</b>
-<b class="fc">&nbsp;        assertEquals(TrainStatus.ACTIVE, train.getStatus());</b>
+&nbsp;    @BeforeEach
+&nbsp;    void setup() {
+<b class="fc">&nbsp;        validator = new StaffValidator();</b>
+<b class="fc">&nbsp;        mockData = new LinkedHashMap&lt;&gt;();</b>
+&nbsp;        // Add a dummy staff to test duplicate checks
+<b class="fc">&nbsp;        Staff existing = new Staff(&quot;Existing User&quot;, &quot;0123456789&quot;, &quot;990101015555&quot;, &quot;S001&quot;, &quot;hash&quot;, 0);</b>
+<b class="fc">&nbsp;        mockData.put(existing.getId(), existing);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    /**
-&nbsp;     * Verifies the full-arg constructor correctly assigns all fields.
+&nbsp;     * Tests the name validation logic.
+&nbsp;     * Ensures names with alphabets are accepted, while numbers or empty strings are rejected.
 &nbsp;     */
 &nbsp;    @Test
-&nbsp;    void testFullArgConstructor() {
-<b class="fc">&nbsp;        LocalDate date = LocalDate.of(2031, 1, 1);</b>
-<b class="fc">&nbsp;        LocalTime time = LocalTime.of(9, 0);</b>
-&nbsp;
-<b class="fc">&nbsp;        Train train = new Train(</b>
-&nbsp;                &quot;T777&quot;,
-&nbsp;                &quot;Johor&quot;,
-&nbsp;                date,
-&nbsp;                time,
-&nbsp;                80,
-&nbsp;                10,
-&nbsp;                45.5,
-&nbsp;                100.0,
-&nbsp;                TrainStatus.DISCONTINUED
-&nbsp;        );
-&nbsp;
-<b class="fc">&nbsp;        assertEquals(&quot;T777&quot;, train.getTrainID());</b>
-<b class="fc">&nbsp;        assertEquals(&quot;Johor&quot;, train.getDestination());</b>
-<b class="fc">&nbsp;        assertEquals(date, train.getDepartureDate());</b>
-<b class="fc">&nbsp;        assertEquals(time, train.getDepartureTime());</b>
-<b class="fc">&nbsp;        assertEquals(80, train.getStandardSeatQty());</b>
-<b class="fc">&nbsp;        assertEquals(10, train.getPremiumSeatQty());</b>
-<b class="fc">&nbsp;        assertEquals(45.5, train.getStandardSeatPrice());</b>
-<b class="fc">&nbsp;        assertEquals(100.0, train.getPremiumSeatPrice());</b>
-<b class="fc">&nbsp;        assertEquals(TrainStatus.DISCONTINUED, train.getStatus());</b>
+&nbsp;    void testNameValidation() {
+<b class="fc">&nbsp;        assertTrue(validator.isNameValid(&quot;John Doe&quot;));</b>
+<b class="fc">&nbsp;        assertFalse(validator.isNameValid(&quot;John123&quot;), &quot;Name with numbers should fail&quot;);</b>
+<b class="fc">&nbsp;        assertFalse(validator.isNameValid(&quot;&quot;), &quot;Empty name should fail&quot;);</b>
 &nbsp;    }
 &nbsp;
 &nbsp;    /**
-&nbsp;     * Verifies that toString includes all fields and formats prices and status correctly.
+&nbsp;     * Tests the contact number validation logic.
+&nbsp;     * Ensures correct format (01xxxxxxxx) is accepted and duplicates are rejected.
 &nbsp;     */
 &nbsp;    @Test
-&nbsp;    void testToStringFormatting() {
-<b class="fc">&nbsp;        Train train = new Train(</b>
-&nbsp;                &quot;T001&quot;,
-&nbsp;                &quot;Penang&quot;,
-<b class="fc">&nbsp;                LocalDate.of(2030, 12, 25),</b>
-<b class="fc">&nbsp;                LocalTime.of(16, 45),</b>
-&nbsp;                120,
-&nbsp;                30,
-&nbsp;                60.0,
-&nbsp;                150.0,
-&nbsp;                TrainStatus.ACTIVE
-&nbsp;        );
+&nbsp;    void testContactValidation() {
+<b class="fc">&nbsp;        assertTrue(validator.isCNValid(&quot;0123456788&quot;, mockData)); // Unique</b>
+<b class="fc">&nbsp;        assertFalse(validator.isCNValid(&quot;0123456789&quot;, mockData), &quot;Duplicate contact should fail&quot;);</b>
+<b class="fc">&nbsp;        assertFalse(validator.isCNValid(&quot;123456&quot;, mockData), &quot;Invalid format should fail&quot;);</b>
+&nbsp;    }
 &nbsp;
-<b class="fc">&nbsp;        String s = train.toString();</b>
+&nbsp;    /**
+&nbsp;     * Tests the IC number validation logic.
+&nbsp;     * Ensures correct 12-digit format is accepted and duplicates are rejected.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void testICValidation() {
+<b class="fc">&nbsp;        assertTrue(validator.isICValid(&quot;990101015556&quot;, mockData)); // Unique</b>
+<b class="fc">&nbsp;        assertFalse(validator.isICValid(&quot;990101015555&quot;, mockData), &quot;Duplicate IC should fail&quot;);</b>
+<b class="fc">&nbsp;        assertFalse(validator.isICValid(&quot;990101&quot;, mockData), &quot;Short IC should fail&quot;);</b>
+&nbsp;    }
 &nbsp;
-<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Train ID                : T001&quot;));</b>
-<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Destination             : Penang&quot;));</b>
-<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Departure Date          : 2030-12-25&quot;));</b>
-<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Departure Time          : 16:45&quot;));</b>
-<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Standard Seat Quantity  : 120&quot;));</b>
-<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Premium Seat Quantity   : 30&quot;));</b>
-<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Standard Seat Price     : RM 60.00&quot;));</b>
-<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Premium Seat Price      : RM 150.00&quot;));</b>
-<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Train Status            : Active&quot;));</b>
+&nbsp;    /**
+&nbsp;     * Tests the Staff ID validation logic.
+&nbsp;     * Ensures the SXXX format is enforced and existing IDs are flagged as duplicates.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void testIDValidation() {
+<b class="fc">&nbsp;        assertTrue(validator.isIDValid(&quot;S002&quot;, mockData)); // Unique</b>
+<b class="fc">&nbsp;        assertFalse(validator.isIDValid(&quot;S001&quot;, mockData), &quot;Duplicate ID should fail&quot;);</b>
+<b class="fc">&nbsp;        assertFalse(validator.isIDValid(&quot;X999&quot;, mockData), &quot;Wrong ID format should fail&quot;);</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Tests the password complexity rules.
+&nbsp;     * Ensures passwords meet minimum length and character requirements.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void testPasswordComplexity() {
+<b class="fc">&nbsp;        assertTrue(validator.isPasswordComplexityValid(&quot;Pass1234&quot;));</b>
+<b class="fc">&nbsp;        assertFalse(validator.isPasswordComplexityValid(&quot;weak&quot;), &quot;Short password should fail&quot;);</b>
 &nbsp;    }
 &nbsp;}
 </code>
@@ -208,7 +179,7 @@ Current scope:     <a href="../../index.html">all classes</a>
 
 <div class="footer">
     
-    <div style="float:right;">generated on 2025-12-02 22:30</div>
+    <div style="float:right;">generated on 2025-12-02 23:29</div>
 </div>
 </body>
 </html>

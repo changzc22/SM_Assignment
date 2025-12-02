@@ -1,0 +1,212 @@
+
+
+
+<!DOCTYPE html>
+<html id="htmlId">
+<head>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8"> 
+  <title>Coverage Report > TrainTest</title>
+  <style type="text/css">
+    @import "../../css/coverage.css";
+    @import "../../css/idea.min.css";
+  </style>
+  <script type="text/javascript" src="../../js/highlight.min.js"></script>
+  <script type="text/javascript" src="../../js/highlightjs-line-numbers.min.js"></script>
+</head>
+
+<body>
+<div class="content">
+<div class="breadCrumbs">
+Current scope:     <a href="../../index.html">all classes</a>
+    <span class="separator">|</span>
+    <a href="../index.html">test</a>
+</div>
+
+<h1>Coverage Summary for Class: TrainTest (test)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">TrainTest</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/4)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (47/47)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<pre>
+<code class="sourceCode" id="sourceCode">&nbsp;package test;
+&nbsp;
+&nbsp;import oopt.assignment.model.Train;
+&nbsp;import oopt.assignment.model.TrainStatus;
+&nbsp;import org.junit.jupiter.api.Test;
+&nbsp;
+&nbsp;import java.time.LocalDate;
+&nbsp;import java.time.LocalTime;
+&nbsp;
+&nbsp;import static org.junit.jupiter.api.Assertions.*;
+&nbsp;
+&nbsp;/**
+&nbsp; * Unit tests for Train
+&nbsp; */
+<b class="fc">&nbsp;class TrainTest {</b>
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifies that the no-arg constructor creates a Train
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void testNoArgConstructorAndSetters() {
+<b class="fc">&nbsp;        Train train = new Train();</b>
+&nbsp;
+<b class="fc">&nbsp;        LocalDate date = LocalDate.of(2030, 5, 10);</b>
+<b class="fc">&nbsp;        LocalTime time = LocalTime.of(14, 30);</b>
+&nbsp;
+<b class="fc">&nbsp;        train.setTrainID(&quot;T123&quot;);</b>
+<b class="fc">&nbsp;        train.setDestination(&quot;KL Sentral&quot;);</b>
+<b class="fc">&nbsp;        train.setDepartureDate(date);</b>
+<b class="fc">&nbsp;        train.setDepartureTime(time);</b>
+<b class="fc">&nbsp;        train.setStandardSeatQty(100);</b>
+<b class="fc">&nbsp;        train.setPremiumSeatQty(20);</b>
+<b class="fc">&nbsp;        train.setStandardSeatPrice(50.0);</b>
+<b class="fc">&nbsp;        train.setPremiumSeatPrice(120.0);</b>
+<b class="fc">&nbsp;        train.setStatus(TrainStatus.ACTIVE);</b>
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(&quot;T123&quot;, train.getTrainID());</b>
+<b class="fc">&nbsp;        assertEquals(&quot;KL Sentral&quot;, train.getDestination());</b>
+<b class="fc">&nbsp;        assertEquals(date, train.getDepartureDate());</b>
+<b class="fc">&nbsp;        assertEquals(time, train.getDepartureTime());</b>
+<b class="fc">&nbsp;        assertEquals(100, train.getStandardSeatQty());</b>
+<b class="fc">&nbsp;        assertEquals(20, train.getPremiumSeatQty());</b>
+<b class="fc">&nbsp;        assertEquals(50.0, train.getStandardSeatPrice());</b>
+<b class="fc">&nbsp;        assertEquals(120.0, train.getPremiumSeatPrice());</b>
+<b class="fc">&nbsp;        assertEquals(TrainStatus.ACTIVE, train.getStatus());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifies the full-arg constructor correctly assigns all fields.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void testFullArgConstructor() {
+<b class="fc">&nbsp;        LocalDate date = LocalDate.of(2031, 1, 1);</b>
+<b class="fc">&nbsp;        LocalTime time = LocalTime.of(9, 0);</b>
+&nbsp;
+<b class="fc">&nbsp;        Train train = new Train(</b>
+&nbsp;                &quot;T777&quot;,
+&nbsp;                &quot;Johor&quot;,
+&nbsp;                date,
+&nbsp;                time,
+&nbsp;                80,
+&nbsp;                10,
+&nbsp;                45.5,
+&nbsp;                100.0,
+&nbsp;                TrainStatus.DISCONTINUED
+&nbsp;        );
+&nbsp;
+<b class="fc">&nbsp;        assertEquals(&quot;T777&quot;, train.getTrainID());</b>
+<b class="fc">&nbsp;        assertEquals(&quot;Johor&quot;, train.getDestination());</b>
+<b class="fc">&nbsp;        assertEquals(date, train.getDepartureDate());</b>
+<b class="fc">&nbsp;        assertEquals(time, train.getDepartureTime());</b>
+<b class="fc">&nbsp;        assertEquals(80, train.getStandardSeatQty());</b>
+<b class="fc">&nbsp;        assertEquals(10, train.getPremiumSeatQty());</b>
+<b class="fc">&nbsp;        assertEquals(45.5, train.getStandardSeatPrice());</b>
+<b class="fc">&nbsp;        assertEquals(100.0, train.getPremiumSeatPrice());</b>
+<b class="fc">&nbsp;        assertEquals(TrainStatus.DISCONTINUED, train.getStatus());</b>
+&nbsp;    }
+&nbsp;
+&nbsp;    /**
+&nbsp;     * Verifies that toString includes all fields and formats prices and status correctly.
+&nbsp;     */
+&nbsp;    @Test
+&nbsp;    void testToStringFormatting() {
+<b class="fc">&nbsp;        Train train = new Train(</b>
+&nbsp;                &quot;T001&quot;,
+&nbsp;                &quot;Penang&quot;,
+<b class="fc">&nbsp;                LocalDate.of(2030, 12, 25),</b>
+<b class="fc">&nbsp;                LocalTime.of(16, 45),</b>
+&nbsp;                120,
+&nbsp;                30,
+&nbsp;                60.0,
+&nbsp;                150.0,
+&nbsp;                TrainStatus.ACTIVE
+&nbsp;        );
+&nbsp;
+<b class="fc">&nbsp;        String s = train.toString();</b>
+&nbsp;
+<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Train ID                : T001&quot;));</b>
+<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Destination             : Penang&quot;));</b>
+<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Departure Date          : 2030-12-25&quot;));</b>
+<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Departure Time          : 16:45&quot;));</b>
+<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Standard Seat Quantity  : 120&quot;));</b>
+<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Premium Seat Quantity   : 30&quot;));</b>
+<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Standard Seat Price     : RM 60.00&quot;));</b>
+<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Premium Seat Price      : RM 150.00&quot;));</b>
+<b class="fc">&nbsp;        assertTrue(s.contains(&quot;Train Status            : Active&quot;));</b>
+&nbsp;    }
+&nbsp;}
+</code>
+</pre>
+</div>
+
+<script type="text/javascript">
+(function() {
+    var msie = false, msie9 = false;
+    /*@cc_on
+      msie = true;
+      @if (@_jscript_version >= 9)
+        msie9 = true;
+      @end
+    @*/
+
+    if (!msie || msie && msie9) {
+      hljs.highlightAll()
+      hljs.initLineNumbersOnLoad();
+    }
+})();
+</script>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2025-12-02 23:29</div>
+</div>
+</body>
+</html>
