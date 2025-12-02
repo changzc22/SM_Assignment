@@ -53,6 +53,8 @@ public class StaffUI {
      */
     public void start(String loggedInStaffId) {
         while (true) {
+            displayStaffLogo();
+            printStaffMenu();
             StaffMenuOption option = getMenuSelection();
             if (option == null) {
                 System.out.println("Invalid choice. Please try again.");
@@ -71,15 +73,40 @@ public class StaffUI {
     }
 
     /**
+     * Display Staff module Logo
+     */
+    private void displayStaffLogo() {
+        System.out.println("         ================================================");
+        System.out.println("         | SSSSS    TTTTTTT    AAA     FFFFFF   FFFFFF  |");
+        System.out.println("         | SS         TTT     AA AA    FF       FF      |");
+        System.out.println("         | SSSSS      TTT    AAAAAAA   FFFF     FFFF    |");
+        System.out.println("         |     SS     TTT    AA   AA   FF       FF      |");
+        System.out.println("         | SSSSS      TTT    AA   AA   FF       FF      |");
+        System.out.println("         ================================================");
+    }
+
+    /**
+     * Display Staff Menu
+     */
+    private void printStaffMenu() {
+        System.out.println("\n           --------------------------------------------");
+        System.out.println("           |               Staff Menu                 |");
+        System.out.println("           --------------------------------------------");
+        System.out.println("           |  1. Create New Staff                     |");
+        System.out.println("           |  2. Modify Staff Details                 |");
+        System.out.println("           |  3. Delete Staff                         |");
+        System.out.println("           |  4. Display All Staff                    |");
+        System.out.println("           |  5. Search for Staff                     |");
+        System.out.println("           |  6. Exit                                 |");
+        System.out.println("           --------------------------------------------");
+    }
+
+    /**
      * Displays the menu options and parses the user's integer choice.
      * @return user's integer choice mapped to Enum.
      */
     private StaffMenuOption getMenuSelection() {
-        System.out.println("\n--- Staff Management Menu ---");
-        Arrays.stream(StaffMenuOption.values())
-                .forEach(opt -> System.out.println(opt.getId() + ". " + opt.getDescription()));
         System.out.print("Your choice: ");
-
         try {
             int choice = Integer.parseInt(scanner.nextLine());
             return StaffMenuOption.fromId(choice);
