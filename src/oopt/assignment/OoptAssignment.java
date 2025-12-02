@@ -41,7 +41,10 @@ public class OoptAssignment {
                 }
 
                 switch (option) {
-                    case STAFF -> StaffMain.staffMain(loginStaffID, staffService);
+                    case STAFF -> {
+                        StaffUI ui = new StaffUI(staffService);
+                        ui.start(loginStaffID);
+                    }
 
                     case PASSENGER -> {
                         PassengerService passengerService = new PassengerService();
