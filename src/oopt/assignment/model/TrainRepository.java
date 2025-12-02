@@ -28,6 +28,20 @@ public class TrainRepository implements TrainInterface {
     private static final DateTimeFormatter TIME_FORMATTER =
             DateTimeFormatter.ofPattern("HH:mm");
 
+    private final String filePath;
+
+    public TrainRepository() {
+        this(AppConstants.TRAIN_FILE_PATH);
+    }
+
+    /**
+     * constructor that allows tests to inject a custom file path.
+     * @param filePath path to the file used for persistence
+     */
+    public TrainRepository(String filePath) {
+        this.filePath = filePath;
+    }
+
     /**
      * Load all Train records from the configured file path.
      * @return list of Train objects loaded from the file
@@ -35,7 +49,7 @@ public class TrainRepository implements TrainInterface {
     @Override
     public List<Train> loadAll() {
         List<Train> result = new ArrayList<>();
-        File trainFile = new File(AppConstants.TRAIN_FILE_PATH);
+        File trainFile = new File(filePath);
 
         if (!trainFile.exists()) {
             LOGGER.info("Train file not found. A new one will be created upon save.");
@@ -85,7 +99,7 @@ public class TrainRepository implements TrainInterface {
      */
     @Override
     public void saveAll(List<Train> trains) {
-        File trainFile = new File(AppConstants.TRAIN_FILE_PATH);
+        File trainFile = new File(filePath);
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(trainFile))) {
             for (Train train : trains) {
                 String line = train.getTrainID() + "|"

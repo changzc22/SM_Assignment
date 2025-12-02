@@ -6,6 +6,7 @@ import oopt.assignment.util.ErrorMessage;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.ResolverStyle;
 import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -39,7 +40,8 @@ public class TrainValidator {
             DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     private static final DateTimeFormatter TIME_FORMATTER =
-            DateTimeFormatter.ofPattern("HH:mm");
+            DateTimeFormatter.ofPattern("HH:mm")
+                    .withResolverStyle(ResolverStyle.STRICT);
 
     /**
      * Checks if a Train ID follows format TXXX
