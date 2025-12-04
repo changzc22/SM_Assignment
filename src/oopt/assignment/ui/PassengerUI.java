@@ -1,6 +1,7 @@
 package oopt.assignment.ui;
 
 import oopt.assignment.model.Passenger;
+import oopt.assignment.model.PassengerTier;
 import oopt.assignment.service.PassengerService;
 
 import java.util.Collection;
@@ -24,30 +25,35 @@ public class PassengerUI {
      * Display Passenger module's menu (Switch)
      */
     public void showMenu() {
-        int selection;
+        PassengerMenuOption option;
 
         do {
             printHeader();
-            selection = readInt("\nEnter a choice > ", 1, 6);
+            int selection = readInt("\nEnter a choice > ", 1, 6);
 
-            switch (selection) {
-                case 1 -> handleNewPassenger();
-                case 2 -> handleSearchPassenger();
-                case 3 -> handleEditPassenger();
-                case 4 -> handleDisplayAll();
-                case 5 -> handleChangeTier();
-                case 6 -> System.out.println("Returning to main menu...");
-                default -> System.out.println("Invalid input!");
+            option = PassengerMenuOption.fromCode(selection);
+            if (option == null) {
+                System.out.println("Invalid input!");
+            } else {
+                switch (option) {
+                    case NEW_REGISTRATION -> handleNewPassenger();
+                    case SEARCH_PASSENGER -> handleSearchPassenger();
+                    case EDIT_PASSENGER -> handleEditPassenger();
+                    case DISPLAY_ALL -> handleDisplayAll();
+                    case CHANGE_TIER -> handleChangeTier();
+                    case BACK_TO_MAIN_MENU -> System.out.println("Returning to main menu...");
+                }
             }
 
-            if (selection != 6) {
+            if (option != PassengerMenuOption.BACK_TO_MAIN_MENU) {
                 System.out.println();
                 System.out.print("Press Enter to continue...");
                 scanner.nextLine();
             }
 
-        } while (selection != 6);
+        } while (option != PassengerMenuOption.BACK_TO_MAIN_MENU);
     }
+
 
     /**
      * Display Passenger module's menu (UI)
@@ -55,12 +61,9 @@ public class PassengerUI {
     private void printHeader() {
         System.out.println();
         System.out.println("--- Passenger Management Menu ---");
-        System.out.println("1. New Passenger Registration");
-        System.out.println("2. Search Passenger");
-        System.out.println("3. Edit Passenger Details");
-        System.out.println("4. Display All Passengers Information");
-        System.out.println("5. Upgrade/Downgrade Passenger Tier");
-        System.out.println("6. Back To Main Menu");
+        for (PassengerMenuOption option : PassengerMenuOption.values()) {
+            System.out.printf("%d. %s%n", option.getCode(), option.getDescription());
+        }
     }
 
     /**
@@ -236,18 +239,20 @@ public class PassengerUI {
             System.out.println(existing);
 
             System.out.println("\nWhich field would you like to edit?");
-            System.out.println("1. Name");
-            System.out.println("2. Contact number");
-            System.out.println("3. IC");
-            System.out.println("4. Gender");
-            System.out.println("5. Save changes and return");
-            System.out.println("6. Cancel without saving");
+            for (PassengerEditOption option : PassengerEditOption.values()) {
+                System.out.printf("%d. %s%n", option.getCode(), option.getDescription());
+            }
 
-            int choice = readInt("Your choice > ", 1, 6);
+            int choiceNumber = readInt("Your choice > ", 1, 6);
+            PassengerEditOption choice = PassengerEditOption.fromCode(choiceNumber);
+
+            if (choice == null) {
+                System.out.println("Invalid option selected.");
+                continue;
+            }
 
             switch (choice) {
-                case 1 -> {
-                    // edit name with validation
+                case EDIT_NAME -> {
                     while (true) {
                         System.out.print("Enter new name           > ");
                         String newName = scanner.nextLine().trim();
@@ -261,8 +266,7 @@ public class PassengerUI {
                         }
                     }
                 }
-                case 2 -> {
-                    // edit contact with validation
+                case EDIT_CONTACT -> {
                     while (true) {
                         System.out.print("Enter new contact number > ");
                         String newContact = scanner.nextLine().trim();
@@ -276,8 +280,7 @@ public class PassengerUI {
                         }
                     }
                 }
-                case 3 -> {
-                    // edit IC with validation
+                case EDIT_IC -> {
                     while (true) {
                         System.out.print("Enter new IC             > ");
                         String newIc = scanner.nextLine().trim();
@@ -291,8 +294,7 @@ public class PassengerUI {
                         }
                     }
                 }
-                case 4 -> {
-                    // edit gender with validation
+                case EDIT_GENDER -> {
                     while (true) {
                         System.out.print("Enter new gender (M - Male | F - Female) > ");
                         String genderInput = scanner.nextLine().trim().toUpperCase();
@@ -311,8 +313,7 @@ public class PassengerUI {
                         }
                     }
                 }
-                case 5 -> {
-                    // save all pending changes
+                case SAVE_AND_RETURN -> {
                     try {
                         service.updatePassenger(existing);
                         System.out.println("Passenger updated successfully.");
@@ -321,14 +322,13 @@ public class PassengerUI {
                     }
                     done = true;
                 }
-                case 6 -> {
+                case CANCEL -> {
                     System.out.println("No changes saved.");
                     done = true;
                 }
             }
         }
     }
-
 
     /**
      * UI for Display All Passengers Information
@@ -379,7 +379,7 @@ public class PassengerUI {
 
         if (result.isEmpty()) {
             System.out.println("Passenger not found.");
-            return; // nothing else to do
+            return;
         }
 
         Passenger p = result.get();
@@ -387,7 +387,7 @@ public class PassengerUI {
         System.out.println("\nPassenger found:");
         System.out.println("ID    : " + p.getId());
         System.out.println("Name  : " + p.getName());
-        System.out.println("Tier  : " + p.getPassengerTier());
+        System.out.println("Tier  : " + p.getPassengerTier() + " (" + p.getPassengerTier().getCode() + ")");
 
         System.out.print("\nDo you want to change this passenger's tier? (Y/N) > ");
         String confirm = scanner.nextLine().trim().toUpperCase();
@@ -396,23 +396,25 @@ public class PassengerUI {
             return;
         }
 
-        System.out.print("Enter new tier (G - Gold | S - Silver | N - Normal) > ");
-        String tierInput = scanner.nextLine().trim().toUpperCase();
-
-        if (tierInput.isBlank()) {
-            System.out.println("Tier cannot be empty. Operation cancelled.");
-            return;
+        System.out.println("\nSelect new tier:");
+        PassengerTier[] tiers = PassengerTier.values();
+        for (int i = 0; i < tiers.length; i++) {
+            PassengerTier tier = tiers[i];
+            System.out.printf("%d. %s (%c, %.0f%% Discount)%n",
+                    i + 1, tier.name(), tier.getCode(), (1 - tier.getPriceMultiplier())*100);
         }
 
-        char newTierCode = tierInput.charAt(0);
+        int selection = readInt("Your choice > ", 1, tiers.length);
+        PassengerTier selectedTier = tiers[selection - 1];
 
         try {
-            service.changeTier(id, newTierCode);
-            System.out.println("Passenger tier updated successfully.");
+            // service.changeTier still expects a char code
+            service.changeTier(id, selectedTier.getCode());
+            System.out.println("Passenger tier updated successfully to " + selectedTier.name() + ".");
         } catch (IllegalArgumentException ex) {
             System.out.println("Failed to update tier: " + ex.getMessage());
         }
-
     }
+
 
 }
