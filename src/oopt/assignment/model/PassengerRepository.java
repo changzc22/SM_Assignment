@@ -47,7 +47,12 @@ public class PassengerRepository implements IPassengerRepository {
                 );
                 map.put(id, passenger);
             }
+        } catch (java.io.FileNotFoundException e) {
+            // First run: file does not exist yet -> treat as "no passengers".
+            // Do nothing, just return empty map.
+            // (No stack trace printed, so your tests look clean.)
         } catch (IOException e) {
+            // Real I/O error while reading an existing file
             e.printStackTrace();
         }
 

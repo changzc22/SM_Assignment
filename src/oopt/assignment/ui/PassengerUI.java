@@ -73,7 +73,7 @@ public class PassengerUI {
      * @param max Maximum option number
      * @return option number if valid
      */
-    private int readInt(String prompt, int min, int max) {
+    public int readInt(String prompt, int min, int max) {
         while (true) {
             System.out.print(prompt);
             String line = scanner.nextLine();
