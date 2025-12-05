@@ -20,11 +20,12 @@ public class BookingService {
     }
 
     public boolean createBooking(Booking newBooking, Train train) {
-        // Logic largely handled in UI/Repo, but we validate here
         if (newBooking.getNumOfSeatBook() <= 0) return false;
 
-        // Update Train Seats (In Memory)
-        int currentSeats = (newBooking.getSeatTier() == SeatTier.STANDARD) ? train.getStandardSeatQty() : train.getPremiumSeatQty();
+        int currentSeats = (newBooking.getSeatTier() == SeatTier.STANDARD)
+                ? train.getStandardSeatQty()
+                : train.getPremiumSeatQty();
+
         if (currentSeats < newBooking.getNumOfSeatBook()) return false;
 
         if (newBooking.getSeatTier() == SeatTier.STANDARD) {
@@ -32,8 +33,12 @@ public class BookingService {
         } else {
             train.setPremiumSeatQty(currentSeats - newBooking.getNumOfSeatBook());
         }
-
         bookingRepository.add(newBooking);
+
+        if (newBooking.getStaffId() != null) {
+            oopt.assignment.service.StaffService.incrementBookingHandleStatic(newBooking.getStaffId());
+        }
+
         return true;
     }
 
@@ -99,5 +104,33 @@ public class BookingService {
         if (getBookingById(id) == null) return false;
         bookingRepository.delete(id);
         return true;
+    }
+
+    public String generateNewBookingId() {
+        ArrayList<Booking> allBookings = bookingRepository.getAll();
+
+        // Default if no bookings exist
+        if (allBookings.isEmpty()) {
+            return "B001";
+        }
+
+        int maxId = 0;
+        for (Booking b : allBookings) {
+            try {
+                // Extract the number part (e.g., "B005" -> "005" -> 5)
+                String numberPart = b.getBookingID().substring(1);
+                int currentId = Integer.parseInt(numberPart);
+
+                if (currentId > maxId) {
+                    maxId = currentId;
+                }
+            } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                // Skip malformed IDs just in case
+                continue;
+            }
+        }
+
+        // Increment and Format (e.g., 6 -> "B006")
+        return String.format("B%03d", maxId + 1);
     }
 }

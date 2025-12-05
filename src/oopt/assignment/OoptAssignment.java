@@ -52,7 +52,7 @@ public class OoptAssignment {
                         passengerUI.showMenu();
                     }
 
-                    case BOOKING -> new BookingUI().start();
+                    case BOOKING -> new BookingUI(loginStaffID).start();
 
                     case TRAIN -> {
                         TrainService trainService = new TrainService();

@@ -98,12 +98,11 @@ public class BookingRepository implements BookingInterface {
             double fare = Double.parseDouble(fields[4]);
             String trainId = fields[5];
 
-            // Temporary placeholder Train (only has ID)
-            // Service layer will fill in the rest
+            String staffId = (fields.length > 6) ? fields[6] : "Unknown";
             Train train = new Train();
             train.setTrainID(trainId);
 
-            return new Booking(id, name, tier, seats, fare, train);
+            return new Booking(id, name, tier, seats, fare, train, staffId);
 
         } catch (Exception e) {
             logger.log(Level.WARNING, "Corrupted data line skipped: " + line);
@@ -118,7 +117,8 @@ public class BookingRepository implements BookingInterface {
                 String.valueOf(b.getSeatTier().getCode()),
                 String.valueOf(b.getNumOfSeatBook()),
                 String.format("%.2f", b.getTotalFare()),
-                b.getTrain().getTrainID()
+                b.getTrain().getTrainID(),
+                b.getStaffId()
         );
     }
 }

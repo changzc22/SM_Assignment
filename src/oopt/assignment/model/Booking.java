@@ -10,19 +10,21 @@ public class Booking {
     private SeatTier seatTier;
     private int numOfSeatBook;
     private double totalFare;
-    private Train train;       // Association
+    private Train train;
+    private String staffId;
 
     // --- CONSTRUCTORS ---
     public Booking() {
     }
 
-    public Booking(String bookingID, String name, SeatTier seatTier, int numOfSeatBook, double totalFare, Train train) {
+    public Booking(String bookingID, String name, SeatTier seatTier, int numOfSeatBook, double totalFare, Train train, String staffId) {
         this.bookingID = bookingID;
         this.name = name;
         this.seatTier = seatTier;
         this.numOfSeatBook = numOfSeatBook;
         this.totalFare = totalFare;
         this.train = train;
+        this.staffId = staffId;
     }
 
     // --- GETTERS AND SETTERS ---
@@ -44,10 +46,13 @@ public class Booking {
     public Train getTrain() { return train; }
     public void setTrain(Train train) { this.train = train; }
 
-    
+    public String getStaffId() { return staffId; }
+    public void setStaffId(String staffId) { this.staffId = staffId; }
+
+
     @Override
     public String toString() {
-        return String.format("Booking [ID=%s, Name=%s, Train=%s, Seats=%d, Fare=RM%.2f]",
-                bookingID, name, (train != null ? train.getTrainID() : "null"), numOfSeatBook, totalFare);
+        return String.format("Booking [ID=%s, Name=%s, Train=%s, Seats=%d, Fare=RM%.2f, Staff=%s]",
+                bookingID, name, (train != null ? train.getTrainID() : "null"), numOfSeatBook, totalFare, staffId);
     }
 }
