@@ -6,6 +6,8 @@ import static java.lang.Character.toUpperCase;
 import java.util.*;
 import java.io.*;
 import java.time.LocalDate;
+import oopt.assignment.model.Booking;
+import oopt.assignment.model.BookingRepository;
 
 public class Passenger extends Person {
 
@@ -349,7 +351,8 @@ public class Passenger extends Person {
 
     public void modifyPassenger() {
         ArrayList<Passenger> passengerList = PassengerMain.readPassengerFile();
-        ArrayList<Booking> bookingList = BookingMain.readBookingFile();
+        BookingRepository bookingRepo = new BookingRepository();
+        ArrayList<Booking> bookingList = bookingRepo.getAll();
         Scanner sc = new Scanner(System.in).useDelimiter("\n");
         String name, nameTemp, contactNo, ic, id, searchInput;
         char gender, selectionC = 0, selectionC2 = 0, selectionC3 = 0;
@@ -451,7 +454,7 @@ public class Passenger extends Person {
                                             for (j = 0; j < bookingList.size(); j++) {
                                             if (bookingList.get(j).getName().equalsIgnoreCase(nameTemp)) {
                                                 bookingList.get(j).setName(name);
-                                                BookingMain.writeBookingFile(bookingList);
+                                                bookingRepo.saveAll(bookingList);
                                             }
                                         }
                                             passenger.setName(name);
