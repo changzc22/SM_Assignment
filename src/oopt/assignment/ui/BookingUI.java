@@ -13,11 +13,13 @@ import java.time.format.DateTimeFormatter;
 public class BookingUI {
 
     private final BookingService bookingService;
+    private final IPassengerRepository passengerRepository;
     private final String currentStaffId;
     private final Scanner scanner;
 
     public BookingUI(String staffId) {
         this.bookingService = new BookingService(new BookingRepository());
+        this.passengerRepository = new PassengerRepository();
         this.currentStaffId = staffId;
         this.scanner = new Scanner(System.in);
     }
@@ -67,26 +69,45 @@ public class BookingUI {
         System.out.println("\n--- Add New Booking ---");
         System.out.println("(Enter 'X' at any prompt to cancel)");
 
-        // 1. Select Train (Looping until valid or X)
-        System.out.println("\nAvailable Trains:");
+        // 1. Display Available Trains (Table Form)
+        System.out.println("\nAvailable Trains (Active & Has Seats):");
         List<Train> trains = oopt.assignment.TrainMain.readTrainFile();
-        boolean hasTrains = false;
+        boolean hasAvailableTrains = false;
+
+        // Define Table Format
+        String border = "+--------+-----------------+---------------------------+-------------+-------------+";
+        String format = "| %-6s | %-15s | %-25s | %-11s | %-11s |%n";
+
+        // Print Header
+        System.out.println(border);
+        System.out.printf(format, "ID", "Destination", "Departure", "Std Seats", "Prm Seats");
+        System.out.println(border);
+
         for (Train t : trains) {
-            if (t.isTrainStatus()) {
-                System.out.printf("[%s] %s - %s\n", t.getTrainID(), t.getDestination(), t.getDepartureTime());
-                hasTrains = true;
+            // Check if active AND has at least one seat in either tier
+            if (t.isTrainStatus() && (t.getStandardSeatQty() > 0 || t.getPremiumSeatQty() > 0)) {
+                String departureInfo = t.getDepartureTime() + " (" + t.getDepartureDate() + ")";
+                System.out.printf(format,
+                        t.getTrainID(),
+                        t.getDestination(),
+                        departureInfo,
+                        t.getStandardSeatQty(),
+                        t.getPremiumSeatQty());
+                hasAvailableTrains = true;
             }
         }
+        System.out.println(border);
 
-        if (!hasTrains) {
-            System.out.println("No active trains available.");
+        if (!hasAvailableTrains) {
+            System.out.println("No active trains with available seats.");
             return;
         }
 
+        // 2. Select Train
         Train selectedTrain = null;
         while (selectedTrain == null) {
-            String trainId = promptInput("Enter Train ID"); // Use helper!
-            if (trainId == null) return; // User entered X
+            String trainId = promptInput("Enter Train ID");
+            if (trainId == null) return;
 
             String finalId = trainId.toUpperCase();
             selectedTrain = trains.stream()
@@ -96,50 +117,95 @@ public class BookingUI {
 
             if (selectedTrain == null) {
                 System.out.println("Error: Invalid Train ID. Please try again.");
+            } else if (!selectedTrain.isTrainStatus() || (selectedTrain.getStandardSeatQty() <= 0 && selectedTrain.getPremiumSeatQty() <= 0)) {
+                System.out.println("Error: That train is unavailable or fully booked.");
+                selectedTrain = null;
             }
         }
 
-        // 2. Generate ID
+        // 3. Generate Booking ID
         String id = bookingService.generateNewBookingId();
 
-        // 3. Get Details using Helper Methods (Clean & Looping)
-        String name = readStringInput("Enter Passenger Name");
-        if (name == null) return;
+        // 4. Select Passenger (Validate via ID)
+        Passenger selectedPassenger = null;
+        List<Passenger> allPassengers = new ArrayList<>(passengerRepository.getAll().values());
 
-        SeatTier tier = readSeatTierInput();
-        if (tier == null) return;
+        while (selectedPassenger == null) {
+            String pId = promptInput("Enter Passenger ID");
+            if (pId == null) return;
 
-        int qty = readIntInput("Enter Quantity");
-        if (qty == -1) return;
+            String finalPId = pId.toUpperCase();
+            selectedPassenger = allPassengers.stream()
+                    .filter(p -> p.getId().equalsIgnoreCase(finalPId))
+                    .findFirst()
+                    .orElse(null);
 
-        if (qty <= 0) {
-            System.out.println("Error: Quantity must be positive.");
-            return;
+            if (selectedPassenger == null) {
+                System.out.println("Error: Passenger ID not found. Please try again.");
+            } else {
+                System.out.println(">> Passenger Selected: " + selectedPassenger.getName());
+            }
         }
 
-        // 4. Create & Save
+        String name = selectedPassenger.getName();
+
+        // 5. Seat Tier
+        SeatTier tier = null;
+        while (tier == null) {
+            SeatTier tempTier = readSeatTierInput();
+            if (tempTier == null) return;
+
+            int availableSeats = (tempTier == SeatTier.STANDARD)
+                    ? selectedTrain.getStandardSeatQty()
+                    : selectedTrain.getPremiumSeatQty();
+
+            if (availableSeats <= 0) {
+                System.out.println("Error: No " + tempTier.getLabel() + " seats available on this train.");
+            } else {
+                tier = tempTier;
+            }
+        }
+
+        // 6. Enter Quantity
+        int qty = -1;
+        while (true) {
+            qty = readIntInput("Enter Quantity");
+            if (qty == -1) return;
+
+            if (qty <= 0) {
+                System.out.println("Error: Quantity must be positive.");
+                continue;
+            }
+
+            int maxSeats = (tier == SeatTier.STANDARD) ? selectedTrain.getStandardSeatQty() : selectedTrain.getPremiumSeatQty();
+            if (qty > maxSeats) {
+                System.out.println("Error: Only " + maxSeats + " seats available.");
+            } else {
+                break;
+            }
+        }
+
+        // 7. Process Booking
         Booking newBooking = new Booking(id, name, tier, qty, 0.0, selectedTrain, currentStaffId);
 
         double basePrice = (tier == SeatTier.STANDARD) ? selectedTrain.getStandardSeatPrice() : selectedTrain.getPremiumSeatPrice();
-        double fare = bookingService.calculateFare(PassengerTier.NORMAL, tier, qty, basePrice);
+        double fare = bookingService.calculateFare(selectedPassenger.getPassengerTier(), tier, qty, basePrice);
         newBooking.setTotalFare(fare);
 
         if (bookingService.createBooking(newBooking, selectedTrain)) {
-            // Success Summary
             System.out.println("\n==========================================");
             System.out.println("          BOOKING CONFIRMED               ");
             System.out.println("==========================================");
-            System.out.println(" Booking ID   : " + newBooking.getBookingID());
-            System.out.println(" Passenger    : " + newBooking.getName());
-            System.out.println(" Train        : " + selectedTrain.getTrainID() + " (" + selectedTrain.getDestination() + ")");
-            System.out.println(" Seat Info    : " + qty + " x " + tier.getLabel());
-            System.out.printf(" Total Fare   : RM %.2f\n", fare);
+            System.out.printf(" %-12s : %s\n", "Booking ID", newBooking.getBookingID());
+            System.out.printf(" %-12s : %s (ID: %s)\n", "Passenger", newBooking.getName(), selectedPassenger.getId());
+            System.out.printf(" %-12s : %s -> %s\n", "Train", selectedTrain.getTrainID(), selectedTrain.getDestination());
+            System.out.printf(" %-12s : %s x %s Seat(s)\n", "Seat Info", qty, tier.getLabel());
+            System.out.printf(" %-12s : RM %.2f\n", "Total Fare", fare);
             System.out.println("==========================================");
 
-            // Save updates
             oopt.assignment.TrainMain.writeTrainFile((ArrayList<Train>) trains);
         } else {
-            System.out.println("Booking Failed (Not enough seats available or system error).");
+            System.out.println("Booking Failed (System Error).");
         }
     }
 
@@ -155,41 +221,57 @@ public class BookingUI {
     }
 
     private void handleSearchBooking() {
-        System.out.print("Enter Booking ID to search: ");
-        String id = scanner.nextLine();
-        Booking b = bookingService.getBookingById(id);
-        if (b != null) {
-            System.out.println("\n--- Booking Found ---");
-            System.out.println("ID:          " + b.getBookingID());
-            System.out.println("Passenger:   " + b.getName());
-            System.out.println("Train:       " + (b.getTrain() != null ? b.getTrain().getDestination() : "N/A"));
-            System.out.println("Seats:       " + b.getNumOfSeatBook() + " (" + b.getSeatTier().getLabel() + ")");
-            System.out.println("Total Fare:  RM " + String.format("%.2f", b.getTotalFare()));
-        } else {
-            System.out.println("Booking not found.");
+        System.out.println("\n--- Search Booking ---");
+
+        Booking b = null;
+        while (b == null) {
+            String id = promptInput("Enter Booking ID to search");
+            if (id == null) return;
+
+            b = bookingService.getBookingById(id);
+            if (b == null) {
+                System.out.println("Booking not found. Please try again.");
+            }
         }
+
+        System.out.println("\n--- Booking Found ---");
+        System.out.println("ID:          " + b.getBookingID());
+        System.out.println("Passenger:   " + b.getName());
+        System.out.println("Train:       " + (b.getTrain() != null ? b.getTrain().getDestination() : "N/A"));
+        System.out.println("Seats:       " + b.getNumOfSeatBook() + " (" + b.getSeatTier().getLabel() + ")");
+        System.out.println("Total Fare:  RM " + String.format("%.2f", b.getTotalFare()));
     }
 
     private void handleCancelBooking() {
-        System.out.print("Enter Booking ID to cancel: ");
-        String id = scanner.nextLine();
+        System.out.println("\n--- Cancel Booking ---");
+        System.out.println("(Enter 'X' to cancel)");
 
-        Booking b = bookingService.getBookingById(id);
-        if (b == null) {
-            System.out.println("Error: Booking ID " + id + " does not exist.");
-            return;
+        Booking b = null;
+        while (b == null) {
+            String id = promptInput("Enter Booking ID to cancel");
+            if (id == null) return;
+
+            b = bookingService.getBookingById(id);
+            if (b == null) {
+                System.out.println("Error: Booking ID " + id + " does not exist. Please try again.");
+            }
         }
 
-        System.out.print("Are you sure you want to cancel booking " + id + "? (Y/N): ");
-        String confirm = scanner.nextLine();
-        if (!confirm.equalsIgnoreCase("Y")) {
+        System.out.println("\n--- Booking Details ---");
+        System.out.println("ID:          " + b.getBookingID());
+        System.out.println("Passenger:   " + b.getName());
+        System.out.println("Destination: " + (b.getTrain() != null ? b.getTrain().getDestination() : "N/A"));
+        System.out.println("Total Fare:  RM " + String.format("%.2f", b.getTotalFare()));
+        System.out.println("-----------------------");
+
+        String confirm = promptInput("Are you sure you want to cancel this booking? (Y/N)");
+        if (confirm == null || !confirm.equalsIgnoreCase("Y")) {
             System.out.println("Cancellation aborted.");
             return;
         }
 
         ArrayList<Train> allTrains = oopt.assignment.TrainMain.readTrainFile();
-
-        if (bookingService.cancelBooking(id, allTrains)) {
+        if (bookingService.cancelBooking(b.getBookingID(), allTrains)) {
             System.out.println("Booking cancelled successfully.");
             oopt.assignment.TrainMain.writeTrainFile(allTrains);
             System.out.println("Seats have been returned to the train.");
@@ -200,8 +282,8 @@ public class BookingUI {
 
     private void handleGenerateReport() {
         MainUI.clearScreen();
-        ArrayList<Booking> bookingList = bookingService.getAllBookings();
-        ArrayList<Train> trainList = oopt.assignment.TrainMain.readTrainFile();
+        List<Booking> bookingList = bookingService.getAllBookings();
+        List<Train> trainList = oopt.assignment.TrainMain.readTrainFile();
 
         if (bookingList.isEmpty()) {
             System.out.println("Oops, the report cannot be generated due to insufficient Data.");
@@ -210,7 +292,6 @@ public class BookingUI {
 
         double totalDestinationFare = 0.0;
         double[] subtotal = {0.0, 0.0};
-
         String formattedDate = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
 
         System.out.println("--------------------------------------------------------");
@@ -281,7 +362,6 @@ public class BookingUI {
         scanner.nextLine();
     }
 
-    // --- MISSING METHOD ADDED HERE ---
     private String promptInput(String message) {
         System.out.print(message + " > ");
         String input = scanner.nextLine().trim();

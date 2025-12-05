@@ -4,4 +4,4 @@ B003|Lam Jing Yu|P|4|294.00|T010|Unknown
 B004|Ho Li Hua|P|2|315.00|T007|Unknown
 B005|Jimmy Teh|P|47|3355.80|T006|Unknown
 B006|Lee Wai Xian|S|20|892.50|T010|Unknown
-B007|Cheong Wei Zhe|S|7|511.98|T003|S001
+B008|Alice|S|12|1017.60|T002|S001
