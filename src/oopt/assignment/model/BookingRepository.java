@@ -4,13 +4,11 @@ import oopt.assignment.Train;
 import oopt.assignment.util.AppConstants;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- * Handles file I/O operations for Booking data.
- */
-public class BookingRepository implements BookingInterface {
+public class BookingRepository implements IBookingRepository {
 
     private static final Logger logger = Logger.getLogger(BookingRepository.class.getName());
 
@@ -20,7 +18,6 @@ public class BookingRepository implements BookingInterface {
         File file = new File(AppConstants.BOOKING_FILE_PATH);
 
         if (!file.exists()) {
-            createNewFile(file);
             return bookingList;
         }
 
@@ -40,7 +37,7 @@ public class BookingRepository implements BookingInterface {
     }
 
     @Override
-    public void saveAll(ArrayList<Booking> bookings) {
+    public void saveAll(Collection<Booking> bookings) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(AppConstants.BOOKING_FILE_PATH, false))) {
             for (Booking b : bookings) {
                 writer.write(formatBookingForFile(b));
@@ -61,51 +58,27 @@ public class BookingRepository implements BookingInterface {
     @Override
     public void delete(String bookingId) {
         ArrayList<Booking> list = getAll();
-        boolean removed = list.removeIf(b -> b.getBookingID().equals(bookingId));
-        if (removed) {
+        if (list.removeIf(b -> b.getBookingID().equals(bookingId))) {
             saveAll(list);
-        } else {
-            // Changed from WARNING to INFO or removed entirely to avoid scaring the user
-            // logger.log(Level.INFO, "Delete requested for non-existent booking: " + bookingId);
-        }
-    }
-
-    // --- Private Helpers ---
-
-    private void createNewFile(File file) {
-        try {
-            if (file.createNewFile()) {
-                logger.info("Created new booking file: " + AppConstants.BOOKING_FILE_PATH);
-            }
-        } catch (IOException e) {
-            logger.log(Level.SEVERE, "Could not create booking file", e);
         }
     }
 
     private Booking parseLineToBooking(String line) {
         try {
-            // Format: ID|Name|TierCode|Seats|Fare|TrainID
             String[] fields = line.split("\\|");
-
             String id = fields[0];
             String name = fields[1];
-
-            // Convert char code to Enum
-            char tierCode = fields[2].charAt(0);
-            SeatTier tier = SeatTier.fromCode(tierCode);
-
+            SeatTier tier = SeatTier.fromCode(fields[2].charAt(0));
             int seats = Integer.parseInt(fields[3]);
             double fare = Double.parseDouble(fields[4]);
             String trainId = fields[5];
+            String staffId = (fields.length > 6) ? fields[6] : "UNKNOWN";
 
-            String staffId = (fields.length > 6) ? fields[6] : "Unknown";
             Train train = new Train();
             train.setTrainID(trainId);
 
             return new Booking(id, name, tier, seats, fare, train, staffId);
-
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Corrupted data line skipped: " + line);
             return null;
         }
     }

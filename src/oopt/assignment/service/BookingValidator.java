@@ -1,6 +1,5 @@
 package oopt.assignment.service;
 
-import oopt.assignment.model.Booking;
 import oopt.assignment.Train;
 import oopt.assignment.model.SeatTier;
 
@@ -22,12 +21,5 @@ public class BookingValidator {
                 : train.getPremiumSeatQty();
 
         return quantity <= availableSeats;
-    }
-
-    /**
-     * Check if ID format is correct (e.g., starts with 'B')
-     */
-    public boolean isValidIdFormat(String bookingId) {
-        return bookingId.matches("^B\\d{3}$"); // Example Regex: B001
     }
 }

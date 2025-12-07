@@ -1,13 +1,11 @@
 package oopt.assignment.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
-/**
- * Interface defining data access operations for Booking.
- */
-public interface BookingInterface {
+public interface IBookingRepository {
     ArrayList<Booking> getAll();
-    void saveAll(ArrayList<Booking> bookingList);
+    void saveAll(Collection<Booking> bookingList);
     void add(Booking booking);
     void delete(String bookingId);
 }

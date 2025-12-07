@@ -17,13 +17,18 @@ public class BookingUI {
     private final String currentStaffId;
     private final Scanner scanner;
 
-    public BookingUI(String staffId) {
-        this.bookingService = new BookingService(new BookingRepository());
-        this.passengerRepository = new PassengerRepository();
+    // --- UPDATED CONSTRUCTOR ---
+    public BookingUI(BookingService bookingService, String staffId, Scanner scanner) {
+        this.bookingService = bookingService;
         this.currentStaffId = staffId;
-        this.scanner = new Scanner(System.in);
+        this.scanner = scanner;
+
+        // We still keep PassengerRepository internal for now,
+        // unless you want to inject PassengerService later.
+        this.passengerRepository = new PassengerRepository();
     }
 
+    // ... (The rest of your start() method and other methods remain exactly the same) ...
     public void start() {
         boolean exit = false;
         while (!exit) {
@@ -31,35 +36,31 @@ public class BookingUI {
             displayLogo();
             printMenu();
 
-            int choice = 0;
-            try {
-                System.out.print("Your Selection > ");
-                String input = scanner.nextLine();
-                if (input.trim().isEmpty()) continue;
-                choice = Integer.parseInt(input);
-            } catch (NumberFormatException e) {
-                System.out.println("Invalid input. Please enter a number.");
+            BookingMenuOption option = getMenuSelection();
+            if (option == null) {
+                System.out.println("Invalid option. Please enter a number from the menu.");
                 waitForEnter();
                 continue;
             }
 
-            switch (choice) {
-                case 1 -> { handleAddBooking(); waitForEnter(); }
-                case 2 -> { handleDisplayBookings(); waitForEnter(); }
-                case 3 -> { handleSearchBooking(); waitForEnter(); }
-                case 4 -> { handleCancelBooking(); waitForEnter(); }
-                case 5 -> { handleGenerateReport(); waitForEnter(); }
-                case 6 -> exit = true;
-                default -> { System.out.println("Invalid option."); waitForEnter(); }
+            switch (option) {
+                case ADD_BOOKING -> { handleAddBooking(); waitForEnter(); }
+                case DISPLAY_BOOKINGS -> { handleDisplayBookings(); waitForEnter(); }
+                case SEARCH_BOOKING -> { handleSearchBooking(); waitForEnter(); }
+                case CANCEL_BOOKING -> { handleCancelBooking(); waitForEnter(); }
+                case GENERATE_REPORT -> { handleGenerateReport(); waitForEnter(); }
+                case EXIT -> exit = true;
             }
         }
     }
 
+    // ... (Keep all helper methods: handleAddBooking, getMenuSelection, etc.) ...
+
+    // Helper to find Enum from selection
     private BookingMenuOption getMenuSelection() {
         System.out.print("Your Selection > ");
         String input = scanner.nextLine();
         if (input.trim().isEmpty()) return null;
-
         try {
             int choice = Integer.parseInt(input);
             return BookingMenuOption.fromId(choice);
@@ -68,7 +69,15 @@ public class BookingUI {
         }
     }
 
-
+    private void printMenu() {
+        System.out.println("\n         --------------------------------------------");
+        System.out.println("         |               Booking Menu               |");
+        System.out.println("         --------------------------------------------");
+        for (BookingMenuOption opt : BookingMenuOption.values()) {
+            System.out.printf("         |  %d. %-36s |%n", opt.getId(), opt.getDescription());
+        }
+        System.out.println("         --------------------------------------------");
+    }
 
     private void displayLogo() {
         System.out.println("===========================================================");
@@ -79,6 +88,9 @@ public class BookingUI {
         System.out.println("| BBBBB    OOO    OOO   KK  KK    III   NN   NNN   GGGGG  |");
         System.out.println("===========================================================");
     }
+
+    // ... (Paste your existing handler methods: handleAddBooking, etc. here) ...
+    // Note: Ensure handleAddBooking calls bookingService.createBooking(newBooking, selectedTrain); (2 args)
 
     private void handleAddBooking() {
         System.out.println("\n--- Add New Booking ---");
@@ -177,6 +189,7 @@ public class BookingUI {
             if (availableSeats <= 0) {
                 System.out.println("Error: No " + tempTier.getLabel() + " seats available on this train.");
             } else {
+                tier = tempTier;
                 tier = tempTier;
             }
         }
@@ -286,7 +299,8 @@ public class BookingUI {
         }
 
         ArrayList<Train> allTrains = oopt.assignment.TrainMain.readTrainFile();
-        if (bookingService.cancelBooking(b.getBookingID(), allTrains)) {
+        // Convert ArrayList to List for Service compatibility if necessary
+        if (bookingService.cancelBooking(b.getBookingID(), (List<Train>) allTrains)) {
             System.out.println("Booking cancelled successfully.");
             oopt.assignment.TrainMain.writeTrainFile(allTrains);
             System.out.println("Seats have been returned to the train.");
@@ -357,29 +371,6 @@ public class BookingUI {
         System.out.printf("Overall Total Revenue: RM %8.2f\n", subtotal[0] + subtotal[1]);
         System.out.println("--------------------------------------------------------");
         System.out.println("\nNote: Discontinued train will not be included in the report!\n");
-    }
-
-//    private void printMenu() {
-//        System.out.println("\n         --------------------------------------------");
-//        System.out.println("         |               Booking Menu               |");
-//        System.out.println("         --------------------------------------------");
-//        System.out.println("         |  1. Add New Booking                      |");
-//        System.out.println("         |  2. Display Booking Details              |");
-//        System.out.println("         |  3. Search Booking details               |");
-//        System.out.println("         |  4. Cancel Booking                       |");
-//        System.out.println("         |  5. Generate Report                      |");
-//        System.out.println("         |  6. Exit                                 |");
-//        System.out.println("         --------------------------------------------");
-//    }
-
-    private void printMenu() {
-        System.out.println("\n         --------------------------------------------");
-        System.out.println("         |               Booking Menu               |");
-        System.out.println("         --------------------------------------------");
-        for (BookingMenuOption opt : BookingMenuOption.values()) {
-            System.out.printf("         |  %d. %-36s |%n", opt.getId(), opt.getDescription());
-        }
-        System.out.println("         --------------------------------------------");
     }
 
     private void waitForEnter() {

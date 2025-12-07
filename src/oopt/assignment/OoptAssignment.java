@@ -1,6 +1,9 @@
 package oopt.assignment;
 
+import oopt.assignment.model.BookingRepository;
 import oopt.assignment.model.StaffRepository;
+import oopt.assignment.model.TrainRepository;
+import oopt.assignment.service.BookingService;
 import oopt.assignment.service.PassengerService;
 import oopt.assignment.service.StaffService;
 import oopt.assignment.service.TrainService;
@@ -52,8 +55,11 @@ public class OoptAssignment {
                         passengerUI.showMenu();
                     }
 
-                    case BOOKING -> new BookingUI(loginStaffID).start();
-
+                    case BOOKING -> {
+                        BookingRepository bookingRepo = new BookingRepository();
+                        BookingService bookingService = new BookingService(bookingRepo);
+                        new BookingUI(bookingService, loginStaffID, scanner).start();
+                    }
                     case TRAIN -> {
                         TrainService trainService = new TrainService();
                         TrainUI trainUI = new TrainUI(trainService, scanner);

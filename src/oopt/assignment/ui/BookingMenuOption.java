@@ -3,7 +3,7 @@ package oopt.assignment.ui;
 import java.util.Arrays;
 
 /**
- * Menu options for the Booking Module.
+ * Represents the menu options for the Booking Module.
  */
 public enum BookingMenuOption {
     ADD_BOOKING(1, "Add New Booking"),

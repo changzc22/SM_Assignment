@@ -6,7 +6,7 @@ import static java.lang.Character.toUpperCase;
 import java.util.*;
 import java.io.*;
 import java.time.LocalDate;
-import oopt.assignment.model.Booking;
+
 import oopt.assignment.model.BookingRepository;
 
 public class Passenger extends Person {

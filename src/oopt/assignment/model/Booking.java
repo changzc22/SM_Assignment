@@ -49,6 +49,20 @@ public class Booking {
     public String getStaffId() { return staffId; }
     public void setStaffId(String staffId) { this.staffId = staffId; }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Booking booking = (Booking) o;
+        // Two bookings are equal if their IDs are the same
+        return bookingID != null && bookingID.equalsIgnoreCase(booking.bookingID);
+    }
+
+    @Override
+    public int hashCode() {
+        return bookingID != null ? bookingID.toUpperCase().hashCode() : 0;
+    }
+
 
     @Override
     public String toString() {
