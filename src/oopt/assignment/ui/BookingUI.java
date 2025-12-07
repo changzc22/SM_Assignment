@@ -55,6 +55,21 @@ public class BookingUI {
         }
     }
 
+    private BookingMenuOption getMenuSelection() {
+        System.out.print("Your Selection > ");
+        String input = scanner.nextLine();
+        if (input.trim().isEmpty()) return null;
+
+        try {
+            int choice = Integer.parseInt(input);
+            return BookingMenuOption.fromId(choice);
+        } catch (NumberFormatException e) {
+            return null;
+        }
+    }
+
+
+
     private void displayLogo() {
         System.out.println("===========================================================");
         System.out.println("| BBBBB    OOO    OOO   KK   KK   III   NN    NN   GGGGG  |");
@@ -344,16 +359,26 @@ public class BookingUI {
         System.out.println("\nNote: Discontinued train will not be included in the report!\n");
     }
 
+//    private void printMenu() {
+//        System.out.println("\n         --------------------------------------------");
+//        System.out.println("         |               Booking Menu               |");
+//        System.out.println("         --------------------------------------------");
+//        System.out.println("         |  1. Add New Booking                      |");
+//        System.out.println("         |  2. Display Booking Details              |");
+//        System.out.println("         |  3. Search Booking details               |");
+//        System.out.println("         |  4. Cancel Booking                       |");
+//        System.out.println("         |  5. Generate Report                      |");
+//        System.out.println("         |  6. Exit                                 |");
+//        System.out.println("         --------------------------------------------");
+//    }
+
     private void printMenu() {
         System.out.println("\n         --------------------------------------------");
         System.out.println("         |               Booking Menu               |");
         System.out.println("         --------------------------------------------");
-        System.out.println("         |  1. Add New Booking                      |");
-        System.out.println("         |  2. Display Booking Details              |");
-        System.out.println("         |  3. Search Booking details               |");
-        System.out.println("         |  4. Cancel Booking                       |");
-        System.out.println("         |  5. Generate Report                      |");
-        System.out.println("         |  6. Exit                                 |");
+        for (BookingMenuOption opt : BookingMenuOption.values()) {
+            System.out.printf("         |  %d. %-36s |%n", opt.getId(), opt.getDescription());
+        }
         System.out.println("         --------------------------------------------");
     }
 
