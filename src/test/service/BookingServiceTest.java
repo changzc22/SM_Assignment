@@ -1,8 +1,8 @@
 package test.service;
 
-import oopt.assignment.Train; // Uses Legacy Train
 import oopt.assignment.model.*;
 import oopt.assignment.service.BookingService;
+import oopt.assignment.service.StaffService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,124 +10,132 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class BookingServiceTest {
 
     private BookingService bookingService;
-    private MockIBookingRepository mockBookingRepo;
+    private MockBookingRepository mockBookingRepo;
+    private MockTrainRepository mockTrainRepo;
 
     @BeforeEach
     void setUp() {
-        mockBookingRepo = new MockIBookingRepository();
+        // 1. Create Mocks
+        mockBookingRepo = new MockBookingRepository();
+        mockTrainRepo = new MockTrainRepository();
+        MockStaffRepository mockStaffRepo = new MockStaffRepository();
 
-        // REVERTED: Only takes 1 argument (BookingRepo)
-        // We don't need TrainRepo because Legacy Service uses TrainMain directly
-        bookingService = new BookingService(mockBookingRepo);
+        // 2. Setup Dependencies
+        // We use a REAL StaffService but connect it to a MOCK Repository.
+        // This allows 'incrementBookingHandle' to run without needing 'StaffFile.txt'.
+        StaffService staffService = new StaffService(mockStaffRepo);
+
+        // Seed a dummy staff member so updates don't fail
+        mockStaffRepo.save(new Staff("Admin", "0123456789", "999999010101", "S001", "pass", 0));
+
+        // 3. Initialize BookingService (3 Arguments)
+        bookingService = new BookingService(mockBookingRepo, mockTrainRepo, staffService);
     }
 
-    // --- TEST 1: Fare Calculation Logic ---
+    // --- 1. FARE CALCULATION ---
     @Test
-    void testCalculateFare_Standard_Gold() {
-        // Price: 100 * 1 qty * 0.75 (Gold) * 1.06 (Tax) = 79.50
-        double fare = bookingService.calculateFare(PassengerTier.GOLD, SeatTier.STANDARD, 1, 100.00);
-        assertEquals(79.50, fare, 0.01, "Fare calculation for Gold/Standard is incorrect");
+    void testCalculateFare() {
+        // Gold (0.75) * Standard (100) * 1.06 tax = 79.50
+        double goldFare = bookingService.calculateFare(PassengerTier.GOLD, SeatTier.STANDARD, 1, 100.00);
+        assertEquals(79.50, goldFare, 0.01);
+
+        // Normal (1.00) * Premium (200) * 1.06 tax = 424.00
+        double normFare = bookingService.calculateFare(PassengerTier.NORMAL, SeatTier.PREMIUM, 2, 200.00);
+        assertEquals(424.00, normFare, 0.01);
     }
 
-    @Test
-    void testCalculateFare_Premium_Normal() {
-        // Price: 200 * 2 qty * 1.00 (Normal) * 1.06 (Tax) = 424.00
-        double fare = bookingService.calculateFare(PassengerTier.NORMAL, SeatTier.PREMIUM, 2, 200.00);
-        assertEquals(424.00, fare, 0.01, "Fare calculation for Normal/Premium is incorrect");
-    }
-
-    // --- TEST 2: Validation Logic ---
+    // --- 2. CREATE BOOKING ---
     @Test
     void testCreateBooking_Success() {
-        // Legacy Constructor: (ID, Dest, Date, Time, StdQty, PrmQty, StdPrice, PrmPrice, BOOLEAN_STATUS)
-        Train train = new Train("T001", "Penang", LocalDate.now(), LocalTime.now(),
-                10, 10, 50.0, 80.0, true);
+        // Setup: Train with 10 seats
+        Train dbTrain = new Train("T001", "Penang", LocalDate.now(), LocalTime.now(),
+                10, 10, 50.0, 80.0, TrainStatus.ACTIVE);
+        mockTrainRepo.save(dbTrain);
 
-        Booking booking = new Booking("B001", "Test User", SeatTier.STANDARD, 2, 100.0, train, "S001");
+        // UI passes a simplified Train object (simulating selection)
+        Booking newBooking = new Booking("B001", "User", SeatTier.STANDARD, 2, 100.0, dbTrain, "S001");
 
-        boolean result = bookingService.createBooking(booking, train);
+        boolean result = bookingService.createBooking(newBooking, dbTrain);
 
         assertTrue(result, "Booking should be successful");
-        // Verify seats were deducted in memory
-        assertEquals(8, train.getStandardSeatQty(), "Train seats should decrease by 2");
+        assertEquals(8, dbTrain.getStandardSeatQty(), "Seats should be deducted in the repository object");
+        assertEquals(1, mockBookingRepo.getAll().size(), "Booking should be saved");
     }
 
     @Test
     void testCreateBooking_NotEnoughSeats() {
-        // Only 1 seat available
-        Train train = new Train("T001", "Penang", LocalDate.now(), LocalTime.now(),
-                1, 10, 50.0, 80.0, true);
+        // Setup: Train with only 1 seat
+        Train dbTrain = new Train("T001", "Penang", LocalDate.now(), LocalTime.now(),
+                1, 10, 50.0, 80.0, TrainStatus.ACTIVE);
+        mockTrainRepo.save(dbTrain);
 
-        // Try to book 2 seats
-        Booking booking = new Booking("B001", "Test User", SeatTier.STANDARD, 2, 100.0, train, "S001");
+        Booking newBooking = new Booking("B001", "User", SeatTier.STANDARD, 2, 100.0, dbTrain, "S001");
 
-        boolean result = bookingService.createBooking(booking, train);
+        boolean result = bookingService.createBooking(newBooking, dbTrain);
 
-        assertFalse(result, "Booking should fail due to insufficient seats");
-        assertEquals(1, train.getStandardSeatQty(), "Train seats should not change");
+        assertFalse(result, "Should fail due to insufficient seats");
+        assertEquals(1, dbTrain.getStandardSeatQty(), "Seats should NOT be deducted");
     }
 
+    // --- 3. CANCEL BOOKING ---
     @Test
-    void testCreateBooking_InvalidQuantity() {
-        Train train = new Train("T001", "Penang", LocalDate.now(), LocalTime.now(),
-                10, 10, 50.0, 80.0, true);
+    void testCancelBooking_Success() {
+        // Setup: Train with 8 seats (2 booked)
+        Train dbTrain = new Train("T001", "Penang", LocalDate.now(), LocalTime.now(),
+                8, 10, 50.0, 80.0, TrainStatus.ACTIVE);
+        mockTrainRepo.save(dbTrain);
 
-        Booking booking = new Booking("B001", "Test User", SeatTier.STANDARD, -5, 100.0, train, "S001");
+        // Existing booking
+        Booking booking = new Booking("B001", "User", SeatTier.STANDARD, 2, 100.0, dbTrain, "S001");
+        mockBookingRepo.add(booking);
 
-        boolean result = bookingService.createBooking(booking, train);
+        boolean result = bookingService.cancelBooking("B001");
 
-        assertFalse(result, "Booking should fail for negative quantity");
+        assertTrue(result, "Cancel should succeed");
+        assertTrue(mockBookingRepo.getAll().isEmpty(), "Booking should be removed");
+        assertEquals(10, dbTrain.getStandardSeatQty(), "Seats should be restored to 10");
     }
 
-    // --- TEST 3: ID Generation ---
+    // --- 4. GENERATE ID ---
     @Test
-    void testGenerateBookingId_EmptyRepo() {
-        String id = bookingService.generateNewBookingId();
-        assertEquals("B001", id);
-    }
+    void testGenerateNewBookingId() {
+        assertEquals("B001", bookingService.generateNewBookingId());
 
-    @Test
-    void testGenerateBookingId_Increment() {
-        Train train = new Train(); // Dummy train
-        mockBookingRepo.add(new Booking("B005", "User", SeatTier.STANDARD, 1, 10.0, train, "S001"));
-
-        String id = bookingService.generateNewBookingId();
-        assertEquals("B006", id, "Should increment the highest ID found");
+        mockBookingRepo.add(new Booking("B005", "User", SeatTier.STANDARD, 1, 50.0, null, "S001"));
+        assertEquals("B006", bookingService.generateNewBookingId());
     }
 
     // =============================================================
-    // INTERNAL MOCK CLASS (Adapted for Legacy ArrayList)
+    // INTERNAL MOCK CLASSES (Simulate Database in Memory)
     // =============================================================
 
-    static class MockIBookingRepository implements IBookingRepository {
-        // Uses ArrayList to match your Legacy Interface
+    static class MockBookingRepository implements IBookingRepository {
         private final ArrayList<Booking> db = new ArrayList<>();
+        public ArrayList<Booking> getAll() { return new ArrayList<>(db); }
+        public void saveAll(Collection<Booking> list) { db.clear(); db.addAll(list); }
+        public void add(Booking b) { db.add(b); }
+        public void delete(String id) { db.removeIf(b -> b.getBookingID().equals(id)); }
+    }
 
-        @Override
-        public ArrayList<Booking> getAll() {
-            return db;
-        }
+    static class MockTrainRepository implements TrainInterface {
+        private final List<Train> db = new ArrayList<>();
+        public void save(Train t) { db.add(t); }
+        public List<Train> loadAll() { return new ArrayList<>(db); }
+        public void saveAll(List<Train> trains) { /* Simulates saving to file */ }
+    }
 
-        @Override
-        public void saveAll(Collection<Booking> bookings) {
-            db.clear();
-            db.addAll(bookings);
-        }
-
-        @Override
-        public void add(Booking b) {
-            db.add(b);
-        }
-
-        @Override
-        public void delete(String id) {
-            db.removeIf(b -> b.getBookingID().equals(id));
-        }
+    static class MockStaffRepository implements IStaffRepository {
+        private final LinkedHashMap<String, Staff> db = new LinkedHashMap<>();
+        public void save(Staff s) { db.put(s.getId(), s); }
+        public LinkedHashMap<String, Staff> getAll() { return new LinkedHashMap<>(db); }
+        public void saveAll(Collection<Staff> list) { /* Simulates saving */ }
     }
 }

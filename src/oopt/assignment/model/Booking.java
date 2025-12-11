@@ -1,7 +1,5 @@
 package oopt.assignment.model;
 
-import oopt.assignment.Train;
-
 public class Booking {
 
     // --- DATA FIELDS ---

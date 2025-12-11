@@ -194,12 +194,11 @@ public class StaffService {
      * Increments the booking handle count for a staff member statically
      * @param staffId The ID of the staff member who handled the booking
      */
-    public static void incrementBookingHandleStatic(String staffId) {
-        StaffService service = getStaticInstance();
-        Staff s = service.getStaffById(staffId);
+    public void incrementBookingHandle(String staffId) {
+        Staff s = staffCache.get(staffId);
         if (s != null) {
             s.setNoOfBookingHandle(s.getNoOfBookingHandle() + 1);
-            service.repository.saveAll(service.staffCache.values());
+            repository.saveAll(staffCache.values());
         }
     }
 }

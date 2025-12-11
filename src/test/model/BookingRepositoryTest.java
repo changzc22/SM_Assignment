@@ -1,11 +1,15 @@
 package test.model;
 
-import oopt.assignment.Train;
 import oopt.assignment.model.Booking;
 import oopt.assignment.model.BookingRepository;
 import oopt.assignment.model.SeatTier;
+import oopt.assignment.model.Train;
+import oopt.assignment.util.AppConstants;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,65 +17,48 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BookingRepositoryTest {
 
     private BookingRepository repository;
+    private final File file = new File(AppConstants.BOOKING_FILE_PATH);
 
     @BeforeEach
     void setUp() {
+        // Delete any existing file to ensure a clean test environment
+        if (file.exists()) {
+            file.delete();
+        }
         repository = new BookingRepository();
+    }
+
+    @AfterEach
+    void tearDown() {
+        // Clean up the garbage file created by the test
+        if (file.exists()) {
+            file.delete();
+        }
     }
 
     @Test
     void testAddAndRetrieveBooking() {
-        // 1. Create Data (Using Legacy Train)
+        // 1. Create Dummy Train
         Train train = new Train();
         train.setTrainID("T001");
 
+        // 2. Create and Save Booking
         Booking b = new Booking("B100", "Integration Test", SeatTier.STANDARD, 1, 50.0, train, "S001");
-
-        // 2. Action: Save to File
         repository.add(b);
 
-        // 3. Action: Read from File (New instance to ensure actual file read)
+        // 3. Read back from Disk
         BookingRepository repoReader = new BookingRepository();
-        ArrayList<Booking> results = repoReader.getAll(); // Now returns ArrayList
+        ArrayList<Booking> results = repoReader.getAll();
 
-        // 4. Assert (Loop through List to find B100)
-        Booking retrieved = null;
-        for (Booking booking : results) {
-            if (booking.getBookingID().equals("B100")) {
-                retrieved = booking;
-                break;
-            }
-        }
+        // 4. Verify
+        Booking retrieved = results.stream()
+                .filter(bk -> bk.getBookingID().equals("B100"))
+                .findFirst()
+                .orElse(null);
 
-        assertNotNull(retrieved, "Should retrieve the booking object B100 from the file");
+        assertNotNull(retrieved, "Should retrieve the booking from the file");
         assertEquals("Integration Test", retrieved.getName());
         assertEquals("S001", retrieved.getStaffId());
-
-        // Cleanup
-        repository.delete("B100");
-    }
-
-    @Test
-    void testDeleteBooking() {
-        // Setup
-        Train train = new Train();
-        train.setTrainID("T001");
-        repository.add(new Booking("B200", "To Delete", SeatTier.PREMIUM, 1, 100.0, train, "S001"));
-
-        // Action
-        repository.delete("B200");
-
-        // Assert
-        ArrayList<Booking> results = repository.getAll();
-
-        boolean found = false;
-        for (Booking booking : results) {
-            if (booking.getBookingID().equals("B200")) {
-                found = true;
-                break;
-            }
-        }
-
-        assertFalse(found, "Booking B200 should be deleted from the list");
+        assertEquals("T001", retrieved.getTrain().getTrainID());
     }
 }

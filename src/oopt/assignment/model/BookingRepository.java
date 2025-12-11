@@ -1,6 +1,5 @@
 package oopt.assignment.model;
 
-import oopt.assignment.Train;
 import oopt.assignment.util.AppConstants;
 import java.io.*;
 import java.util.ArrayList;

@@ -1,20 +1,24 @@
 package oopt.assignment.service;
 
-import oopt.assignment.Train;
 import oopt.assignment.model.*;
 import oopt.assignment.util.AppConstants;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class BookingService {
 
     private final IBookingRepository bookingRepository;
+    private final TrainInterface trainRepository;
+    private final StaffService staffService;
     private final BookingValidator validator;
 
-    // Constructor removed TrainInterface to avoid conflict
-    public BookingService(IBookingRepository bookingRepository) {
+    // Updated Constructor: Injects all necessary dependencies to avoid static calls
+    public BookingService(IBookingRepository bookingRepository,
+                          TrainInterface trainRepository,
+                          StaffService staffService) {
         this.bookingRepository = bookingRepository;
+        this.trainRepository = trainRepository;
+        this.staffService = staffService;
         this.validator = new BookingValidator();
     }
 
@@ -24,35 +28,67 @@ public class BookingService {
         return basePrice * quantity * discountMultiplier * tax;
     }
 
-    public boolean createBooking(Booking newBooking, Train train) {
-        if (!validator.isValidQuantity(newBooking.getNumOfSeatBook())) return false;
-        if (!validator.hasEnoughSeats(train, newBooking.getSeatTier(), newBooking.getNumOfSeatBook())) return false;
+    /**
+     * Fetch trains directly from repository (Replaces TrainMain usage)
+     */
+    public List<Train> getAvailableTrains() {
+        return trainRepository.loadAll();
+    }
 
-        // Update Legacy Train Seats
+    public boolean createBooking(Booking newBooking, Train uiSelectedTrain) {
+        // 1. Validate Quantity
+        if (!validator.isValidQuantity(newBooking.getNumOfSeatBook())) {
+            return false;
+        }
+
+        // 2. Load fresh train data to ensure seat counts are accurate
+        // (We don't trust the UI copy because it might be stale)
+        List<Train> allTrains = trainRepository.loadAll();
+        Train dbTrain = allTrains.stream()
+                .filter(t -> t.getTrainID().equals(uiSelectedTrain.getTrainID()))
+                .findFirst()
+                .orElse(null);
+
+        if (dbTrain == null) return false; // Train not found in file
+
+        // 3. Validate Seat Availability on the FRESH object
+        if (!validator.hasEnoughSeats(dbTrain, newBooking.getSeatTier(), newBooking.getNumOfSeatBook())) {
+            return false;
+        }
+
+        // 4. Logic: Update Train Seats in Memory
         int currentSeats = (newBooking.getSeatTier() == SeatTier.STANDARD)
-                ? train.getStandardSeatQty() : train.getPremiumSeatQty();
+                ? dbTrain.getStandardSeatQty() : dbTrain.getPremiumSeatQty();
 
         if (newBooking.getSeatTier() == SeatTier.STANDARD) {
-            train.setStandardSeatQty(currentSeats - newBooking.getNumOfSeatBook());
+            dbTrain.setStandardSeatQty(currentSeats - newBooking.getNumOfSeatBook());
         } else {
-            train.setPremiumSeatQty(currentSeats - newBooking.getNumOfSeatBook());
+            dbTrain.setPremiumSeatQty(currentSeats - newBooking.getNumOfSeatBook());
         }
 
-        bookingRepository.add(newBooking);
+        // 5. Transaction: Save Everything
+        bookingRepository.add(newBooking);       // Save Booking
+        trainRepository.saveAll(allTrains);      // Save Updated Train Seats
 
+        // 6. Update Staff Stats (Using instance method, not static)
         if (newBooking.getStaffId() != null) {
-            oopt.assignment.service.StaffService.incrementBookingHandleStatic(newBooking.getStaffId());
+            staffService.incrementBookingHandle(newBooking.getStaffId());
         }
+
         return true;
     }
 
-    public boolean cancelBooking(String bookingID, List<Train> allTrains) {
+    public boolean cancelBooking(String bookingID) {
         Booking booking = getBookingById(bookingID);
         if (booking == null) return false;
+
+        // Load all trains to find the one we need to restore seats to
+        List<Train> allTrains = trainRepository.loadAll();
 
         if (booking.getTrain() != null) {
             for (Train t : allTrains) {
                 if (t.getTrainID().equals(booking.getTrain().getTrainID())) {
+                    // Restore Seats logic
                     if (booking.getSeatTier() == SeatTier.STANDARD) {
                         t.setStandardSeatQty(t.getStandardSeatQty() + booking.getNumOfSeatBook());
                     } else {
@@ -62,15 +98,18 @@ public class BookingService {
                 }
             }
         }
+
+        // Commit changes
         bookingRepository.delete(bookingID);
+        trainRepository.saveAll(allTrains); // Save restored seats
         return true;
     }
 
     public List<Booking> getAllBookings() {
         List<Booking> bookings = bookingRepository.getAll();
-        // Use Legacy TrainMain to fetch trains (compatible with your UI)
-        ArrayList<Train> allTrains = oopt.assignment.TrainMain.readTrainFile();
+        List<Train> allTrains = trainRepository.loadAll(); // Use Repo directly
 
+        // Hydrate Bookings with full Train objects
         for (Booking b : bookings) {
             if (b.getTrain() == null) continue;
             String trainId = b.getTrain().getTrainID();
@@ -96,16 +135,26 @@ public class BookingService {
 
     public String generateNewBookingId() {
         List<Booking> allBookings = bookingRepository.getAll();
-        if (allBookings.isEmpty()) return "B001";
+
+        if (allBookings.isEmpty()) {
+            return "B001";
+        }
 
         int maxId = 0;
         for (Booking b : allBookings) {
             try {
+                // Extract number (B005 -> 5)
                 String numberPart = b.getBookingID().substring(1);
                 int currentId = Integer.parseInt(numberPart);
-                if (currentId > maxId) maxId = currentId;
-            } catch (Exception e) { continue; }
+
+                if (currentId > maxId) {
+                    maxId = currentId;
+                }
+            } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                continue;
+            }
         }
+
         return String.format("B%03d", maxId + 1);
     }
 }

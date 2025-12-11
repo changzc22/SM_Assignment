@@ -8,7 +8,7 @@ import oopt.assignment.service.PassengerService;
 import oopt.assignment.service.StaffService;
 import oopt.assignment.service.TrainService;
 import oopt.assignment.ui.*;
-import oopt.assignment.util.ErrorMessage; // Import the utility
+import oopt.assignment.util.ErrorMessage;
 
 import java.util.Scanner;
 
@@ -57,7 +57,9 @@ public class OoptAssignment {
 
                     case BOOKING -> {
                         BookingRepository bookingRepo = new BookingRepository();
-                        BookingService bookingService = new BookingService(bookingRepo);
+                        TrainRepository trainRepo = new TrainRepository();
+                        BookingService bookingService = new BookingService(bookingRepo, trainRepo, staffService);
+
                         new BookingUI(bookingService, loginStaffID, scanner).start();
                     }
                     case TRAIN -> {

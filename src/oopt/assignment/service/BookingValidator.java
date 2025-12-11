@@ -1,7 +1,7 @@
 package oopt.assignment.service;
 
-import oopt.assignment.Train;
 import oopt.assignment.model.SeatTier;
+import oopt.assignment.model.Train;
 
 public class BookingValidator {
 
