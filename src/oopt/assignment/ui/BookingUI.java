@@ -3,8 +3,8 @@ package oopt.assignment.ui;
 import oopt.assignment.Train;
 import oopt.assignment.model.*;
 import oopt.assignment.service.BookingService;
-
 import java.time.format.DateTimeFormatter;
+
 import java.util.List;
 import java.util.Scanner;
 import java.util.ArrayList;
@@ -49,7 +49,7 @@ public class BookingUI {
         }
     }
 
-    // --- 1. ADD BOOKING (New Logic: Safer & cleaner) ---
+    // --- 1. ADD BOOKING (Updated with Strict Confirmation) ---
     private void handleAddBooking() {
         System.out.println("\n--- Add New Booking ---");
         System.out.println("(Enter 'X' at any prompt to cancel)");
@@ -145,7 +145,7 @@ public class BookingUI {
             else break;
         }
 
-        // 7. Review & Confirm
+        // 7. Review
         double basePrice = (tier == SeatTier.STANDARD) ? selectedTrain.getStandardSeatPrice() : selectedTrain.getPremiumSeatPrice();
         double fare = bookingService.calculateFare(selectedPassenger.getPassengerTier(), tier, qty, basePrice);
 
@@ -162,15 +162,30 @@ public class BookingUI {
         System.out.printf("Total Fare     : RM %.2f\n", fare);
         System.out.println("==========================");
 
-        String confirm = promptInput("Do you want to add this Booking? [Y/N]");
-        if (confirm == null || !confirm.equalsIgnoreCase("Y")) {
-            System.out.println("Booking cancelled.");
-            return;
+        // 8. Strict Confirmation Loop
+        String confirm = "";
+        while (true) {
+            confirm = promptInput("Do you want to add this Booking? [Y/N]");
+
+            // Check for 'X' (Cancel operation completely)
+            if (confirm == null) {
+                System.out.println("Booking creation cancelled.");
+                return;
+            }
+
+            if (confirm.equalsIgnoreCase("Y")) {
+                break; // Valid YES -> Proceed
+            } else if (confirm.equalsIgnoreCase("N")) {
+                System.out.println("Booking creation cancelled.");
+                return; // Valid NO -> Exit
+            } else {
+                System.out.println("Error: Invalid input. Please enter 'Y' for Yes or 'N' for No.");
+            }
         }
 
+        // Execute Creation
         Booking newBooking = new Booking(id, selectedPassenger.getName(), tier, qty, fare, selectedTrain, currentStaffId);
 
-        // FIX: Removed extra 'currentStaffId' argument
         if (bookingService.createBooking(newBooking, selectedTrain)) {
             System.out.println("Booking Confirmed!");
             oopt.assignment.TrainMain.writeTrainFile((ArrayList<Train>) trains);
@@ -179,7 +194,7 @@ public class BookingUI {
         }
     }
 
-    // --- 2. DISPLAY BOOKINGS (Restored Legacy Table) ---
+    // --- 2. DISPLAY BOOKINGS ---
     private void handleDisplayBookings() {
         System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------");
         System.out.println("|                                                     All Booking Details                                                                                    |");
@@ -188,7 +203,6 @@ public class BookingUI {
         System.out.println("    ID                                                                Date          Time                         Quantity      Fare (RM)      Status\n");
 
         for (Booking b : bookingService.getAllBookings()) {
-            // Safety check for null train (prevents crashes if data is corrupted)
             String dest = (b.getTrain() != null) ? b.getTrain().getDestination() : "Unknown";
             LocalDate date = (b.getTrain() != null) ? b.getTrain().getDepartureDate() : null;
             Object time = (b.getTrain() != null) ? b.getTrain().getDepartureTime() : "N/A";
@@ -223,6 +237,7 @@ public class BookingUI {
         displayBookingDetail(b);
     }
 
+    // --- 4. CANCEL BOOKING (Updated with Strict Confirmation) ---
     private void handleCancelBooking() {
         System.out.println("\n--- Cancel Booking ---");
         Booking b = null;
@@ -238,15 +253,30 @@ public class BookingUI {
 
         displayBookingDetail(b);
 
-        String confirm = promptInput("Are you sure you want to cancel this booking? (Y/N)");
-        if (confirm != null && confirm.equalsIgnoreCase("Y")) {
-            ArrayList<Train> allTrains = oopt.assignment.TrainMain.readTrainFile();
-            if (bookingService.cancelBooking(b.getBookingID(), allTrains)) {
-                System.out.println("Booking cancelled successfully.");
-                oopt.assignment.TrainMain.writeTrainFile(allTrains);
+        // Strict Confirmation Loop
+        String confirm = "";
+        while (true) {
+            confirm = promptInput("Are you sure you want to cancel this booking? (Y/N)");
+
+            if (confirm == null) return; // Exit if X
+
+            if (confirm.equalsIgnoreCase("Y")) {
+                break; // Proceed
+            } else if (confirm.equalsIgnoreCase("N")) {
+                System.out.println("Cancellation aborted.");
+                return; // Exit
             } else {
-                System.out.println("Error cancelling booking.");
+                System.out.println("Error: Invalid input. Please enter 'Y' or 'N'.");
             }
+        }
+
+        // Proceed with cancellation
+        ArrayList<Train> allTrains = oopt.assignment.TrainMain.readTrainFile();
+        if (bookingService.cancelBooking(b.getBookingID(), allTrains)) {
+            System.out.println("Booking cancelled successfully.");
+            oopt.assignment.TrainMain.writeTrainFile(allTrains);
+        } else {
+            System.out.println("Error cancelling booking.");
         }
     }
 
@@ -264,10 +294,6 @@ public class BookingUI {
     }
 
     private void handleGenerateReport() {
-        // ... (Keep your existing report logic here) ...
-        // Re-paste the report logic from previous versions if needed,
-        // otherwise this response gets too long.
-        // It should match the legacy style too.
         MainUI.clearScreen();
         List<Booking> bookingList = bookingService.getAllBookings();
         List<Train> trainList = oopt.assignment.TrainMain.readTrainFile();
@@ -370,7 +396,6 @@ public class BookingUI {
         System.out.print(message + " > ");
         String input = scanner.nextLine().trim();
         if (input.equalsIgnoreCase("X")) {
-            System.out.println("Operation cancelled.");
             return null;
         }
         return input;
