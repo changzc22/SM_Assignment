@@ -5,8 +5,17 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * PassengerMenuOptionTest - To test the passenger main menu UI
+ */
 class PassengerMenuOptionTest {
 
+    /**
+     * Verifies that valid numeric codes (1–6) correctly map to the
+     * corresponding PassengerMenuOption enum values.
+     * This ensures that the UI’s menu selection system aligns with the
+     * intended menu structure and that mappings remain reliable.
+     */
     @Test
     void fromCode_validCodes_returnEnum() {
         assertEquals(PassengerMenuOption.NEW_REGISTRATION,
@@ -23,11 +32,21 @@ class PassengerMenuOptionTest {
                 PassengerMenuOption.fromCode(6));
     }
 
+    /**
+     * Ensures that invalid menu codes return null instead of causing errors.
+     * This is important for defensive programming and prevents the UI from
+     * crashing when a user or test environment provides unexpected input.
+     */
     @Test
     void fromCode_invalidCode_returnsNull() {
         assertNull(PassengerMenuOption.fromCode(99));
     }
 
+    /**
+     * Confirms that the enum’s getter methods correctly expose the configured
+     * menu code and description. This protects the integrity of user-facing text
+     * and helps ensure consistency across the UI.
+     */
     @Test
     void getters_returnExpectedValues() {
         PassengerMenuOption opt = PassengerMenuOption.CHANGE_TIER;

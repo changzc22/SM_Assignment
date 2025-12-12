@@ -8,8 +8,18 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * PassengerTest - Test the Passenger model class
+ */
 class PassengerTest {
 
+    /**
+     * Verifies that the parameterised constructor correctly assigns all fields.
+     * This test ensures that getter methods return the expected values and that
+     * Passenger inherits Person's fields correctly. It also indirectly verifies
+     * both Person.toString() and Passenger.toString() by checking the output contains
+     * key values such as name and tier.
+     */
     @Test
     void constructorAndGetters_workCorrectly() {
         LocalDate joined = LocalDate.of(2025, 1, 1);
@@ -31,12 +41,16 @@ class PassengerTest {
         assertEquals(joined, p.getDateJoined());
         assertEquals(PassengerTier.SILVER, p.getPassengerTier());
 
-        // also covers Person.toString() and Passenger.toString()
         String text = p.toString();
         assertTrue(text.contains("Alice"));
         assertTrue(text.contains("SILVER"));
     }
 
+    /**
+     * Confirms that setter methods correctly update individual fields in the
+     * Passenger object. This ensures mutability works as expected and that the
+     * inherited fields from Person (name, contact, IC, ID) can be modified safely.
+     */
     @Test
     void setters_updateFields() {
         Passenger p = new Passenger();
