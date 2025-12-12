@@ -1,6 +1,6 @@
 package test.model;
 
-import oopt.assignment.model.Staff;
+import ets.model.Staff;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

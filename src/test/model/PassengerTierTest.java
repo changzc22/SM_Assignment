@@ -1,6 +1,6 @@
 package test.model;
 
-import oopt.assignment.model.PassengerTier;
+import ets.model.PassengerTier;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

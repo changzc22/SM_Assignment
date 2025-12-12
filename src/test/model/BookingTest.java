@@ -1,8 +1,8 @@
 package test.model;
 
-import oopt.assignment.model.Booking;
-import oopt.assignment.model.SeatTier;
-import oopt.assignment.model.Train;
+import ets.model.Booking;
+import ets.model.SeatTier;
+import ets.model.Train;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -1,6 +1,6 @@
 package test.util;
 
-import oopt.assignment.util.PasswordUtil;
+import ets.util.PasswordUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

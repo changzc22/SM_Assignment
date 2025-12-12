@@ -1,10 +1,10 @@
 package test.service;
 
-import oopt.assignment.model.Passenger;
-import oopt.assignment.model.PassengerRepository;
-import oopt.assignment.model.PassengerTier;
-import oopt.assignment.service.PassengerService;
-import oopt.assignment.service.PassengerValidator;
+import ets.model.Passenger;
+import ets.model.PassengerRepository;
+import ets.model.PassengerTier;
+import ets.service.PassengerService;
+import ets.service.PassengerValidator;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

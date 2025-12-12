@@ -1,10 +1,10 @@
 package test.ui;
 
-import oopt.assignment.model.IStaffRepository;
-import oopt.assignment.model.Staff;
-import oopt.assignment.service.StaffService;
-import oopt.assignment.ui.StaffUI;
-import oopt.assignment.util.PasswordUtil;
+import ets.model.IStaffRepository;
+import ets.model.Staff;
+import ets.service.StaffService;
+import ets.ui.StaffUI;
+import ets.util.PasswordUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

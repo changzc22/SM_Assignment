@@ -1,6 +1,6 @@
 package test.model;
 
-import oopt.assignment.model.TrainStatus;
+import ets.model.TrainStatus;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

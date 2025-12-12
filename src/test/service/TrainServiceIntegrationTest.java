@@ -1,8 +1,11 @@
 package test.service;
 
-import oopt.assignment.model.*;
-import oopt.assignment.service.TrainService;
-import oopt.assignment.service.TrainValidator;
+import ets.model.Train;
+import ets.model.TrainCreationRequest;
+import ets.model.TrainInterface;
+import ets.model.TrainStatus;
+import ets.service.TrainService;
+import ets.service.TrainValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

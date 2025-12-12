@@ -1,6 +1,6 @@
 package test.ui;
 
-import oopt.assignment.ui.ModifyStaffOption;
+import ets.ui.ModifyStaffOption;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -1,7 +1,7 @@
 package test.service;
 
-import oopt.assignment.service.TrainValidator;
-import oopt.assignment.util.AppConstants;
+import ets.service.TrainValidator;
+import ets.util.AppConstants;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

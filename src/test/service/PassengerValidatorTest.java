@@ -1,5 +1,5 @@
 package test.service;
-import oopt.assignment.service.PassengerValidator;
+import ets.service.PassengerValidator;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

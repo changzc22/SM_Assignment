@@ -1,7 +1,7 @@
 package test.ui;
 
-import oopt.assignment.service.PassengerService;
-import oopt.assignment.ui.PassengerUI;
+import ets.service.PassengerService;
+import ets.ui.PassengerUI;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayInputStream;

@@ -1,6 +1,6 @@
 package test.model;
 
-import oopt.assignment.model.SeatTier;
+import ets.model.SeatTier;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 

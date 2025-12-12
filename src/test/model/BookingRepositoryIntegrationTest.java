@@ -1,10 +1,10 @@
 package test.model;
 
-import oopt.assignment.model.Booking;
-import oopt.assignment.model.BookingRepository;
-import oopt.assignment.model.SeatTier;
-import oopt.assignment.model.Train;
-import oopt.assignment.util.AppConstants;
+import ets.model.Booking;
+import ets.model.BookingRepository;
+import ets.model.SeatTier;
+import ets.model.Train;
+import ets.util.AppConstants;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

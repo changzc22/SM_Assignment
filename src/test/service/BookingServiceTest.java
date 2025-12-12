@@ -1,8 +1,8 @@
 package test.service;
 
-import oopt.assignment.model.*;
-import oopt.assignment.service.BookingService;
-import oopt.assignment.service.StaffService;
+import ets.model.*;
+import ets.service.BookingService;
+import ets.service.StaffService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

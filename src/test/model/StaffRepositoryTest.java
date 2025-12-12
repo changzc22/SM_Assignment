@@ -1,8 +1,8 @@
 package test.model;
 
-import oopt.assignment.model.Staff;
-import oopt.assignment.model.StaffRepository;
-import oopt.assignment.util.AppConstants;
+import ets.model.Staff;
+import ets.model.StaffRepository;
+import ets.util.AppConstants;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

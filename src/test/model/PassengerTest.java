@@ -1,7 +1,7 @@
 package test.model;
 
-import oopt.assignment.model.Passenger;
-import oopt.assignment.model.PassengerTier;
+import ets.model.Passenger;
+import ets.model.PassengerTier;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

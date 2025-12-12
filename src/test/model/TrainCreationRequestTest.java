@@ -1,6 +1,6 @@
 package test.model;
 
-import oopt.assignment.model.TrainCreationRequest;
+import ets.model.TrainCreationRequest;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

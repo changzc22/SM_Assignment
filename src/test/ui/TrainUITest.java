@@ -1,12 +1,12 @@
 package test.ui;
 
-import oopt.assignment.model.Train;
-import oopt.assignment.model.TrainCreationRequest;
-import oopt.assignment.model.TrainInterface;
-import oopt.assignment.model.TrainStatus;
-import oopt.assignment.service.TrainService;
-import oopt.assignment.service.TrainValidator;
-import oopt.assignment.ui.TrainUI;
+import ets.model.Train;
+import ets.model.TrainCreationRequest;
+import ets.model.TrainInterface;
+import ets.model.TrainStatus;
+import ets.service.TrainService;
+import ets.service.TrainValidator;
+import ets.ui.TrainUI;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

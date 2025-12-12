@@ -1,7 +1,7 @@
 package test.service;
 
-import oopt.assignment.model.Staff;
-import oopt.assignment.service.StaffValidator;
+import ets.model.Staff;
+import ets.service.StaffValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package test.ui;
 
-import oopt.assignment.ui.PassengerMenuOption;
+import ets.ui.PassengerMenuOption;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
