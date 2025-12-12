@@ -6,8 +6,16 @@ import oopt.assignment.model.Train;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for the Booking Data Model (POJO).
+ * Verifies object identity methods (equals, hashCode) and string representation.
+ */
 public class BookingTest {
 
+    /**
+     * Ensures two booking objects with the same ID are considered equal.
+     * Crucial for ArrayList.remove() and contains().
+     */
     @Test
     void testEquality() {
         Booking b1 = new Booking();

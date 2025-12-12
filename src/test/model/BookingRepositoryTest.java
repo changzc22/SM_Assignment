@@ -14,6 +14,9 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Integration tests for BookingRepository.
+ */
 public class BookingRepositoryTest {
 
     private BookingRepository repository;
@@ -22,6 +25,10 @@ public class BookingRepositoryTest {
     private final File dataFile = new File(AppConstants.BOOKING_FILE_PATH);
     private final File backupFile = new File(AppConstants.BOOKING_FILE_PATH + ".bak");
 
+    /**
+     * Prepares a clean environment.
+     * Backs up any existing 'BookingFile.txt' to avoid data loss.
+     */
     @BeforeEach
     void setUp() {
         // 1. BACKUP: If a real file exists, rename it to .bak so we don't lose it
@@ -33,6 +40,10 @@ public class BookingRepositoryTest {
         repository = new BookingRepository();
     }
 
+    /**
+     * Restores the environment.
+     * Deletes the dummy test file and restores the original data.
+     */
     @AfterEach
     void tearDown() {
         // 1. CLEANUP: Delete the dummy test file created during the test
@@ -46,6 +57,10 @@ public class BookingRepositoryTest {
         }
     }
 
+    /**
+     * Verifies that data can be persisted to disk and retrieved correctly.
+     * Checks if formatting (pipe-separated) is handled properly.
+     */
     @Test
     void testAddAndRetrieveBooking() {
         // 1. Create Dummy Train (New Model)

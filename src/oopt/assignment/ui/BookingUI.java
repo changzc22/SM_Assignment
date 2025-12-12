@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
+
+/**
+ * Presentation layer for the Booking Module.
+ * Handles all console output and user input validation.
+ * Delegates logic to BookingService.
+ */
 public class BookingUI {
 
     private final BookingService bookingService;
@@ -16,6 +22,14 @@ public class BookingUI {
     private final String currentStaffId;
     private final Scanner scanner;
 
+
+    /**
+     * Constructor injecting dependencies.
+     *
+     * @param bookingService Service to handle booking logic
+     * @param staffId        ID of the currently logged-in staff
+     * @param scanner        Shared scanner instance
+     */
     public BookingUI(BookingService bookingService, String staffId, Scanner scanner) {
         this.bookingService = bookingService;
         this.currentStaffId = staffId;
@@ -23,6 +37,10 @@ public class BookingUI {
         this.passengerRepository = new PassengerRepository();
     }
 
+
+    /**
+     * Main loop for the Booking Menu.
+     */
     public void start() {
         boolean exit = false;
         while (!exit) {
@@ -48,7 +66,10 @@ public class BookingUI {
         }
     }
 
-    // --- 1. ADD BOOKING ---
+    /**
+     * Handles the flow for creating a new booking.
+     * Displays trains with prices, selects passenger, and confirms details.
+     */
     private void handleAddBooking() {
         System.out.println("\n--- Add New Booking ---");
         System.out.println("(Enter 'X' at any prompt to cancel operation)");
@@ -58,7 +79,7 @@ public class BookingUI {
         List<Train> trains = bookingService.getAvailableTrains();
         boolean hasAvailableTrains = false;
 
-        // Clean Table Header with Prices
+        // Display table of the available train
         // ID | Dest | Departure | Std Qty | Std Price | Prm Qty | Prm Price
         String headerFmt = "%-6s %-15s %-25s %-8s %-12s %-8s %-12s\n";
         String rowFmt    = "%-6s %-15s %-25s %-8d RM %-9.2f %-8d RM %-9.2f\n";
@@ -224,7 +245,9 @@ public class BookingUI {
         }
     }
 
-    // --- 2. DISPLAY BOOKINGS ---
+    /**
+     * Displays a formatted table of all bookings in the system.
+     */
     private void handleDisplayBookings() {
         System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------");
         System.out.println("|                                                     All Booking Details                                                                                    |");
@@ -253,7 +276,9 @@ public class BookingUI {
         System.out.println("--------------------------------------------------------------------------------------------------------------------------------------------------------------");
     }
 
-    // --- 3. SEARCH BOOKING ---
+    /**
+     * Prompts for Booking ID and displays details if found.
+     */
     private void handleSearchBooking() {
         System.out.println("\n--- Search Booking ---");
         Booking b = null;
@@ -269,7 +294,9 @@ public class BookingUI {
         displayBookingDetail(b);
     }
 
-    // --- 4. CANCEL BOOKING ---
+    /**
+     * Handles the cancellation of a booking and refunds the seats.
+     */
     private void handleCancelBooking() {
         System.out.println("\n--- Cancel Booking ---");
         Booking b = null;
@@ -305,21 +332,9 @@ public class BookingUI {
         }
     }
 
-    private void displayBookingDetail(Booking b) {
-        System.out.println("--------------------------------------------");
-        System.out.println("|               Booking Detail             |");
-        System.out.println("--------------------------------------------");
-        System.out.println("Booking ID      : " + b.getBookingID());
-        System.out.println("Name            : " + b.getName());
-        System.out.println("Destination     : " + (b.getTrain() != null ? b.getTrain().getDestination() : "N/A"));
-        System.out.println("Departure Date  : " + (b.getTrain() != null ? b.getTrain().getDepartureDate() : "N/A"));
-        System.out.println("Departure Time  : " + (b.getTrain() != null ? b.getTrain().getDepartureTime() : "N/A"));
-        System.out.println("Seat Tier       : " + b.getSeatTier().getLabel());
-        System.out.println("Seat Quantity   : " + b.getNumOfSeatBook());
-        System.out.printf("Total Fare      : RM %.2f\n", b.getTotalFare());
-        System.out.println("Train Status    : " + (b.getTrain() != null && b.getTrain().getStatus() == TrainStatus.ACTIVE ? "Active" : "Discontinued"));
-    }
-
+    /**
+     * Generates a revenue report based on destination and seat tier.
+     */
     private void handleGenerateReport() {
         MainUI.clearScreen();
         List<Booking> bookingList = bookingService.getAllBookings();
@@ -382,6 +397,26 @@ public class BookingUI {
         System.out.printf("Overall Total Revenue: RM %8.2f\n", subtotal[0] + subtotal[1]);
         System.out.println("--------------------------------------------------------");
         System.out.println("\nNote: Discontinued train will not be included in the report!\n");
+    }
+
+
+    /**
+     * Display the Booking Detail based on the given booking id
+     * @param b Booking id
+     */
+    private void displayBookingDetail(Booking b) {
+        System.out.println("--------------------------------------------");
+        System.out.println("|               Booking Detail             |");
+        System.out.println("--------------------------------------------");
+        System.out.println("Booking ID      : " + b.getBookingID());
+        System.out.println("Name            : " + b.getName());
+        System.out.println("Destination     : " + (b.getTrain() != null ? b.getTrain().getDestination() : "N/A"));
+        System.out.println("Departure Date  : " + (b.getTrain() != null ? b.getTrain().getDepartureDate() : "N/A"));
+        System.out.println("Departure Time  : " + (b.getTrain() != null ? b.getTrain().getDepartureTime() : "N/A"));
+        System.out.println("Seat Tier       : " + b.getSeatTier().getLabel());
+        System.out.println("Seat Quantity   : " + b.getNumOfSeatBook());
+        System.out.printf("Total Fare      : RM %.2f\n", b.getTotalFare());
+        System.out.println("Train Status    : " + (b.getTrain() != null && b.getTrain().getStatus() == TrainStatus.ACTIVE ? "Active" : "Discontinued"));
     }
 
     private void printMenu() {

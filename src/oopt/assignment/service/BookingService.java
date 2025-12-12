@@ -5,6 +5,11 @@ import oopt.assignment.util.AppConstants;
 
 import java.util.List;
 
+/**
+ * Handles the core business logic for the Booking Module.
+ * Responsible for fare calculations, seat inventory management,
+ * and coordinating data persistence between Booking, Train, and Staff modules.
+ */
 public class BookingService {
 
     private final IBookingRepository bookingRepository;
@@ -12,7 +17,15 @@ public class BookingService {
     private final StaffService staffService;
     private final BookingValidator validator;
 
-    // Updated Constructor: Injects all necessary dependencies to avoid static calls
+
+    /**
+     * Parameterized constructor for Dependency Injection.
+     * Allows for easier testing by injecting Mock repositories.
+     *
+     * @param bookingRepository Repository for handling Booking I/O
+     * @param trainRepository   Repository for handling Train I/O (seat updates)
+     * @param staffService      Service for handling Staff performance tracking
+     */
     public BookingService(IBookingRepository bookingRepository,
                           TrainInterface trainRepository,
                           StaffService staffService) {
@@ -22,6 +35,17 @@ public class BookingService {
         this.validator = new BookingValidator();
     }
 
+
+    /**
+     * Calculates the total ticket price based on multiple factors.
+     * Formula: Base Price * Quantity * Tier Discount * Tax Rate.
+     *
+     * @param passengerTier The tier of the passenger (Gold/Silver/Normal)
+     * @param seatTier      The class of seat (Standard/Premium)
+     * @param quantity      Number of seats being booked
+     * @param basePrice     The base price of the specific train seat
+     * @return The final total fare (double)
+     */
     public double calculateFare(PassengerTier passengerTier, SeatTier seatTier, int quantity, double basePrice) {
         double discountMultiplier = passengerTier.getPriceMultiplier();
         double tax = AppConstants.SST_RATE;
@@ -29,12 +53,28 @@ public class BookingService {
     }
 
     /**
-     * Fetch trains directly from repository (Replaces TrainMain usage)
+     * Retrieves the latest list of trains directly from the repository.
+     * Used by the UI to display available options.
+     * @return List of all Train objects
      */
     public List<Train> getAvailableTrains() {
         return trainRepository.loadAll();
     }
 
+
+    /**
+     * Create a new booking.
+     * This method performs a transaction:
+     * 1. Validates input.
+     * 2. Refreshes train data to prevent stale seat counts.
+     * 3. Deducts seats from the Train.
+     * 4. Saves the Booking AND the updated Train file.
+     * 5. Updates the Staff performance counter.
+     *
+     * @param newBooking      The booking object containing user inputs
+     * @param uiSelectedTrain The train object selected in the UI (used for ID reference)
+     * @return true if the booking was created successfully, false if validation failed
+     */
     public boolean createBooking(Booking newBooking, Train uiSelectedTrain) {
         // 1. Validate Quantity
         if (!validator.isValidQuantity(newBooking.getNumOfSeatBook())) {
@@ -42,7 +82,6 @@ public class BookingService {
         }
 
         // 2. Load fresh train data to ensure seat counts are accurate
-        // (We don't trust the UI copy because it might be stale)
         List<Train> allTrains = trainRepository.loadAll();
         Train dbTrain = allTrains.stream()
                 .filter(t -> t.getTrainID().equals(uiSelectedTrain.getTrainID()))
@@ -70,7 +109,7 @@ public class BookingService {
         bookingRepository.add(newBooking);       // Save Booking
         trainRepository.saveAll(allTrains);      // Save Updated Train Seats
 
-        // 6. Update Staff Stats (Using instance method, not static)
+        // 6. Update Staff Stats
         if (newBooking.getStaffId() != null) {
             staffService.incrementBookingHandle(newBooking.getStaffId());
         }
@@ -78,6 +117,13 @@ public class BookingService {
         return true;
     }
 
+
+    /**
+     * Cancels an existing booking and restores the seats to the Train.
+     *
+     * @param bookingID The unique ID of the booking to cancel
+     * @return true if successful, false if booking ID not found
+     */
     public boolean cancelBooking(String bookingID) {
         Booking booking = getBookingById(bookingID);
         if (booking == null) return false;
@@ -105,6 +151,13 @@ public class BookingService {
         return true;
     }
 
+
+    /**
+     * Retrieves all bookings and "hydrates" them with full Train details.
+     * The file only stores Train ID, so this method links the actual Train object.
+     *
+     * @return List of fully populated Booking objects
+     */
     public List<Booking> getAllBookings() {
         List<Booking> bookings = bookingRepository.getAll();
         List<Train> allTrains = trainRepository.loadAll(); // Use Repo directly
@@ -126,6 +179,13 @@ public class BookingService {
         return bookings;
     }
 
+
+    /**
+     * Helper to find a specific booking by ID.
+     *
+     * @param id The Booking ID (e.g. "B001")
+     * @return The Booking object, or null if not found
+     */
     public Booking getBookingById(String id) {
         return getAllBookings().stream()
                 .filter(b -> b.getBookingID().equalsIgnoreCase(id))
@@ -133,6 +193,13 @@ public class BookingService {
                 .orElse(null);
     }
 
+
+    /**
+     * Generates a new unique Booking ID (e.g., B001, B002).
+     * Scans existing bookings to find the highest number and increments it.
+     *
+     * @return A formatted String ID
+     */
     public String generateNewBookingId() {
         int maxId = bookingRepository.getAll().stream()
                 .map(Booking::getBookingID)

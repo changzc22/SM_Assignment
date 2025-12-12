@@ -3,7 +3,7 @@ package oopt.assignment.ui;
 import java.util.Arrays;
 
 /**
- * Represents the menu options for the Booking Module.
+ * Enum representing the available menu actions in the Booking Module.
  */
 public enum BookingMenuOption {
     ADD_BOOKING(1, "Add New Booking"),
@@ -30,9 +30,10 @@ public enum BookingMenuOption {
     }
 
     /**
-     * Helper to find the Enum from the user's integer input.
+     * Converts a raw integer input from the user into a type-safe Enum option.
+     *
      * @param id The number entered by the user.
-     * @return The corresponding Enum option, or null if not found.
+     * @return The corresponding BookingMenuOption, or null if the ID is invalid.
      */
     public static BookingMenuOption fromId(int id) {
         return Arrays.stream(values())

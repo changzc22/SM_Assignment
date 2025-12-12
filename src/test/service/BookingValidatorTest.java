@@ -12,6 +12,9 @@ import java.time.LocalTime;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Unit tests for BookingValidator.
+ */
 public class BookingValidatorTest {
 
     private BookingValidator validator;
@@ -28,6 +31,9 @@ public class BookingValidatorTest {
                 TrainStatus.ACTIVE);
     }
 
+    /**
+     * Verifies that only positive integers are accepted for quantity.
+     */
     @Test
     void testIsValidQuantity() {
         assertTrue(validator.isValidQuantity(1));
@@ -35,6 +41,9 @@ public class BookingValidatorTest {
         assertFalse(validator.isValidQuantity(-5));
     }
 
+    /**
+     * Verifies the logic that checks if the train has enough capacity.
+     */
     @Test
     void testHasEnoughSeats() {
         assertTrue(validator.hasEnoughSeats(testTrain, SeatTier.STANDARD, 5));

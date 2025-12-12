@@ -15,12 +15,20 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
+/**
+ * Unit tests for BookingService.
+ */
 public class BookingServiceTest {
 
     private BookingService bookingService;
     private MockBookingRepository mockBookingRepo;
     private MockTrainRepository mockTrainRepo;
 
+    /**
+     * Setup runs before every single test.
+     * It creates fresh instances of the Mocks and Service to ensure no data "leaks" between tests.
+     */
     @BeforeEach
     void setUp() {
         // 1. Create Mocks
@@ -29,18 +37,19 @@ public class BookingServiceTest {
         MockStaffRepository mockStaffRepo = new MockStaffRepository();
 
         // 2. Setup Dependencies
-        // We use a REAL StaffService but connect it to a MOCK Repository.
-        // This allows 'incrementBookingHandle' to run without needing 'StaffFile.txt'.
         StaffService staffService = new StaffService(mockStaffRepo);
-
-        // Seed a dummy staff member so updates don't fail
         mockStaffRepo.save(new Staff("Admin", "0123456789", "999999010101", "S001", "pass", 0));
 
-        // 3. Initialize BookingService (3 Arguments)
+        // 3. Initialize BookingService
         bookingService = new BookingService(mockBookingRepo, mockTrainRepo, staffService);
     }
 
     // --- 1. FARE CALCULATION ---
+    /**
+     * Verifies the financial logic for ticket pricing.
+     * Scenario: Different Passenger Tiers (Gold/Normal) and Seat Tiers.
+     * Expected: Base Price * Quantity * Tier Multiplier * Tax Rate (1.06).
+     */
     @Test
     void testCalculateFare() {
         // Gold (0.75) * Standard (100) * 1.06 tax = 79.50
@@ -53,6 +62,14 @@ public class BookingServiceTest {
     }
 
     // --- 2. CREATE BOOKING ---
+    /**
+     * Verifies the "Happy Path" for creating a booking.
+     * Scenario: User books 2 seats on a train with 10 seats available.
+     * Expected:
+     * 1. Method returns true.
+     * 2. Train seats decrease by 2 (10 -> 8).
+     * 3. Booking is saved to the repository.
+     */
     @Test
     void testCreateBooking_Success() {
         // Setup: Train with 10 seats
@@ -70,6 +87,12 @@ public class BookingServiceTest {
         assertEquals(1, mockBookingRepo.getAll().size(), "Booking should be saved");
     }
 
+
+    /**
+     * Verifies validation logic for insufficient inventory.
+     * Scenario: User requests 2 seats but only 1 is available.
+     * Expected: Returns false, and NO seats are deducted.
+     */
     @Test
     void testCreateBooking_NotEnoughSeats() {
         // Setup: Train with only 1 seat
@@ -86,6 +109,13 @@ public class BookingServiceTest {
     }
 
     // --- 3. CANCEL BOOKING ---
+    /**
+     * Verifies the cancellation and refund logic.
+     * Scenario: Cancelling a booking of 2 seats.
+     * Expected:
+     * 1. Booking is removed from repository.
+     * 2. Train seats are restored (8 -> 10).
+     */
     @Test
     void testCancelBooking_Success() {
         // Setup: Train with 8 seats (2 booked)
@@ -105,6 +135,12 @@ public class BookingServiceTest {
     }
 
     // --- 4. GENERATE ID ---
+    /**
+     * Verifies auto-increment logic for IDs.
+     * Expected:
+     * - Empty Repo -> B001
+     * - Repo has B005 -> Returns B006
+     */
     @Test
     void testGenerateNewBookingId() {
         assertEquals("B001", bookingService.generateNewBookingId());
@@ -113,10 +149,7 @@ public class BookingServiceTest {
         assertEquals("B006", bookingService.generateNewBookingId());
     }
 
-    // =============================================================
-    // INTERNAL MOCK CLASSES (Simulate Database in Memory)
-    // =============================================================
-
+    // --- Internal mock classes ---
     static class MockBookingRepository implements IBookingRepository {
         private final ArrayList<Booking> db = new ArrayList<>();
         public ArrayList<Booking> getAll() { return new ArrayList<>(db); }

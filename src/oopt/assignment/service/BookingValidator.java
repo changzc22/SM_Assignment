@@ -3,17 +3,28 @@ package oopt.assignment.service;
 import oopt.assignment.model.SeatTier;
 import oopt.assignment.model.Train;
 
+
+/**
+ * Utility class to enforce validation rules for Bookings.
+ */
 public class BookingValidator {
 
     /**
-     * Validates if the booking quantity is valid (positive integer).
+     * Validates if the booking quantity is a positive integer.
+     * @param quantity The number of seats requested
+     * @return true if quantity > 0
      */
     public boolean isValidQuantity(int quantity) {
         return quantity > 0;
     }
 
     /**
-     * Validates if the train has enough seats for the requested quantity.
+     * Checks if the specific train has enough seats for the requested tier.
+     *
+     * @param train    The train object to check
+     * @param tier     The seat tier (Standard/Premium)
+     * @param quantity The number of seats requested
+     * @return true if available seats >= quantity
      */
     public boolean hasEnoughSeats(Train train, SeatTier tier, int quantity) {
         int availableSeats = (tier == SeatTier.STANDARD)

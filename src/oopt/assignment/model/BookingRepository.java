@@ -7,10 +7,20 @@ import java.util.Collection;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+
+/**
+ * Handles File I/O for Booking data using a text file.
+ * Implements IBookingRepository for loose coupling.
+ */
 public class BookingRepository implements IBookingRepository {
 
     private static final Logger logger = Logger.getLogger(BookingRepository.class.getName());
 
+
+    /**
+     * Reads all bookings from the file.
+     * @return ArrayList of Booking objects
+     */
     @Override
     public ArrayList<Booking> getAll() {
         ArrayList<Booking> bookingList = new ArrayList<>();
@@ -35,6 +45,11 @@ public class BookingRepository implements IBookingRepository {
         return bookingList;
     }
 
+
+    /**
+     * Overwrites the booking file with the provided collection.
+     * @param bookings The list of bookings to persist
+     */
     @Override
     public void saveAll(Collection<Booking> bookings) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(AppConstants.BOOKING_FILE_PATH, false))) {
@@ -47,6 +62,11 @@ public class BookingRepository implements IBookingRepository {
         }
     }
 
+
+    /**
+     * Helper to append a single booking to the file.
+     * @param booking The booking object to add
+     */
     @Override
     public void add(Booking booking) {
         ArrayList<Booking> list = getAll();
@@ -54,6 +74,11 @@ public class BookingRepository implements IBookingRepository {
         saveAll(list);
     }
 
+
+    /**
+     * Helper to remove a booking by ID and update the file.
+     * @param bookingId The ID of the booking to remove
+     */
     @Override
     public void delete(String bookingId) {
         ArrayList<Booking> list = getAll();
