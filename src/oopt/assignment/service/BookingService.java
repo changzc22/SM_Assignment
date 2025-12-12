@@ -134,26 +134,12 @@ public class BookingService {
     }
 
     public String generateNewBookingId() {
-        List<Booking> allBookings = bookingRepository.getAll();
-
-        if (allBookings.isEmpty()) {
-            return "B001";
-        }
-
-        int maxId = 0;
-        for (Booking b : allBookings) {
-            try {
-                // Extract number (B005 -> 5)
-                String numberPart = b.getBookingID().substring(1);
-                int currentId = Integer.parseInt(numberPart);
-
-                if (currentId > maxId) {
-                    maxId = currentId;
-                }
-            } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
-                continue;
-            }
-        }
+        int maxId = bookingRepository.getAll().stream()
+                .map(Booking::getBookingID)
+                .filter(id -> id != null && id.matches("B\\d+"))
+                .mapToInt(id -> Integer.parseInt(id.substring(1)))
+                .max()
+                .orElse(0);
 
         return String.format("B%03d", maxId + 1);
     }

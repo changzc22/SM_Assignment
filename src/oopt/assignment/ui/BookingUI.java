@@ -51,33 +51,40 @@ public class BookingUI {
     // --- 1. ADD BOOKING ---
     private void handleAddBooking() {
         System.out.println("\n--- Add New Booking ---");
-        System.out.println("(Enter 'X' at any prompt to cancel)");
+        System.out.println("(Enter 'X' at any prompt to cancel operation)");
 
-        // 1. Display Trains (Using Cleaner/Modern Design)
+        // 1. Display Trains with PRICES (Detailed Table)
         System.out.println("\nAvailable Trains (Active & Has Seats):");
         List<Train> trains = bookingService.getAvailableTrains();
         boolean hasAvailableTrains = false;
 
-        // Modern Table Header
-        System.out.printf("%-6s %-15s %-30s %-10s %-10s\n", "ID", "Destination", "Departure", "Std Seats", "Prm Seats");
-        System.out.println("-----------------------------------------------------------------------------");
+        // Clean Table Header with Prices
+        // ID | Dest | Departure | Std Qty | Std Price | Prm Qty | Prm Price
+        String headerFmt = "%-6s %-15s %-25s %-8s %-12s %-8s %-12s\n";
+        String rowFmt    = "%-6s %-15s %-25s %-8d RM %-9.2f %-8d RM %-9.2f\n";
+        String divider   = "-------------------------------------------------------------------------------------------------------------";
+
+        System.out.println(divider);
+        System.out.printf(headerFmt, "ID", "Destination", "Departure", "Std Qty", "Std Price", "Prm Qty", "Prm Price");
+        System.out.println(divider);
 
         for (Train t : trains) {
-            // FIX: Use getStatus() check
             if (t.getStatus() == TrainStatus.ACTIVE && (t.getStandardSeatQty() > 0 || t.getPremiumSeatQty() > 0)) {
                 String departureInfo = t.getDepartureTime() + " (" + t.getDepartureDate() + ")";
 
-                System.out.printf("%-6s %-15s %-30s %-10d %-10d\n",
+                System.out.printf(rowFmt,
                         t.getTrainID(),
                         t.getDestination(),
                         departureInfo,
                         t.getStandardSeatQty(),
-                        t.getPremiumSeatQty());
+                        t.getStandardSeatPrice(),
+                        t.getPremiumSeatQty(),
+                        t.getPremiumSeatPrice());
 
                 hasAvailableTrains = true;
             }
         }
-        System.out.println("-----------------------------------------------------------------------------");
+        System.out.println(divider);
 
         if (!hasAvailableTrains) {
             System.out.println("No active trains with available seats.");
@@ -87,7 +94,7 @@ public class BookingUI {
         // 2. Select Train
         Train selectedTrain = null;
         while (selectedTrain == null) {
-            String destInput = promptInput("Please input Train ID (e.g. T001) [Enter x to exit]");
+            String destInput = promptInput("Please input Train ID (e.g. T001)");
             if (destInput == null) return;
 
             String inputUpper = destInput.toUpperCase();
@@ -103,12 +110,13 @@ public class BookingUI {
         // 3. Seat Tier
         SeatTier tier = null;
         while (tier == null) {
+            // Using helper without repetitive prompt text
             SeatTier temp = readSeatTierInput();
             if (temp == null) return;
 
             int avail = (temp == SeatTier.STANDARD) ? selectedTrain.getStandardSeatQty() : selectedTrain.getPremiumSeatQty();
             if (avail <= 0) {
-                System.out.println("No more seat for this seat tier.");
+                System.out.println("Error: No more " + temp.getLabel() + " seats available on this train.");
             } else {
                 tier = temp;
             }
@@ -117,19 +125,21 @@ public class BookingUI {
         // 4. Quantity
         int qty = -1;
         while (true) {
-            qty = readIntInput("Enter quantity for seat [Enter -1 to return]");
+            qty = readIntInput("Enter quantity for seat");
+
+            // Returns -1 if user typed 'X'
             if (qty == -1) return;
 
             int avail = (tier == SeatTier.STANDARD) ? selectedTrain.getStandardSeatQty() : selectedTrain.getPremiumSeatQty();
-            if (qty <= 0) System.out.println("You cannot input 0 or negative values");
-            else if (qty > avail) System.out.println("You should not input more than available quantity.");
+            if (qty <= 0) System.out.println("Error: You cannot input 0 or negative values.");
+            else if (qty > avail) System.out.println("Error: You should not input more than available quantity (" + avail + ").");
             else break;
         }
 
-        // 5. Booking ID (Auto-Generated)
+        // 5. Booking ID
         String id = bookingService.generateNewBookingId();
 
-        // 6. Select Passenger (Now displays table first)
+        // 6. Select Passenger (Table View)
         Passenger selectedPassenger = null;
         List<Passenger> allPassengers = new ArrayList<>(passengerRepository.getAll().values());
 
@@ -138,10 +148,11 @@ public class BookingUI {
             return;
         }
 
-        // Display Passenger List
+        // Display Passenger List for Easy Selection
         System.out.println("\n--- Select Passenger ---");
+        System.out.println("---------------------------------------------------------");
         System.out.printf("%-6s %-20s %-15s %-10s\n", "ID", "Name", "IC Number", "Tier");
-        System.out.println("-----------------------------------------------------------");
+        System.out.println("---------------------------------------------------------");
         for (Passenger p : allPassengers) {
             System.out.printf("%-6s %-20s %-15s %-10s\n",
                     p.getId(),
@@ -149,11 +160,11 @@ public class BookingUI {
                     p.getIc(),
                     p.getPassengerTier());
         }
-        System.out.println("-----------------------------------------------------------");
+        System.out.println("---------------------------------------------------------");
 
         // Loop to get valid ID
         while (selectedPassenger == null) {
-            String pIdInput = promptInput("Please input Passenger ID (e.g. P001) [Enter x to exit]");
+            String pIdInput = promptInput("Please input Passenger ID");
             if (pIdInput == null) return;
 
             String finalId = pIdInput.toUpperCase();
@@ -183,7 +194,7 @@ public class BookingUI {
         System.out.println("Seat Quantity  : " + qty);
         System.out.printf("Total Fare     : RM %.2f\n", fare);
         System.out.println("==========================");
-        System.out.println("Note: SST & Discounts(If applicable) included in total fare.");
+        System.out.println("Note: SST & Discounts (if applicable) included in total fare.");
 
         // 9. Strict Confirmation
         String confirm = "";
@@ -247,7 +258,7 @@ public class BookingUI {
         System.out.println("\n--- Search Booking ---");
         Booking b = null;
         while (b == null) {
-            String id = promptInput("Please enter the booking ID [Enter X to quit]");
+            String id = promptInput("Please enter the booking ID");
             if (id == null) return;
 
             b = bookingService.getBookingById(id);
@@ -263,7 +274,7 @@ public class BookingUI {
         System.out.println("\n--- Cancel Booking ---");
         Booking b = null;
         while (b == null) {
-            String id = promptInput("Please enter the booking ID [Enter X to quit]");
+            String id = promptInput("Please enter the booking ID");
             if (id == null) return;
 
             b = bookingService.getBookingById(id);
@@ -422,23 +433,27 @@ public class BookingUI {
     private int readIntInput(String message) {
         while (true) {
             String input = promptInput(message);
+
+            // If promptInput returns null, it means user typed 'X'.
+            // Return -1 to signal cancellation to the caller.
             if (input == null) return -1;
+
             try {
                 return Integer.parseInt(input);
             } catch (NumberFormatException e) {
-                System.out.println("Error: Invalid input. Please enter a valid number.");
+                System.out.println("Invalid input. Please enter a valid number.");
             }
         }
     }
 
     private SeatTier readSeatTierInput() {
         while (true) {
-            String input = promptInput("Please enter seat tier (S-Standard, P-Premium) [Enter x to return]");
+            String input = promptInput("Please enter seat tier (S-Standard, P-Premium)");
             if (input == null) return null;
             try {
                 return SeatTier.fromCode(input.charAt(0));
             } catch (Exception e) {
-                System.out.println("Error: Invalid Tier. Please enter 'S' or 'P'.");
+                System.out.println("Invalid Tier. Please enter 'S' or 'P'.");
             }
         }
     }
