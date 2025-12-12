@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Integration tests for BookingRepository.
  */
-public class BookingRepositoryTest {
+public class BookingRepositoryIntegrationTest {
 
     private BookingRepository repository;
 
