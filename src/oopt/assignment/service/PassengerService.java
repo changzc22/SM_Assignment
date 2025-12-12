@@ -101,6 +101,7 @@ public class PassengerService {
         validator.validateName(name);
         validator.validateContact(contactNo);
         validator.validateIc(ic);
+        ensureIcUnique(ic, null);
         validator.validateGender(gender);
 
         PassengerRepository concreteRepo = ensureConcreteRepo();
@@ -135,6 +136,7 @@ public class PassengerService {
         validator.validateName(updatedPassenger.getName());
         validator.validateContact(updatedPassenger.getContactNo());
         validator.validateIc(updatedPassenger.getIc());
+        ensureIcUnique(updatedPassenger.getIc(), updatedPassenger.getId());
         validator.validateGender(updatedPassenger.getGender());
 
         all.put(updatedPassenger.getId(), updatedPassenger);
@@ -172,4 +174,22 @@ public class PassengerService {
         throw new IllegalStateException(
                 "New ID generation requires PassengerRepository concrete type.");
     }
+
+    /**
+     * To ensure the IC is unique for all passengers
+     * @param ic Passenger's ic
+     * @param currentPassengerId Passenger's id
+     */
+    private void ensureIcUnique(String ic, String currentPassengerId) {
+        LinkedHashMap<String, Passenger> all = repository.getAll();
+
+        for (Passenger existing : all.values()) {
+            if (existing.getIc().equals(ic)) {
+                if (!existing.getId().equals(currentPassengerId)) {
+                    throw new IllegalArgumentException("IC is already registered in the system.");
+                }
+            }
+        }
+    }
+
 }

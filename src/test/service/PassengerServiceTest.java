@@ -134,4 +134,17 @@ class PassengerServiceTest {
                         () -> service.changeTier("P999", 'G'));
         assertTrue(ex.getMessage().contains("Passenger not found"));
     }
+
+    @Test
+    void registerNewPassenger_duplicateIc_throws() {
+        service.registerNewPassenger("Alice", "0123456789", "010203040506", 'F');
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> service.registerNewPassenger("Bob", "0987654321", "010203040506", 'M')
+        );
+
+        assertEquals("IC is already registered in the system.", ex.getMessage());
+    }
+
 }
